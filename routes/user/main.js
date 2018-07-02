@@ -42,7 +42,7 @@ router.post('/signin', async(req, res, next) => {
     `;
 
     let result = await db.Query(selectQuery, [email, pwd.toString('base64')]); 
-    if( result[0].cnt == 0){
+    if( result.length == 0){
         res.status(404).send({
             state: "Login Fail "
         });
@@ -112,7 +112,7 @@ router.post('/signup', async(req, res) => {
     let chkToken = {};
    chkToken.email = "1";
 
-    var {name, size, birthday, caution} = req.body;
+    let {name, size, birthday, caution} = req.body;
 
     let selectIdxQuery = 
     `
