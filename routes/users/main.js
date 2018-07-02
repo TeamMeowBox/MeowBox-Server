@@ -11,16 +11,6 @@
  const db = require('../../module/pool.js');
  const sql = require('../../module/sql.js');
 
-
-
-function array_diff(a, b) {
-  var tmp={}, res=[];
-  for(var i=0;i<a.length;i++) tmp[a[i]]=1;
-  for(var i=0;i<b.length;i++) { if(tmp[b[i]]) delete tmp[b[i]]; }
-  for(var k in tmp) res.push(k);
-  return res;
-}
-
 /*
  Method : Get
  */
