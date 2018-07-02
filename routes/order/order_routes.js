@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 // Signin
-router.use('/main', require('./main'));
+// router.use('/main', require('./main'));
 
 
 ///////mtmtmtmtmtmtmtm
