@@ -6,6 +6,7 @@ const router = express.Router();
 
 
 router.use('/', require('./mypageinfo'));
+router.use('/feedback', require('./feedback'));
 
 
 
