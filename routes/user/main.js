@@ -44,13 +44,17 @@ router.post('/signin', async(req, res, next) => {
     let result = await db.Query(selectQuery, [email, pwd.toString('base64')]); 
     if( result[0].cnt == 0){
         res.status(404).send({
-            state: "Login Fail "
+            message: "Login Fail "
         });
     }
     else{
+        let token = jwt.sign(email);
         res.status(200).send({
-            state : "Login Success"
-        });
+            "result" : {
+                message : "Login Success",
+                token : token 
+            }
+        })
     } // End of else    
 });
 
@@ -86,11 +90,11 @@ router.post('/signup', async(req, res) => {
         try {
             await db.Query(insertQuery,[email,pwd,name,phone_number]);
             await res.status(200).send({
-                state : "Register Success"
+                message : "Register Success"
             });
         } catch (error) {
             res.status(500).send({
-                state : "Register Error"
+                message : "Register Error"
             });
         }
     }
@@ -126,7 +130,7 @@ router.post('/signup', async(req, res) => {
 
     if( user_idx.length == 0){
         res.status(404).send({
-            state: "Cat Register Fail "
+            message: "Cat Register Fail "
         });
     }
     else{
@@ -139,11 +143,11 @@ router.post('/signup', async(req, res) => {
         try {
             await db.Query(insertQuery,[user_idx[0].idx,name,size,birthday,caution]);
             await res.status(200).send({
-                state : "Register Cat Success"
+                message : "Register Cat Success"
             });
         } catch (error) {
             res.status(500).send({
-                state : "Register Error"
+                message : "Register Error"
             });
         }
         
