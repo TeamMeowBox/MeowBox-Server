@@ -14,6 +14,19 @@
 router.get('/:user_idx', async (req, res, next) => {
   let { user_idx } = req.params;
   let catinfo, sendImage ,cnt;
+
+// const chkToken = jwt.verify(req.headers.authorization);
+   /*
+   if(chkToken == -1) {
+       res.status(401).send({
+           message : "Access Denied"
+       });
+   }
+   */
+
+  // let chkToken = {};
+  // chkToken.email = "1";
+
   let Query = ` 
                 SELECT cats.name as cat_name 
                 FROM users,cats 
@@ -50,7 +63,7 @@ router.get('/:user_idx', async (req, res, next) => {
       status : -1,  //정기권 없음
       data : {
         cat : catinfo,
-        product : sendImage
+        iamge : sendImage
       }
     })
   } else { //정기권 진행중일때
@@ -60,7 +73,7 @@ router.get('/:user_idx', async (req, res, next) => {
       status : 1,   //정기권 있음
       data : {
         cat : catinfo,
-        total : orderResult[0].product,
+        ticket : orderResult[0].product,
         use :cnt
       }
     })
