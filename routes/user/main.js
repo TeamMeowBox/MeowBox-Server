@@ -76,7 +76,7 @@ router.post('/signup', async (req, res) => {
     let selectResult = await db.Query(selectEmail, [email]);
     if (selectResult.length > 0) {
         res.status(200).send({
-            state: "ID already exist !",
+            message : "ID already exist !",
         });
     }
     else {
