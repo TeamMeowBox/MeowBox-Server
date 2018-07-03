@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
 
+const scheduler = require('./module/scheduler')
 /*
  Custom module
 */
