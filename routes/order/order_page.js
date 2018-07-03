@@ -49,8 +49,6 @@ router.post('/', async(req, res, next) => {
    let payment_date = new Date();
    payment_date = yyyymmdd(payment_date);
   
-   console.log(product);
-
     let insertQuery = 
     `
     INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
@@ -59,13 +57,14 @@ router.post('/', async(req, res, next) => {
 
     try {
         let result = await db.Query(insertQuery,[ user_idx, name, address, phone_number, chkToken.email, payment_date, price, product ]);
-        console.log(result);
-        await res.status(200).send({
-            state : "Success Order Info"
+        
+
+        res.status(200).send({
+            message : "Success Order Info"
         });
     } catch (error) {
         res.status(500).send({
-            state : "Fail Order Info"
+            message : "Fail Order Info"
         });
     }
 });
