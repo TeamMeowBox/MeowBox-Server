@@ -27,8 +27,8 @@ router.get('/account_setting/:user_idx', async(req, res) =>{
     } else {
         let accountSelectQuery =
         `
-        SELECT users.idx, users.name, users.email, users.phone_number, users.image_profile, image_background,
-               cats.name, cats.size, cats.birthday, cats.caution 
+        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile, image_background,
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
         FROM users JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = cats.user_idx
         AND users.idx = ?
@@ -78,25 +78,15 @@ router.post('/account_setting/:user_idx', upload.fields([{ name: 'image_profile'
 
         try{
             await db.Query(usersUpdateQuery,[user_name, user_phone, user_email,user_idx]);
-            await res.status(200).send({
-                state : 'Update users Success'
-            });
-        } catch (error) {
-            res.status(500).send({
-                state : 'Update users Error'
-            });
-        }
-        
-        try{
             await db.Query(catsUpdateQuery,[cat_name, cat_size, cat_birthday, cat_caution,user_idx]);
             await res.status(200).send({
-                state : 'Update cats Success'
+                state : 'Update account Success'
             });
         } catch (error) {
             res.status(500).send({
-                state : 'Update cats Error'
+                state : 'Update account Error'
             });
-        }
+        } 
     } // End of else    
 });
 
