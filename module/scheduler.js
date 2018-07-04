@@ -16,7 +16,7 @@ const db = require('./pool.js');
 
 
 
-     // where  date(delivery_date) <=date(subdate(now(),interval 1 DAY));
+     // where  date(delivery_date) > date(subdate(now(),interval 1 DAY));
      // INSERT INTO  reservations VALUES(? ,DATE_FORMAT(NOW(),'%Y.%m.%d') );
      
 
