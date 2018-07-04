@@ -43,8 +43,8 @@ router.post('/signin', async (req, res, next) => {
 
     let result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
     if (result.length == 0) {
-        res.status(404).send({
-            status: fail,
+        res.status(200).send({
+            status: "fail",
             message: "Login Fail "
         });
     }
@@ -52,7 +52,7 @@ router.post('/signin', async (req, res, next) => {
         let token = jwt.sign(email);
         res.status(200).send({
             "result": {
-                status: true,
+                status: "true",
                 message: "Login Success",
                 token: token
             }
@@ -131,7 +131,7 @@ router.post('/cat_signup', async (req, res, next) => {
     console.log('idx length : ' + user_idx.length);
 
     if (user_idx.length == 0) {
-        res.status(404).send({
+        res.status(200).send({
             message: "Cat Register Fail "
         });
     }

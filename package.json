@@ -15,7 +15,7 @@
     "cors": "^2.8.4",
     "crypto-promise": "^2.0.0",
     "debug": "~2.6.9",
-    "dredd": "^4.9.2",
+    "dredd": "^5.1.11",
     "ejs": "^2.5.7",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
