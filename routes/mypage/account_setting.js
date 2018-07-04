@@ -8,7 +8,7 @@ const async = require('async');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const db = require('../../module/pool.js');
-const multerUpload = require('../../module/multer.js').upload;
+const upload = require('../../module/multer.js');
 
 
 /*
@@ -27,16 +27,17 @@ router.get('/account_setting/:user_idx', async(req, res) =>{
     } else {
         let accountSelectQuery =
         `
-        SELECT users.idx, users.name, users.email, users.phone_number, users.image_profile, image_background,
-               cats.name, cats.size, cats.birthday, cats.caution 
+        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile, image_background,
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
         FROM users JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = cats.user_idx
         AND users.idx = ?
         `;
         try{
-            await db.Query(accountSelectQuery,[user_idx]);
+            let accountResult = await db.Query(accountSelectQuery,[user_idx]);
             await res.status(200).send({
-                state :  'Select Account Success'
+                state :  'Select Account Success',
+                user_account : accountResult
             });
         } catch (error) {
             res.status(500).send({
@@ -50,7 +51,7 @@ router.get('/account_setting/:user_idx', async(req, res) =>{
  */
  // Written By 서연
  // 계정 수정
-router.post('/account_setting/:user_idx', multerUpload.fields([{ name: 'image_profile' }, { name: 'image_back' }]), async(req, res) => {
+router.post('/account_setting/:user_idx', upload.fields([{ name: 'image_profile', maxCount : 1 }, { name: 'image_back', maxCount : 1 }]), async(req, res) => {
     let {user_idx, user_name, user_email, user_phone, image_profile, image_back, cat_name, cat_size, cat_birthday, cat_caution} = req.body;
 
     console.log(req.files);
@@ -77,25 +78,15 @@ router.post('/account_setting/:user_idx', multerUpload.fields([{ name: 'image_pr
 
         try{
             await db.Query(usersUpdateQuery,[user_name, user_phone, user_email,user_idx]);
-            await res.status(200).send({
-                state : 'Update users Success'
-            });
-        } catch (error) {
-            res.status(500).send({
-                state : 'Update users Error'
-            });
-        }
-        
-        try{
             await db.Query(catsUpdateQuery,[cat_name, cat_size, cat_birthday, cat_caution,user_idx]);
             await res.status(200).send({
-                state : 'Update cats Success'
+                state : 'Update account Success'
             });
         } catch (error) {
             res.status(500).send({
-                state : 'Update cats Error'
+                state : 'Update account Error'
             });
-        }
+        } 
     } // End of else    
 });
 

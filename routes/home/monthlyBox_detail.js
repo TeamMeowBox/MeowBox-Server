@@ -29,9 +29,9 @@ var package = new Schema({
         {
             title : String,
             main_img : String,
-            hashtag : [String],
+            hashtag : [{type : String}],
             main_text : String,
-            detail_img : [String],
+            detail_img : [{type : String}],
             detail_text : String
         }
     ]

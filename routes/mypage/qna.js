@@ -17,23 +17,55 @@ const db = require('../../module/pool.js');
  // qna 화면 보기
 router.get('/qna', async(req, res) =>{
     console.log("success connection");
-    
     let qnaSelectQuery =
     `
-    SELECT idx, answer, category, question 
-    FROM qna
+    SELECT question, answer, category
+    FROM qna    
     `;
-    try{
-        await db.Query(qnaSelectQuery);
-        await res.status(200).send({
-            state :  'Select Qna Success'
-        });
-    } catch (error) {
-        res.status(500).send({
-            state : 'Select Qna Error'
-        });
-    }
+
+    let qnaResult = await db.Query(qnaSelectQuery);
     
+    if (qnaResult.length === 0){
+        res.status(404).send({
+            message: "server error"
+        });
+    } else {
+        let product = new Array();
+        let delivery = new Array();
+        let packing = new Array();
+        let subscribe = new Array();
+
+        console.log('qnaResult.length' +qnaResult.length );
+        for(let i=0;i<qnaResult.length;i++){
+            switch(qnaResult[i].category){
+                case '0' :
+                    product.push(qnaResult[i]);
+                    break;            
+                case '1' :
+                    delivery.push(qnaResult[i]);
+                    break;
+                case '2' :
+                    packing.push(qnaResult[i]);
+                    break;
+                case '3' :
+                    subscribe.push(qnaResult[i]);
+                    break;   
+            }
+        }
+        try{
+            await res.status(200).send({
+                     state :  'Select Qna Success',
+                     product : product,
+                     delivery : delivery,
+                     packing : packing,
+                     subscribe : subscribe
+                });
+            } catch (error) {
+                res.status(500).send({
+                    state : 'Select Qna Error'
+                });
+            }
+        }
 });
-  
-module.exports = router;
+
+module.exports = router;    
