@@ -8,8 +8,10 @@
   "dependencies": {
     "async": "^2.6.0",
     "body-parser": "~1.18.2",
+    "cheerio": "^1.0.0-rc.2",
     "config": "^1.30.0",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "crypto-promise": "^2.0.0",
     "debug": "~2.6.9",
     "dredd": "^4.9.2",
@@ -17,6 +19,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "helmet": "^3.9.0",
+    "instagram-crawling": "^1.1.2",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.1.0",
     "moment": "^2.20.1",
