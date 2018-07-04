@@ -8,7 +8,7 @@ const async = require('async');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const db = require('../../module/pool.js');
-const multerUpload = require('../../module/multer.js').upload;
+const upload = require('../../module/multer.js');
 
 
 /*
@@ -34,9 +34,10 @@ router.get('/account_setting/:user_idx', async(req, res) =>{
         AND users.idx = ?
         `;
         try{
-            await db.Query(accountSelectQuery,[user_idx]);
+            let accountResult = await db.Query(accountSelectQuery,[user_idx]);
             await res.status(200).send({
-                state :  'Select Account Success'
+                state :  'Select Account Success',
+                user_account : accountResult
             });
         } catch (error) {
             res.status(500).send({
@@ -50,7 +51,7 @@ router.get('/account_setting/:user_idx', async(req, res) =>{
  */
  // Written By 서연
  // 계정 수정
-router.post('/account_setting/:user_idx', multerUpload.fields([{ name: 'image_profile' }, { name: 'image_back' }]), async(req, res) => {
+router.post('/account_setting/:user_idx', upload.fields([{ name: 'image_profile', maxCount : 1 }, { name: 'image_back', maxCount : 1 }]), async(req, res) => {
     let {user_idx, user_name, user_email, user_phone, image_profile, image_back, cat_name, cat_size, cat_birthday, cat_caution} = req.body;
 
     console.log(req.files);
