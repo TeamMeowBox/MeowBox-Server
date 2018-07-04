@@ -1,5 +1,3 @@
-
-
 const schedule = require('node-schedule');
 const async = require('async');
 const db = require('./pool.js');
