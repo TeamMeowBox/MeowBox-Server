@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =    
     `
-    SELECT email
+    SELECT email, idx
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -46,6 +46,7 @@ router.post('/signin', async (req, res, next) => {
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
         if(_result.length > 0){
             result.token = jwt.sign(email);
+            result.user_idx = _result[0].idx;
         }
         else{
             return next("401");
@@ -84,8 +85,9 @@ router.post('/signup', async (req, res, next) => {
             VALUES(?,?,?,?);
             `;
             try {
-                await db.Query(insertQuery, [email, pwd, name, phone_number]);
+                let _result = await db.Query(insertQuery, [email, pwd, name, phone_number]);
                 result.token = jwt.sign(email);
+                result.user_idx = _result.insertId;
             } catch (error) {
                 return next(error);
             }

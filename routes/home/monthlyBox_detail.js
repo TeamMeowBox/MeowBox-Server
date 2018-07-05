@@ -29,10 +29,10 @@ var package = new Schema({
 })
 
 var testhomes = mongoose.model('testhomes',package)
-router.get('/:id',async (req,res,next) => {
+router.get('/',async (req,res,next) => {
     let {id} = req.params
     try{
-        var result = await testhomes.findOne({_id : id});
+        var result = await testhomes.find({});
     } catch(err){
         return res.r(err);
     }
