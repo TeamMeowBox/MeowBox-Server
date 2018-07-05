@@ -26,6 +26,7 @@
     "joi": "^13.4.0",
     "jsonwebtoken": "^8.1.0",
     "moment": "^2.20.1",
+    "mongoose": "^5.2.1",
     "morgan": "~1.9.0",
     "multer": "^1.3.1",
     "multer-s3": "^2.7.0",
