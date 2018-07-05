@@ -43,8 +43,13 @@ router.post('/signin', async (req, res, next) => {
 
     let result = {};
     try {
-        result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
-        result.token = jwt.sign(email);
+        let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
+        if(_result.length > 0){
+            result.token = jwt.sign(email);
+        }
+        else{
+            return next("401");
+        }
     } catch (error) {
         return next(error);
     }
@@ -60,7 +65,7 @@ router.post('/signup', async (req, res, next) => {
     pwd = encrypt(pwd);
 
     let selectEmail =
-        `
+    `
     SELECT *
     FROM users
     WHERE email = ?
@@ -109,7 +114,6 @@ router.post('/cat_signup', async (req, res, next) => {
     WHERE email = ?
     `;
 
-
     let result;
     try {
         let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
@@ -123,7 +127,7 @@ router.post('/cat_signup', async (req, res, next) => {
             VALUES(?,?,?,?,?);
             `;
             try {
-                result = await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
+                await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
             } catch (error) {
                 next(error);
             }
@@ -131,7 +135,7 @@ router.post('/cat_signup', async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.r(result);  
+    return res.r();  
 });
 
 
@@ -139,6 +143,12 @@ router.post('/cat_signup', async (req, res, next) => {
 // Written By 정경인
 // 회원 탈퇴
 router.delete('/account/:user_idx', async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    
+    if(chkToken == -1) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
+    
     let { user_idx } = req.params;
 
     let deleteQuery =
@@ -150,11 +160,11 @@ router.delete('/account/:user_idx', async (req, res, next) => {
 
     let result;
     try {
-        result = await db.Query(deleteQuery, [user_idx]);
+        await db.Query(deleteQuery, [user_idx]);
     } catch (error) {
         next(error);
     }
-    return res.r(result);
+    return res.r();
 });
 
 
