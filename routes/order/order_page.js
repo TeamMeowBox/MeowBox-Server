@@ -56,10 +56,10 @@ function getFirstMonday(date){
 //배송일 리스트 구하는 함수
 function getDeliveryDate(payment_date,product){
     var deliveryDate = new Array();
-    if(product === 3 || product === 6){
+    if(product == 3 || product == 6){
 		for(let i = 0;i<product;i++){
 			if(i==0){
-				let firstDate = getNextDayofWeek(payment_date,1)
+                let firstDate = getNextDayofWeek(payment_date,1)
 				//delivertDate.push(getNextDayofWeek(payment_date,1))
 				if(moment(firstDate).month()>moment(payment_date).month()){
 					deliveryDate.push(moment(firstDate).format('YYYY.MM.DD'))
@@ -89,22 +89,14 @@ Method : Post
 // Written By 신기용
 // 주문 페이지
 router.post('/', async(req, res, next) => {
-   // const chkToken = jwt.verify(req.headers.authorization);
-   /*
-   if(chkToken == -1) {
-       res.status(401).send({
-           message : "Access Denied"
-       });
-   }
-   */
-
-   let chkToken = {};
-  chkToken.email = "1";
+    const chkToken = jwt.verify(req.headers.authorization);
+    
+    if(chkToken == -1) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
 
    let {user_idx, product, name, address, phone_number, price} = req.body;
-   user_idx = 1 ;
-   product = 3 ;
-
+ 
    let payment_date = [];
    payment_date = yyyymmdd(new Date());
 
@@ -114,8 +106,9 @@ router.post('/', async(req, res, next) => {
     VALUES(?,?,?,?,?,?,?,?);
     `;
 
+    let result;
     try {
-        let result = await db.Query(insertQuery,[ user_idx, name, address, phone_number, chkToken.email, payment_date[1], price, product ]);
+        await db.Query(insertQuery,[ user_idx, name, address, phone_number, chkToken.email, payment_date[1], price, product ]);
         let selectQuery =
         `
         SELECT idx
@@ -138,19 +131,17 @@ router.post('/', async(req, res, next) => {
         INSERT INTO reservations (order_idx, delivery_date)
         VALUES(?,?);
         `;
+        console.log('deleveryList :' +  deliveryList);
+
 
         for(var i in deliveryList ){
             db.Query(insertQuery,[ result[0].idx, deliveryList[i] ]);
         }
-
-        res.status(200).send({
-            message : "Success Order Info"
-        });
     } catch (error) {
-        res.status(500).send({
-            message : "Fail Order Info"
-        });
+        return next(error);
     }
+    
+    return res.r();
 });
 
 
