@@ -41,6 +41,12 @@
       "description": "이미 승인 절차가 진행된 유저입니다.",
       "message": "already_confirm_user"
     },
+    "1406": {
+      "status": 200,
+      "code": 400,
+      "description": "존재하지 않는 유저입니다.",
+      "message": "untitled_user"
+    },
     "2401": {
       "status": 200,
       "code": 400,
