@@ -12,6 +12,16 @@ const helmet = require('helmet');
 const cors = require('cors');
 
 const scheduler = require('./module/scheduler')
+app.use((req, res, next) => {
+  res.r = (result) => {
+      res.json({
+          status: true,
+          message: "success",
+          result,
+      });
+  };
+  next();
+});
 /*
  Custom module
 */
