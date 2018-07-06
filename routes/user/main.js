@@ -41,12 +41,21 @@ router.post('/signin', async (req, res, next) => {
     WHERE email = ? and pwd = ?
     `;
 
+    let selectCatQuery=
+    `
+    SELECT idx
+    FROM cats
+    WHERE user_idx = ? 
+    `
+
     let result = {};
     try {
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
+        let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
             result.token = jwt.sign(email);
             result.user_idx = _result[0].idx;
+            result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
         }
         else{
             return next("401");
@@ -88,6 +97,7 @@ router.post('/signup', async (req, res, next) => {
                 let _result = await db.Query(insertQuery, [email, pwd, name, phone_number]);
                 result.token = jwt.sign(email);
                 result.user_idx = _result.insertId;
+                result.cat_idx = -1;
             } catch (error) {
                 return next(error);
             }
