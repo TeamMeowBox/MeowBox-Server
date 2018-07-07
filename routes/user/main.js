@@ -114,6 +114,42 @@ router.post('/signup', async (req, res, next) => {
     return res.r(result);
 });
 
+// Written By 정경인
+// 묘 정보
+router.get('/cat/:cat_idx', async (req, res, next) => {
+
+    const chkToken = jwt.verify(req.headers.authorization);
+
+    if (chkToken == -1) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
+
+    let { cat_idx } = req.params;
+
+    let selectQuery =
+        `
+    SELECT idx as cat_idx, name, size, birthday, caution
+    FROM cats
+    WHERE idx = ?
+    `;
+
+    let result;
+    try {
+        result = await db.Query(selectQuery, [cat_idx]);
+        if (result.length === 0) {
+            result= {};
+            result.cat_idx = -1;
+        }
+        else{
+        }
+              
+    } catch (error) {
+        return next(error);
+    }
+    return res.r(result[0]);
+});
+
+
 // Written By 신기용
 // 묘등록
 router.post('/cat_signup', async (req, res, next) => {
