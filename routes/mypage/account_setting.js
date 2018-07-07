@@ -21,7 +21,7 @@ router.get('/account/:user_idx', async (req, res, next) => {
     let { user_idx } = req.params;
 
     const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403")
     }
 

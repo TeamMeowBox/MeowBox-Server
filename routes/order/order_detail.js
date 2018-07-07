@@ -130,8 +130,8 @@ function getDeliveryDate(payment_date,product){
 			}
 		}
 	} else {
-		let testDate = getNextDayofWeek(payment_date,1)
-        deliveryDate.push(testDate)
+        let testDate = getNextDayofWeek(payment_date,1)
+        deliveryDate.push(moment(testDate).format('YYYY.MM.DD'))
 	}
     return deliveryDate
 }
