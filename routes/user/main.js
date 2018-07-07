@@ -133,20 +133,23 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
     WHERE idx = ?
     `;
 
-    let result;
+    let result ={};
     try {
-        result = await db.Query(selectQuery, [cat_idx]);
-        if (result.length === 0) {
-            result= {};
+        let selectResult = await db.Query(selectQuery, [cat_idx]);
+        if (selectResult.length === 0) {
             result.cat_idx = -1;
-        }
-        else{
+        }else{
+            result.cat_idx = selectResult[0].cat_idx
+            result.name = selectResult[0].name
+            result.size = selectResult[0].size
+            result.birthday = selectResult[0].birthday
+            result.caution= selectResult[0].caution
         }
               
     } catch (error) {
         return next(error);
     }
-    return res.r(result[0]);
+    return res.r(result);
 });
 
 
