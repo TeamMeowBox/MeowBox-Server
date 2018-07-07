@@ -26,13 +26,13 @@ var package = new Schema({
         detail_img : [{type : String}],
         detail_text : String
     }]
-})
+},{Collection : 'testhomes'})
 
-var testhomes = mongoose.model('testhomes',package)
-router.get('/:id',async (req,res,next) => {
-    let {id} = req.params
+var testhomes = mongoose.model('testhomes',package,)
+router.get('/',async (req,res,next) => {
+    // let {id} = req.params
     try{
-        var result = await testhomes.findOne({_id : id});
+        var result = await testhomes.findOne({package_date : "2018.07"});
     } catch(err){
         return res.r(err);
     }
