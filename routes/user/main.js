@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT email, idx
+    SELECT email, idx,  name, phone_number,image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -58,6 +58,8 @@ router.post('/signin', async (req, res, next) => {
         if(_result.length > 0){
             result.token = jwt.sign(email);
             result.user_idx = _result[0].idx;
+            result.phone_number = _result[0].phone_number;
+            result.image_profile = _result[0].image_profile;
             result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
         }
         else{
