@@ -172,7 +172,7 @@ router.post('/cat_signup', async (req, res, next) => {
     try {
         let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
         if (user_idx.length == 0) {
-            next("1402"); // "description": "아이디가 존재하지 않습니다.",
+	return next("1402"); // "description": "아이디가 존재하지 않습니다.",
         }
         else {
             let insertQuery =
@@ -183,7 +183,7 @@ router.post('/cat_signup', async (req, res, next) => {
             try {
                 await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
             } catch (error) {
-                next(error);
+              return next(error);
             }
         } // End of else    
     } catch (error) {
