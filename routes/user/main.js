@@ -159,7 +159,7 @@ router.post('/cat_signup', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
-        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+         next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
     let { name, size, birthday, caution } = req.body;   
@@ -178,6 +178,16 @@ router.post('/cat_signup', async (req, res, next) => {
             next("1402"); // "description": "아이디가 존재하지 않습니다.",
         }
         else {
+            let catQuery =
+                `
+            SELECT * FROM cats
+            WHERE user_idx  = ?    
+                `;
+            let catResult = await db.Query(catQuery, [user_idx[0].idx]);
+            if(catResult.length !== 0){
+                return next("400")  //잘못된 요청입니다.
+            }
+            else{
             let insertQuery =
                 `
             INSERT INTO cats (user_idx, name, size, birthday, caution)
@@ -188,7 +198,9 @@ router.post('/cat_signup', async (req, res, next) => {
             } catch (error) {
                 next(error);
             }
-        } // End of else    
+        }
+        } // End of else  
+            
     } catch (error) {
         return next(error);
     }
@@ -199,15 +211,19 @@ router.post('/cat_signup', async (req, res, next) => {
 
 // Written By 정경인
 // 회원 탈퇴
-router.delete('/account/:user_idx', async (req, res, next) => {
+router.delete('/account', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
-    let { user_idx } = req.params;
-
+    let selectIdxQuery =
+        `
+    SELECT idx
+    FROM users
+    WHERE email = ?
+    `;
     let deleteQuery =
         `
     DELETE
@@ -217,7 +233,13 @@ router.delete('/account/:user_idx', async (req, res, next) => {
 
     let result;
     try {
-        await db.Query(deleteQuery, [user_idx]);
+        let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
+        if (user_idx.length === 0) {
+           return next("1402"); // "description": "아이디가 존재하지 않습니다.",
+        }
+        else{
+        await db.Query(deleteQuery, [user_idx[0].idx]);
+        }
     } catch (error) {
         next(error);
     }
