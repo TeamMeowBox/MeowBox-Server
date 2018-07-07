@@ -108,23 +108,10 @@ router.post('/', async(req, res, next) => {
 
     let result;
     try {
-        await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
-        let selectQuery =
-        `
-        SELECT idx
-        FROM orders
-        WHERE user_idx = ? and 
-             name = ? and
-              address = ? and 
-               phone_number = ? and 
-                email = ? and 
-                 payment_date = ? and 
-                  price = ? and 
-                   product = ?
-        ORDER BY idx DESC
-        `
-        result = await db.Query(selectQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
+        let insertIdx = await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
 
+        console.log('insertIdx : ' + insertIdx.insertId);
+    
         let deliveryList = getDeliveryDate(payment_date[0],product);
         insertQuery = 
         `
@@ -135,7 +122,7 @@ router.post('/', async(req, res, next) => {
 
 
         for(var i in deliveryList ){
-            db.Query(insertQuery,[ result[0].idx, deliveryList[i] ]);
+            db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
         }
     } catch (error) {
         return next(error);
