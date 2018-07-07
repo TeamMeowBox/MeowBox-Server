@@ -24,7 +24,7 @@ function getFirstMonday(date){
 // 데이터 제대로 넣고 다시 수정 필요 !!!
 router.get('/:user_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
-    if(chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
     let {user_idx} = req.params;

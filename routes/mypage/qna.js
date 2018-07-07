@@ -17,7 +17,7 @@ const jwt = require('../../module/jwt.js');
 router.get('/qna', async (req, res,next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403")
     }
     let qnaSelectQuery =

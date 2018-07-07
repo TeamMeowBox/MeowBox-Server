@@ -3,7 +3,6 @@ const router = express.Router();
 
 const db = require('../../config/mongoPool.js')
 const mongoose = require('mongoose')
-
 const Schema = mongoose.Schema;
 
 var contentSchema = new Schema({
@@ -26,7 +25,7 @@ var package = new Schema({
         detail_img : [{type : String}],
         detail_text : String
     }]
-},{ collection: 'testhomes'})
+},{Collection : 'testhomes'})
 
 var testhomes = mongoose.model('testhomes',package,'testhomes')
 

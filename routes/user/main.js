@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT email, idx
+    SELECT email, idx,  name, phone_number,image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -58,6 +58,8 @@ router.post('/signin', async (req, res, next) => {
         if(_result.length > 0){
             result.token = jwt.sign(email);
             result.user_idx = _result[0].idx;
+            result.phone_number = _result[0].phone_number;
+            result.image_profile = _result[0].image_profile;
             result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
         }
         else{
@@ -112,12 +114,48 @@ router.post('/signup', async (req, res, next) => {
     return res.r(result);
 });
 
+// Written By 정경인
+// 묘 정보
+router.get('/cat/:cat_idx', async (req, res, next) => {
+
+    const chkToken = jwt.verify(req.headers.authorization);
+
+    if (chkToken == -1) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
+
+    let { cat_idx } = req.params;
+
+    let selectQuery =
+        `
+    SELECT idx as cat_idx, name, size, birthday, caution
+    FROM cats
+    WHERE idx = ?
+    `;
+
+    let result;
+    try {
+        result = await db.Query(selectQuery, [cat_idx]);
+        if (result.length === 0) {
+            result= {};
+            result.cat_idx = -1;
+        }
+        else{
+        }
+              
+    } catch (error) {
+        return next(error);
+    }
+    return res.r(result[0]);
+});
+
+
 // Written By 신기용
 // 묘등록
 router.post('/cat_signup', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
@@ -161,7 +199,7 @@ router.post('/cat_signup', async (req, res, next) => {
 router.delete('/account/:user_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
