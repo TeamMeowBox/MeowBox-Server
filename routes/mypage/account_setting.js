@@ -36,9 +36,8 @@ router.get('/account/:user_idx', async (req, res, next) => {
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile, image_background,
                cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
-        FROM users JOIN cats ON users.idx = cats.user_idx
-        WHERE users.idx = cats.user_idx
-        AND users.idx = ?
+        FROM users LEFT JOIN cats ON users.idx = cats.user_idx
+        WHERE users.idx = ?
         `;
     try {
         result = await db.Query(accountSelectQuery, [user_idx]);
