@@ -28,11 +28,11 @@ var package = new Schema({
     }]
 },{Collection : 'testhomes'})
 
-var testhomes = mongoose.model('testhomes',package)
+var test = mongoose.model('testhomes',package,'testhomes')
 router.get('/',async (req,res,next) => {
     // let {id} = req.params
     try{
-        var result = await testhomes.find({});
+        var result = await test.find({});
     } catch(err){
         return res.r(err);
     }
@@ -40,4 +40,3 @@ router.get('/',async (req,res,next) => {
 })
 
 module.exports = router;
-// module.exports = router;
