@@ -34,19 +34,33 @@ router.post('/signin', async (req, res, next) => {
     let { email, pwd } = req.body;
     pwd = encrypt(pwd);
 
-    let selectQuery =    
+    let selectQuery =
     `
-    SELECT email, idx
+    SELECT email, idx,  name, phone_number,image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
 
+    let selectCatQuery=
+    `
+    SELECT idx
+    FROM cats
+    WHERE user_idx = ?
+    `
+    
     let result = {};
     try {
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
+        if(!_result[0]){
+                return next("401");
+        }
+        let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
             result.token = jwt.sign(email);
             result.user_idx = _result[0].idx;
+            result.phone_number = _result[0].phone_number;
+            result.image_profile = _result[0].image_profile;
+            result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
         }
         else{
             return next("401");
@@ -55,7 +69,8 @@ router.post('/signin', async (req, res, next) => {
         return next(error);
     }
 
-    return res.r(result);  
+    return res.r(result);
+
 });
 
 
@@ -66,7 +81,7 @@ router.post('/signup', async (req, res, next) => {
     pwd = encrypt(pwd);
 
     let selectEmail =
-    `
+        `
     SELECT *
     FROM users
     WHERE email = ?
@@ -80,14 +95,15 @@ router.post('/signup', async (req, res, next) => {
         }
         else {
             let insertQuery =
-            `
+                `
             INSERT INTO users (email,pwd,name,phone_number)
             VALUES(?,?,?,?);
             `;
             try {
-                let _result = await db.Query(insertQuery, [email, pwd, name, phone_number]);
+                let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
                 result.token = jwt.sign(email);
-                result.user_idx = _result.insertId;
+                result.user_idx = userResult.insertId;
+                result.cat_idx = -1;
             } catch (error) {
                 return next(error);
             }
@@ -95,22 +111,22 @@ router.post('/signup', async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.r(result); 
+    return res.r(result);
 });
 
 // Written By 신기용
 // 묘등록
 router.post('/cat_signup', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
-    
-    if(chkToken == -1) {
+
+    if (chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    
+
     let { name, size, birthday, caution } = req.body;
 
     let selectIdxQuery =
-    `
+        `
     SELECT idx
     FROM users
     WHERE email = ?
@@ -124,7 +140,7 @@ router.post('/cat_signup', async (req, res, next) => {
         }
         else {
             let insertQuery =
-            `
+                `
             INSERT INTO cats (user_idx, name, size, birthday, caution)
             VALUES(?,?,?,?,?);
             `;
@@ -137,7 +153,7 @@ router.post('/cat_signup', async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.r();  
+    return res.r();
 });
 
 
@@ -146,15 +162,15 @@ router.post('/cat_signup', async (req, res, next) => {
 // 회원 탈퇴
 router.delete('/account/:user_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
-    
-    if(chkToken == -1) {
+
+    if (chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    
+
     let { user_idx } = req.params;
 
     let deleteQuery =
-    `
+        `
     DELETE
     FROM users
     WHERE idx = ?
