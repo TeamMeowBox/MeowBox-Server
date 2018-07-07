@@ -95,7 +95,7 @@ router.post('/', async(req, res, next) => {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
-   let {user_idx, product, name, address, phone_number, price} = req.body;
+   let {user_idx,email, product, name, address, phone_number, price} = req.body;
  
    let payment_date = [];
    payment_date = yyyymmdd(new Date());
@@ -108,7 +108,7 @@ router.post('/', async(req, res, next) => {
 
     let result;
     try {
-        await db.Query(insertQuery,[ user_idx, name, address, phone_number, chkToken.email, payment_date[1], price, product ]);
+        await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
         let selectQuery =
         `
         SELECT idx
@@ -123,7 +123,7 @@ router.post('/', async(req, res, next) => {
                    product = ?
         ORDER BY idx DESC
         `
-        result = await db.Query(selectQuery,[ user_idx, name, address, phone_number, chkToken.email, payment_date[1], price, product ]);
+        result = await db.Query(selectQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
 
         let deliveryList = getDeliveryDate(payment_date[0],product);
         insertQuery = 
