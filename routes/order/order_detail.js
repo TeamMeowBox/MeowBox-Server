@@ -10,13 +10,34 @@ const moment = require('moment');
 //주문내역 상세보기 기능
 
 router.post('/',async (req,res) => {
-    let { payment_date,product, order_idx } = req.body;
-    
+    let { order_idx } = req.body;
     let flag = true;
-
-    let deliveryDate = getDeliveryDate(payment_date,product);
-    let end_date = deliveryDate[deliveryDate.length-1]
     let imageList = new Array();
+
+    // if(product == '3개월 정기권'){
+    //     total = 3;
+    // } else if(product == '6개월 정기권'){
+    //     total = 6;
+    // } else {
+    //     total = 1
+    // }
+
+    let selectOrderQuery = 
+    `
+    SELECT payment_date, product
+    FROM orders
+    WHERE idx = ?
+    `
+    try{
+        var selectOrderResult = await db.Query(selectOrderQuery,[order_idx])
+    } catch(err){
+        return next(err)
+    }
+    let payment_date = selectOrderResult[0].payment_date
+    let total = selectOrderResult[0].product
+
+    let deliveryDate = getDeliveryDate(payment_date,total);
+    let end_date = deliveryDate[deliveryDate.length-1]
 
     let selectQuery = 
     `
@@ -24,7 +45,9 @@ router.post('/',async (req,res) => {
     FROM products 
     WHERE yearmonth = ?
     `
+
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
+        console.log("111111")
         let countQuery = 
         `
         SELECT *
@@ -37,7 +60,7 @@ router.post('/',async (req,res) => {
                 message : "Internal Server error!"
             })
         } else {
-            for(let i=0;i<product-countResult.length;i++){
+            for(let i=0;i<total-countResult.length;i++){
                 let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
                 if(!selectResult){
                     res.status(500).send({
@@ -59,7 +82,7 @@ router.post('/',async (req,res) => {
             }
         }
     } else {
-        for(let i=0;i<product;i++){
+        for(let i=0;i<total;i++){
             let test = moment(payment_date).add(i,'M').format('YYYYMM')
             let selectResult = await db.Query(selectQuery,[test]);
             if(!selectResult){
@@ -80,7 +103,6 @@ router.post('/',async (req,res) => {
                 imageList.push(image);
             }
         }
-
     }
 
     if(flag){
@@ -115,7 +137,7 @@ function getFirstMonday(date){
 //배송일 리스트 구하는 함수
 function getDeliveryDate(payment_date,product){
     var deliveryDate = new Array();
-    if(product === '3' || product === '6'){
+    if(product == 3 || product == 6){
         for(let i = 0;i<product;i++){
             if(i==0){
 				let firstDate = getNextDayofWeek(payment_date,1)
