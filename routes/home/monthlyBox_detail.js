@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../../config/mongoPool.js')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
@@ -26,16 +26,19 @@ var package = new Schema({
         detail_img : [{type : String}],
         detail_text : String
     }]
-},{Collection : 'testhomes'})
+},{ collection: 'testhomes'})
 
-var testhomes = mongoose.model('testhomes',package,)
+var testhomes = mongoose.model('testhomes',package,'testhomes')
+
 router.get('/',async (req,res,next) => {
     // let {id} = req.params
+    let result;
     try{
-        var result = await testhomes.findOne({package_date : "2018.07"});
+        result = await testhomes.find({});
     } catch(err){
-        return res.r(err);
+        return next(err);
     }
+    console.log(result)
     return res.r(result);
 })
 
