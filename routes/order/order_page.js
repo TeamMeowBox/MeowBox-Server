@@ -87,7 +87,7 @@ Method : Post
 */
 
 // Written By 신기용
-// 주문 페이지
+// 주문 페이지(새로운 배송지 입력)
 router.post('/', async(req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     
@@ -100,6 +100,62 @@ router.post('/', async(req, res, next) => {
    let payment_date = [];
    payment_date = yyyymmdd(new Date());
 
+    let insertQuery = 
+    `
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
+    VALUES(?,?,?,?,?,?,?,?);
+    `;
+
+    let result;
+    try {
+        let insertIdx = await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
+
+        console.log('insertIdx : ' + insertIdx.insertId);
+    
+        let deliveryList = getDeliveryDate(payment_date[0],product);
+        insertQuery = 
+        `
+        INSERT INTO reservations (order_idx, delivery_date)
+        VALUES(?,?);
+        `;
+        console.log('deleveryList :' +  deliveryList);
+
+
+        for(var i in deliveryList ){
+            db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
+        }
+    } catch (error) {
+        return next(error);
+    }
+    
+    return res.r();
+});
+
+
+/*
+Method : Get
+*/
+
+// Written By 권서연
+// 주문 페이지(최근 배송지 가져오기)
+router.get('/', async(req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    
+    if(chkToken == -1) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
+    let _result, result ={};
+    let orderSelectQuery = `SELECT idx, payment_date FROM orders WHERE user_idx = ? ORDER BY payment_date DESC`
+    
+    _result = await db.Query(userSelectQuery, [user_idx]);
+    
+    if (_result.length ===0) {
+        _result = {};
+        idx = -1  // "description": "주문 내역이 존재하지 않습니다.",
+    }
+  
+    let {name, address, phone_number, email} = req.body;
+ 
     let insertQuery = 
     `
     INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)

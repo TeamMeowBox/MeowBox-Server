@@ -61,7 +61,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, {
 
     // let image_background,image_profile;
     console.log(req.files)
-    console.log(req.files['image_profile'][0].location)
+    //console.log(req.files['image_profile'][0].location)
     // console.log(req.files[0].image_background.location)
 
     console.log('success connection');
