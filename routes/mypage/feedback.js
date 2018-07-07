@@ -13,7 +13,7 @@ router.post('/', async (req, res, next) => {
     let { user_idx, title, content } = req.body;
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403")
     }
 

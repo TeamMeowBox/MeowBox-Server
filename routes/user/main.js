@@ -117,7 +117,7 @@ router.post('/signup', async (req, res, next) => {
 router.post('/cat_signup', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
@@ -161,7 +161,7 @@ router.post('/cat_signup', async (req, res, next) => {
 router.delete('/account/:user_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
