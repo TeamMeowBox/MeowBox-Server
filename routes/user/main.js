@@ -62,7 +62,7 @@ router.post('/signin', async (req, res, next) => {
             result.phone_number = _result[0].phone_number;
             result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
-            result.cat_idx = catQueryResult.length > 0 ? Stirng(catQueryResult[0].idx) : "-1";
+            result.cat_idx = catQueryResult.length > 0 ? String(catQueryResult[0].idx) : "-1";
         }
         else{
             return next("401");
