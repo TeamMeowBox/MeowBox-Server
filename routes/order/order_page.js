@@ -85,15 +85,13 @@ Method : Get
 
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
-router.get('/:user_idx', async(req, res, next) => {
+router.get('/', async(req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     
     if(chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
     
-    let {user_idx} = req.params;
-
     let orderResult, result ={};
     let orderSelectQuery = 
     `
@@ -104,7 +102,7 @@ router.get('/:user_idx', async(req, res, next) => {
     `;
     
     try {
-         orderResult = await db.Query(orderSelectQuery, [user_idx]);
+         orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
             
          if (orderResult.length === 0) {
             result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."

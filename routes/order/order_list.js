@@ -45,15 +45,12 @@ router.get('/', async (req, res, next) => {
         result.ticketed = [];
 
         try {
-            console.log('chkToken.user_idx : ' + chkToken.user_idx);
             selectResult = await db.Query(selectQuery,[chkToken.user_idx])
-            console.log('111');
-            console.log('selectResult.length : ' + selectResult.length);
+
             for(let i=0; i< selectResult.length; i++){
                 let product_name = selectResult[i].product;
                 selectResult[i].flag = 0;
 
-                console.log('222');
                 if(product_name == 3 || product_name == 6 ){    
                     let endDate = selectResult[i].term;
                     endDate = getFirstMonday(moment(endDate).add(selectResult[i].product-1,'M'))
@@ -78,12 +75,9 @@ router.get('/', async (req, res, next) => {
                     FROM reservations
                     WHERE order_idx = ?
                     `
-                    console.log('333');
                     try {
                         let _selectResult = await db.Query(selectQuery,[selectResult[i].idx]);
-                        console.log('idx : ' + selectResult[i].idx);
-                        console.log('_selectResult : ' + _selectResult.length);
-                        console.log('444');
+
                         if( _selectResult.length > 0 ){ 
                             let month = _selectResult[0].delivery_date.substring(5,7);
                             console.log('month : ' + month);
@@ -111,63 +105,5 @@ router.get('/', async (req, res, next) => {
         return res.r(result);
     } // End of else
 });
-
-
-
-//Written by 이민형
-//주문내역 리스트 기능
-router.get('/:user_idx',async (req,res) => {
-   // let {token} = req.headers;
-    let {user_idx} = req.params;
-    let token = "asdfasdf"
-    if(token === undefined || token === null){
-        res.status(400).send({
-            state : "Token value error!"
-        })
-    } else {
-        if(user_idx === null){
-            res.status(400).send({
-                state : "user_idx error!"
-            })
-        } else {
-           // let decoded = jwt.decoded(token);
-           let decoded = "asdf"
-            if(decoded === -1){
-                res.status(500).send({
-                    state : "Token Decoded error!"
-                })
-            } else {
-                let selectQuery = 
-                `
-                SELECT idx,user_idx,product,payment_date 
-                FROM orders 
-                WHERE user_idx = ? 
-                ORDER BY payment_date ASC
-                `
-                let selectResult = await db.Query(selectQuery,[user_idx])
-
-                if(!selectResult){
-                    res.status(500).send({
-                        state : "Internal Server Error!"
-                    })
-                } else {
-                    for(let i = 0;i<selectResult.length;i++){
-                        if(selectResult[i].product > 2 ){
-                            let endDate = selectResult[i].payment_date;
-                            endDate = getFirstMonday(moment(endDate).add(selectResult[i].product-1,'M'))
-                            selectResult[i].endDate = moment(endDate).format('YYYY.MM.DD');
-                        } else {
-                            selectResult[i].endDate = null;
-                        }
-                    }
-                    res.status(200).send({
-                        message : "Succesfully Load Order List",
-                        result : selectResult
-                    })
-                }
-            }
-        }
-    }
-})
 
 module.exports = router;
