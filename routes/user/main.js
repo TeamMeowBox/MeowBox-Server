@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT idx, email, name, phone_number, image_profile, image_background
+    SELECT idx, email, name, phone_number, image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -60,7 +60,6 @@ router.post('/signin', async (req, res, next) => {
             result.email = _result[0].email;
             result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
-            result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
             result.cat_idx = catQueryResult.length > 0 ? String(catQueryResult[0].idx) : "-1";
         }
@@ -171,7 +170,7 @@ router.post('/cat_signup', async (req, res, next) => {
         `;
 
         let _result = await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
-        result.cat_idx = _result.insertId;;
+        result.cat_idx = _result.insertId + "";
 
     } catch (error) {
         return next(1407)
