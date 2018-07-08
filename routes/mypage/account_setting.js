@@ -101,25 +101,28 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     console.log('success connection');
     if (!user_idx || !user_name || !user_email || !user_phone || !cat_name || !cat_size || !cat_birthday || !cat_caution) {
         return res.r("2402")
-    } else {
+    } 
         
 
-        let catsUpdateQuery =
-        `
-        UPDATE cats
-        SET  name = ?, size = ?, birthday = ?, caution = ?
-        WHERE user_idx = ?
-        `;//cats_update`
+      
+    let catsUpdateQuery =
+    `
+    UPDATE cats
+    SET  name = ?, size = ?, birthday = ?, caution = ?
+    WHERE user_idx = ?
+    `;//cats_update`
 
-        try {
-            await db.Query(usersUpdateQuery, param);
-            await db.Query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
+    let result = {};
+    try {
+        await db.Query(usersUpdateQuery, param);
+        await db.Query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
+        result.token = jwt.sign(user_email, user_idx);
 
-        } catch (error) {
-            return next(error)
-        }
-    } // End of else 
-    return res.r();
+    } catch (error) {
+        return next(error)
+    }
+
+    return res.r(result);
 });
 
 
