@@ -171,7 +171,7 @@ router.post('/cat_signup', async (req, res, next) => {
         `;
 
         let _result = await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
-        result.cat_idx = _result.insertId;;
+        result.cat_idx = _result.insertId + "";
 
     } catch (error) {
         return next(1407)
