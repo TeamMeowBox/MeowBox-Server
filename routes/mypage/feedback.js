@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const async = require('async');
+const jwt = require('../../module/jwt.js');
 const db = require('../../module/pool.js');
 
 // 
@@ -9,33 +10,30 @@ const db = require('../../module/pool.js');
 // 미유박스에 제안 
 //
 router.post('/', async (req, res, next) => {
- let { user_idx, title, content } = req.body;
-// const chkToken = jwt.verify(req.headers.authorization);
-  /*
-  if(chkToken == -1) {
-      res.status(401).send({
-          message : "Access Denied"
-      });
-  }
-  */
+    let { user_idx, title, content } = req.body;
+    const chkToken = jwt.verify(req.headers.authorization);
 
- // let chkToken = {};
- // chkToken.email = "1";
+    if (chkToken == undefined) {
+        return next("10403")
+    }
 
- let Query = ` 
+
+    let _result, result;
+    let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
+    _result = await db.Query(userSelectQuery, [user_idx]);
+    if (_result.length === 0) {
+        return next("1406")
+    }
+    let Query = ` 
                INSERT INTO feedbacks(user_idx, title, content)
                VALUES(?,?,?)
-             ` 
- try {
-  await db.Query(Query, [user_idx,title,content]);
-  await res.status(201).send({
-      message: "insert Success"
-  });
-} catch (error) {
-  res.status(500).send({
-      message: "insert Error"
-  });
-}
+             `
+    try {
+        result = await db.Query(Query, [user_idx, title, content]);
+    } catch (error) {
+        return next(error);
+    }
+    return res.r();
 
 });
 

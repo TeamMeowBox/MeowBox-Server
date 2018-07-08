@@ -8,7 +8,7 @@ const router = express.Router();
 router.use('/', require('./main'));
 
 // Crawling
-router.use('/crawling', require('./crawling'));
+//router.use('/crawling', require('./crawling'));
 
 
 

@@ -9,14 +9,37 @@ const moment = require('moment');
 //Written By 이민형
 //주문내역 상세보기 기능
 
-router.post('/',async (req,res) => {
-    let { payment_date,product, order_idx } = req.body;
-    
+router.post('/',async (req,res,next) => {
+    let { order_idx } = req.body;
+    let result = {}
     let flag = true;
-
-    let deliveryDate = getDeliveryDate(payment_date,product);
-    let end_date = deliveryDate[deliveryDate.length-1]
     let imageList = new Array();
+
+    // const chkToken = jwt.verify(req.headers.authorization);
+    // if (chkToken == undefined) {
+    //     return next("10403")
+    // }
+
+    let selectOrderQuery = 
+    `
+    SELECT payment_date, product
+    FROM orders
+    WHERE idx = ?
+    `
+    try{
+        var selectOrderResult = await db.Query(selectOrderQuery,[order_idx])
+    } catch(err){
+        return next("500")
+    }
+
+    if(selectOrderResult.length == 0){
+        return next("400")
+    }
+    let payment_date = selectOrderResult[0].payment_date
+    let total = selectOrderResult[0].product
+
+    let deliveryDate = getDeliveryDate(payment_date,total);
+    let end_date = deliveryDate[deliveryDate.length-1]
 
     let selectQuery = 
     `
@@ -24,6 +47,7 @@ router.post('/',async (req,res) => {
     FROM products 
     WHERE yearmonth = ?
     `
+
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
         let countQuery = 
         `
@@ -33,22 +57,16 @@ router.post('/',async (req,res) => {
         `
         let countResult = await db.Query(countQuery,[order_idx])
         if(!countResult){
-            res.status(500).send({
-                message : "Internal Server error!"
-            })
+            return next("500")
         } else {
-            for(let i=0;i<product-countResult.length;i++){
+            for(let i=0;i<total-countResult.length;i++){
                 let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
                 if(!selectResult){
-                    res.status(500).send({
-                        message : "Internal Server Error!"
-                    })
+                    return next("500")
                     flag = false;
                     break;
                 } else if(selectResult.length === 0){
-                    res.status(500).send({
-                        message : "There is no product image"
-                    })
+                    return next("400")
                     flag = false;
                     break;
                 } else {
@@ -59,19 +77,15 @@ router.post('/',async (req,res) => {
             }
         }
     } else {
-        for(let i=0;i<product;i++){
+        for(let i=0;i<total;i++){
             let test = moment(payment_date).add(i,'M').format('YYYYMM')
             let selectResult = await db.Query(selectQuery,[test]);
             if(!selectResult){
-                res.status(500).send({
-                    message : "Internal Server Error!"
-                })
+                return next("500")
                 flag = false;
                 break;
             } else if(selectResult.length === 0){
-                res.status(500).send({
-                    message : "There is no product image"
-                })
+                return next("400")
                 flag = false;
                 break;
             } else {
@@ -80,14 +94,11 @@ router.post('/',async (req,res) => {
                 imageList.push(image);
             }
         }
-
     }
 
     if(flag){
-        res.status(201).send({
-            message : "Successfully load product image",
-            result : imageList
-        })
+        result = {imageList}
+        res.r(result);
     }
 })
 
@@ -115,7 +126,7 @@ function getFirstMonday(date){
 //배송일 리스트 구하는 함수
 function getDeliveryDate(payment_date,product){
     var deliveryDate = new Array();
-    if(product === '3' || product === '6'){
+    if(product == 3 || product == 6){
         for(let i = 0;i<product;i++){
             if(i==0){
 				let firstDate = getNextDayofWeek(payment_date,1)
@@ -130,8 +141,8 @@ function getDeliveryDate(payment_date,product){
 			}
 		}
 	} else {
-		let testDate = getNextDayofWeek(payment_date,1)
-        deliveryDate.push(testDate)
+        let testDate = getNextDayofWeek(payment_date,1)
+        deliveryDate.push(moment(testDate).format('YYYY.MM.DD'))
 	}
     return deliveryDate
 }
