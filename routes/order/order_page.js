@@ -138,55 +138,42 @@ Method : Get
 
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
-router.get('/', async(req, res, next) => {
+router.get('/:user_idx', async(req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     
     if(chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    let _result, result ={};
-    let orderSelectQuery = `SELECT idx, payment_date FROM orders WHERE user_idx = ? ORDER BY payment_date DESC`
     
-    _result = await db.Query(userSelectQuery, [user_idx]);
-    
-    if (_result.length ===0) {
-        _result = {};
-        idx = -1  // "description": "주문 내역이 존재하지 않습니다.",
-    }
-  
-    let {name, address, phone_number, email} = req.body;
- 
-    let insertQuery = 
+    let {user_idx} = req.params;
+
+    let orderResult, result ={};
+    let orderSelectQuery = 
     `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
-    VALUES(?,?,?,?,?,?,?,?);
+    SELECT idx as order_idx, name, address, phone_number, email, payment_date
+    FROM orders
+    WHERE user_idx = ? 
+    ORDER BY payment_date DESC
     `;
-
-    let result;
-    try {
-        let insertIdx = await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
-
-        console.log('insertIdx : ' + insertIdx.insertId);
     
-        let deliveryList = getDeliveryDate(payment_date[0],product);
-        insertQuery = 
-        `
-        INSERT INTO reservations (order_idx, delivery_date)
-        VALUES(?,?);
-        `;
-        console.log('deleveryList :' +  deliveryList);
+    try {
+         orderResult = await db.Query(orderSelectQuery, [user_idx]);
+            
+         if (orderResult.length === 0) {
+            result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
+          } else{
+            result.order_idx = orderResult[0].order_idx;
+            result.name = orderResult[0].name;
+            result.address = orderResult[0].address;
+            result.phone_number = orderResult[0].phone_number;
+            result.email = orderResult[0].email;
+            result.payment_date = orderResult[0].payment_date;
 
-
-        for(var i in deliveryList ){
-            db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
-        }
+          }
     } catch (error) {
         return next(error);
     }
-    
-    return res.r();
+    return res.r(result); 
 });
-
-
 
 module.exports = router;

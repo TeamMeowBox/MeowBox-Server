@@ -69,14 +69,14 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, {
         return res.r("2402")
     } else {
         let usersUpdateQuery =
-            `
+        `
         UPDATE users 
         SET name = ?, phone_number = ?, email = ? , image_profile = ?, image_background = ?
         WHERE idx = ?
         `; //users_update
 
         let catsUpdateQuery =
-            `
+        `
         UPDATE cats
         SET  name = ?, size = ?, birthday = ?, caution = ?
         WHERE user_idx = ?

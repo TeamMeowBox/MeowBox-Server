@@ -9,7 +9,7 @@ const router = express.Router();
 // router.use('/main', require('./main'));
 
 // Order Page
-router.use('/order_page', require('./order_page'));
+router.use('/order_page', require('./order_page.js'));
 
 //Order detail
 router.use('/order_detail', require('./order_detail.js'));
