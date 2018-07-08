@@ -17,17 +17,16 @@ const upload = require('../../module/multer.js');
  */
 // Written By 서연
 // 계정 설정 화면 보기
-router.get('/account/:user_idx', async (req, res, next) => {
-    let { user_idx } = req.params;
-
+router.get('/account', async (req, res, next) => {
+    
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
     }
-
+    let user_idx = chkToken.user_idx;
     let _result,result;
     let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
-    _result = await db.Query(userSelectQuery, [user_idx]);
+    _result = await db.Query(userSelectQuery,[user_idx]);
     if (_result.length === 0) {
         return next("1406")
     }
@@ -40,7 +39,7 @@ router.get('/account/:user_idx', async (req, res, next) => {
         WHERE users.idx = ?
         `;
     try {
-        let accountSelectResult= await db.Query(accountSelectQuery, [user_idx]);
+        let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
         result = accountSelectResult[0];
     } catch (error) {
         return next(error);
@@ -54,16 +53,17 @@ router.get('/account/:user_idx', async (req, res, next) => {
 // Written By 서연
 // 계정 수정
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, { name: 'image_background', maxCount: 1 }]), async (req, res, next) => {
-    let { user_idx, user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+    let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
     let image_profile = req.files['image_profile'][0].location;
     let image_background = req.files['image_background'][0].location;
-
-    // let image_background,image_profile;
-    console.log(req.files)
-    //console.log(req.files['image_profile'][0].location)
-    // console.log(req.files[0].image_background.location)
-
+   
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+    let user_idx = chkToken.user_idx;
+   
     console.log('success connection');
     if (!user_idx || !user_name || !user_email || !user_phone || !cat_name || !cat_size || !cat_birthday || !cat_caution) {
         return res.r("2402")

@@ -101,8 +101,8 @@ router.post('/signup', async (req, res, next) => {
             `;
             try {
                 let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
-                result.token = jwt.sign(email);
                 result.user_idx = userResult.insertId;
+                result.token = jwt.sign(email, result.user_idx);
                 result.cat_idx = -1;
             } catch (error) {
                 return next(error);
