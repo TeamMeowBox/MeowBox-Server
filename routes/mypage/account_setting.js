@@ -3,13 +3,17 @@
  */
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto-promise');
-const async = require('async');
-const bodyParser = require('body-parser');
-const moment = require('moment');
+const _crypto = require('crypto');
 const jwt = require('../../module/jwt.js');
 const db = require('../../module/pool.js');
 const upload = require('../../module/multer.js');
+const secretKey = require('../../config/secretKey').key;
+
+
+function encrypt(u_password) {
+    const encrypted = _crypto.createHmac('sha512', secretKey).update(u_password).digest('base64');
+    return encrypted;
+}
 
 
 /*
@@ -25,7 +29,7 @@ router.get('/account/:user_idx', async (req, res, next) => {
         return next("10403")
     }
 
-    let _result, result;
+    let _result,result;
     let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
     _result = await db.Query(userSelectQuery, [user_idx]);
     if (_result.length === 0) {
@@ -40,7 +44,8 @@ router.get('/account/:user_idx', async (req, res, next) => {
         WHERE users.idx = ?
         `;
     try {
-        result = await db.Query(accountSelectQuery, [user_idx]);
+        let accountSelectResult= await db.Query(accountSelectQuery, [user_idx]);
+        result = accountSelectResult[0];
     } catch (error) {
         return next(error);
     }
@@ -91,5 +96,71 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, {
     } // End of else 
     return res.r();
 });
+
+
+
+// Written By 기용
+// My page에서 유저 정보 수정
+router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+
+    let { name, phone_number, pwd} = req.body;
+    let image_profile = req.files['image_profile'][0].location;
+    pwd = encrypt(pwd);
+    console.log('image_profile : ' + image_profile);
+
+    if (!name || !phone_number || !pwd ) {
+        return res.r("2402")
+    } 
+
+    let usersUpdateQuery =
+    `
+    UPDATE users 
+    SET name = ?, phone_number = ?, pwd = ? , image_profile = ?
+    WHERE idx = ?
+    `; 
+
+    try {
+        await db.Query(usersUpdateQuery, [name, phone_number, pwd, image_profile, chkToken.user_idx]);
+
+    } catch (error) {
+        return next(error)
+    }
+
+    return res.r();
+});
+
+
+
+
+// Written By 기용
+// My page에서 고양이 정보 수정 
+router.post('/update_cat', async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+
+    let { name, size, birthday, caution} = req.body;
+    let updateQuery = 
+    `
+    UPDATE cats 
+    SET name = ?, size = ?, birthday = ? , caution = ?
+    WHERE user_idx = ?
+    `
+
+    try {
+        await db.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+    } catch (error) {
+        return next(error);
+    }
+    return res.r();
+});
+
+
 
 module.exports = router;
