@@ -136,9 +136,9 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
         if (selectResult.length === 0) {
             result.cat_idx = -1;
         }else{
-            result.cat_idx = selectResult[0].cat_idx
+            result.cat_idx = selectResult[0].cat_idx + ""
             result.name = selectResult[0].name
-            result.size = selectResult[0].size
+            result.size = selectResult[0].size + ""
             result.birthday = selectResult[0].birthday
             result.caution= selectResult[0].caution
         }
