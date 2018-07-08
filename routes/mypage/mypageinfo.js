@@ -10,12 +10,9 @@ const db = require('../../module/pool.js');
 // 
 // Written By 정경인
 // 마이페이지 첫 화면
-//
-
 router.get('/', async (req, res, next) => {
   let { user_idx } = req.query;
-  console.log('user_idx  : ' + user_idx);
-  let catinfo, sendImage, cnt;
+  let sendImage, cnt;
 
   const chkToken = jwt.verify(req.headers.authorization);
   if (chkToken == undefined) {
@@ -36,7 +33,7 @@ router.get('/', async (req, res, next) => {
   let catResult = await db.Query(Query, [user_idx]);
 
   if (catResult.length === 0) {												// 고양이 유무
-    result.catinfo = 0;
+    result.catinfo = "-1";
   } else {
     result.catinfo = catResult[0].cat_name;
   }
@@ -63,27 +60,24 @@ router.get('/', async (req, res, next) => {
         sendImage = 
         `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-22.png`; //앞으로 잘부탁
       }
-      result.flag = -1
+      result.flag = "-1"
       result.sendImage = sendImage;
-
-      return res.r(result);
 
     } else { //정기권 진행중일때
       cnt = orderResult[0].product - orderResult[0].cnt;
       console.log('orderResult[0].product : ' + orderResult[0].product);
       console.log('orderResult[0].product : ' + orderResult[0].cnt);
-      result.flag = 1;
+      result.flag = "1";
       result.ticket = orderResult[0].product+"박스"
       result.use =  cnt+"박스"
 
       console.log(JSON.stringify(result))
-      return res.r(result);
     }
 
   } catch (error) {
     return next(error)
   }
-
+  return res.r(result);
 })
 
 module.exports = router;
