@@ -9,17 +9,15 @@ const moment = require('moment');
 //Written By 이민형
 //주문내역 상세보기 기능
 
-router.post('/',async (req,res) => {
+router.post('/',async (req,res,next) => {
     let { order_idx } = req.body;
+    let result = {}
     let flag = true;
     let imageList = new Array();
 
-    // if(product == '3개월 정기권'){
-    //     total = 3;
-    // } else if(product == '6개월 정기권'){
-    //     total = 6;
-    // } else {
-    //     total = 1
+    // const chkToken = jwt.verify(req.headers.authorization);
+    // if (chkToken == undefined) {
+    //     return next("10403")
     // }
 
     let selectOrderQuery = 
@@ -31,7 +29,11 @@ router.post('/',async (req,res) => {
     try{
         var selectOrderResult = await db.Query(selectOrderQuery,[order_idx])
     } catch(err){
-        return next(err)
+        return next("500")
+    }
+
+    if(selectOrderResult.length == 0){
+        return next("400")
     }
     let payment_date = selectOrderResult[0].payment_date
     let total = selectOrderResult[0].product
@@ -47,7 +49,6 @@ router.post('/',async (req,res) => {
     `
 
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
-        console.log("111111")
         let countQuery = 
         `
         SELECT *
@@ -56,22 +57,16 @@ router.post('/',async (req,res) => {
         `
         let countResult = await db.Query(countQuery,[order_idx])
         if(!countResult){
-            res.status(500).send({
-                message : "Internal Server error!"
-            })
+            return next("500")
         } else {
             for(let i=0;i<total-countResult.length;i++){
                 let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
                 if(!selectResult){
-                    res.status(500).send({
-                        message : "Internal Server Error!"
-                    })
+                    return next("500")
                     flag = false;
                     break;
                 } else if(selectResult.length === 0){
-                    res.status(500).send({
-                        message : "There is no product image"
-                    })
+                    return next("400")
                     flag = false;
                     break;
                 } else {
@@ -86,15 +81,11 @@ router.post('/',async (req,res) => {
             let test = moment(payment_date).add(i,'M').format('YYYYMM')
             let selectResult = await db.Query(selectQuery,[test]);
             if(!selectResult){
-                res.status(500).send({
-                    message : "Internal Server Error!"
-                })
+                return next("500")
                 flag = false;
                 break;
             } else if(selectResult.length === 0){
-                res.status(500).send({
-                    message : "There is no product image"
-                })
+                return next("400")
                 flag = false;
                 break;
             } else {
@@ -106,10 +97,8 @@ router.post('/',async (req,res) => {
     }
 
     if(flag){
-        res.status(201).send({
-            message : "Successfully load product image",
-            result : imageList
-        })
+        result = {imageList}
+        res.r(result);
     }
 })
 
