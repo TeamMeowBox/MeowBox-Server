@@ -11,16 +11,16 @@ const db = require('../../module/pool.js');
 // Written By 정경인
 // 마이페이지 첫 화면
 router.get('/', async (req, res, next) => {
-  let { user_idx } = req.query;
   let sendImage, cnt;
 
   const chkToken = jwt.verify(req.headers.authorization);
   if (chkToken == undefined) {
       return next("10403")
   }
+  console.log('user_idx : ' + chkToken.user_idx );
   let _result, result ={};
   let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
-  _result = await db.Query(userSelectQuery, [user_idx]);
+  _result = await db.Query(userSelectQuery, [chkToken.user_idx]);
   if (_result.length ===0) {
       return next("1406")
   }
@@ -30,7 +30,7 @@ router.get('/', async (req, res, next) => {
                 WHERE users.idx =? AND users.idx = cats.user_idx 
               `;
 
-  let catResult = await db.Query(Query, [user_idx]);
+  let catResult = await db.Query(Query, [chkToken.user_idx]);
 
   if (catResult.length === 0) {												// 고양이 유무
     result.catinfo = "-1";
@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
 
   try {
 
-    let orderResult = await db.Query(Query, [user_idx]);
+    let orderResult = await db.Query(Query, [chkToken.user_idx]);
 
     if (!orderResult[0].product) {    //정기권 진행 중이 아닐때
 

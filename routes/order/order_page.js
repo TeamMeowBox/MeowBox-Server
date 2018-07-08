@@ -79,62 +79,6 @@ function getDeliveryDate(payment_date,product){
     return deliveryDate
 }
 
-
-
-
-/*
-Method : Post
-*/
-
-// Written By 신기용
-// 주문 페이지(새로운 배송지 입력)
-router.post('/', async(req, res, next) => {
-    const chkToken = jwt.verify(req.headers.authorization);
-    
-    if (chkToken == undefined) {
-        return next("10403"); // "description": "잘못된 인증 방식입니다.",
-    }
-
-   let {user_idx,email, product, name, address, phone_number, price} = req.body;
- 
-   let payment_date = [];
-   payment_date = yyyymmdd(new Date());
-
-    let insertQuery = 
-    `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
-    VALUES(?,?,?,?,?,?,?,?);
-    `;
-
-    let result;
-    try {
-        let insertIdx = await db.Query(insertQuery,[ user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
-
-        console.log('insertIdx : ' + insertIdx.insertId);
-    
-        let deliveryList = getDeliveryDate(payment_date[0],product);
-        insertQuery = 
-        `
-        INSERT INTO reservations (order_idx, delivery_date)
-        VALUES(?,?);
-        `;
-        console.log('deleveryList :' +  deliveryList);
-
-
-        for(var i in deliveryList ){
-            console.log(' i : ' + i);
-            let a = deliveryList[i];
-            console.log('a : ' + a);
-            db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
-        }
-    } catch (error) {
-        return next(error);
-    }
-    
-    return res.r();
-});
-
-
 /*
 Method : Get
 */
@@ -178,5 +122,63 @@ router.get('/:user_idx', async(req, res, next) => {
     }
     return res.r(result); 
 });
+
+
+
+
+/*
+Method : Post
+*/
+
+// Written By 신기용
+// 주문 페이지(새로운 배송지 입력)
+router.post('/', async(req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    
+    if (chkToken == undefined) {
+        return next("10403"); // "description": "잘못된 인증 방식입니다.",
+    }
+
+   let {email, product, name, address, phone_number, price} = req.body;
+ 
+   let payment_date = [];
+   payment_date = yyyymmdd(new Date());
+
+    let insertQuery = 
+    `
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
+    VALUES(?,?,?,?,?,?,?,?);
+    `;
+
+    let result;
+    try {
+        let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
+
+        console.log('insertIdx : ' + insertIdx.insertId);
+    
+        let deliveryList = getDeliveryDate(payment_date[0],product);
+        insertQuery = 
+        `
+        INSERT INTO reservations (order_idx, delivery_date)
+        VALUES(?,?);
+        `;
+        console.log('deleveryList :' +  deliveryList);
+
+
+        for(var i in deliveryList ){
+            console.log(' i : ' + i);
+            let a = deliveryList[i];
+            console.log('a : ' + a);
+            db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
+        }
+    } catch (error) {
+        return next(error);
+    }
+    
+    return res.r();
+});
+
+
+
 
 module.exports = router;
