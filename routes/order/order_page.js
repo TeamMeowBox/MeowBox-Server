@@ -107,7 +107,7 @@ router.get('/', async(req, res, next) => {
          if (orderResult.length === 0) {
             result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
           } else{
-            result.order_idx = orderResult[0].order_idx;
+            result.order_idx = orderResult[0].order_idx + "";
             result.name = orderResult[0].name;
             result.address = orderResult[0].address;
             result.phone_number = orderResult[0].phone_number;
