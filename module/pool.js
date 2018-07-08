@@ -35,6 +35,8 @@ module.exports = {
       var connection = await pool.getConnection();
       await connection.beginTransaction();
       result = await connection.query(query,data) || null;
+
+      
       //result = await fn(connection, ...args)
     }
     catch(err) {
