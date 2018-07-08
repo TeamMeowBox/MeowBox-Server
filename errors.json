@@ -47,6 +47,12 @@
       "description": "존재하지 않는 유저입니다.",
       "message": "untitled_user"
     },
+    "1407": {
+      "status": 200,
+      "code": 400,
+      "description": "이미 등록된 고양이가 있습니다.",
+      "message": "exist_cat"
+    },
     "2401": {
       "status": 200,
       "code": 400,

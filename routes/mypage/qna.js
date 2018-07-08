@@ -14,7 +14,7 @@ const jwt = require('../../module/jwt.js');
  */
 // Written By 서연
 // qna 화면 보기
-router.get('/qna', async (req, res,next) => {
+router.get('/', async (req, res,next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
