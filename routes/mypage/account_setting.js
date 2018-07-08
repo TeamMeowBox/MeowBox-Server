@@ -107,24 +107,42 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
         return next("10403")
     }
 
+    let image_profile;
     let { name, phone_number, pwd} = req.body;
-    let image_profile = req.files['image_profile'][0].location;
-    pwd = encrypt(pwd);
-    console.log('image_profile : ' + image_profile);
 
-    if (!name || !phone_number || !pwd ) {
-        return res.r("2402")
-    } 
+    pwd = encrypt(pwd);
+    
+    let param = [];
+    param.push(name);
+    param.push(phone_number);
+    param.push(pwd);
 
     let usersUpdateQuery =
     `
     UPDATE users 
-    SET name = ?, phone_number = ?, pwd = ? , image_profile = ?
+    SET name = ?, phone_number = ?, pwd = ?
     WHERE idx = ?
     `; 
 
+    if (req.files['image_prifile'] != undefined){
+        image_profile = req.files['image_profile'][0].location;
+        usersUpdateQuery =
+        `
+        UPDATE users 
+        SET name = ?, phone_number = ?, pwd = ? , image_profile = ?
+        WHERE idx = ?
+        `;
+        param.push(image_profile) 
+    }
+   
+    if (!name || !phone_number || !pwd ) {
+        return res.r("2402")
+    } 
+
+    param.push(String(chkToken.user_idx))
+    console.log(param);
     try {
-        await db.Query(usersUpdateQuery, [name, phone_number, pwd, image_profile, chkToken.user_idx]);
+        await db.Query(usersUpdateQuery, param);
 
     } catch (error) {
         return next(error)
@@ -132,8 +150,6 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
 
     return res.r();
 });
-
-
 
 
 // Written By 기용
