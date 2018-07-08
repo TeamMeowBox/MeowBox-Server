@@ -43,6 +43,7 @@ router.get('/account', async (req, res, next) => {
         `;
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
+        accountSelectResult[0].size = accountSelectResult[0].size + ""
         result = accountSelectResult[0];
     } catch (error) {
         return next(error);
@@ -131,6 +132,8 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     if (chkToken == undefined) {
         return next("10403")
     }
+
+    console.log('user_idx  : ' + chkToken.user_idx);
     
     let userSelectQuery = 
     `
@@ -162,7 +165,7 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     WHERE idx = ?
     `; 
 
-    if (req.files['image_prifile'] != undefined){
+    if (req.files['image_profile'] != undefined){
         image_profile = req.files['image_profile'][0].location;
         usersUpdateQuery =
         `
@@ -173,6 +176,7 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
         param.push(image_profile) 
     }
    
+
     if (!name || !phone_number || !pwd ) {
         return res.r("2402")
     } 
