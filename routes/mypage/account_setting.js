@@ -55,28 +55,54 @@ router.get('/account', async (req, res, next) => {
  */
 // Written By 서연
 // 계정 수정
-router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, { name: 'image_background', maxCount: 1 }]), async (req, res, next) => {
+// Edit By 기용
+
+// router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, { name: 'image_background', maxCount: 1 }]), async (req, res, next) => {
+router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
-    let image_profile = req.files['image_profile'][0].location;
-    let image_background = req.files['image_background'][0].location;
+    let param = [];
+    param.push(user_name);
+    param.push(user_phone);
+    param.push(user_email);
+
+    let flag = 2;
+    /*
+    1 : image_profile만 있는 경우
+    2 : image_background만 있는 경우
+    3 : 2개다 있는 경우
+    */
+   let usersUpdateQuery;
+   if(req.files['image_profile'] == undefined){
+    usersUpdateQuery =
+    `
+    UPDATE users 
+    SET name = ?, phone_number = ?, email = ?
+    WHERE idx = ?
+    `; //users_update
+   }
+   else{
+    usersUpdateQuery =
+    `
+    UPDATE users 
+    SET name = ?, phone_number = ?, email = ?, image_profile = ?
+    WHERE idx = ?
+    `; //users_update
+    param.push(req.files['image_profile'][0].location)
+   }
    
-    const chkToken = jwt.verify(req.headers.authorization);
+   const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
     }
     let user_idx = chkToken.user_idx;
+    param.push(user_idx);
    
     console.log('success connection');
     if (!user_idx || !user_name || !user_email || !user_phone || !cat_name || !cat_size || !cat_birthday || !cat_caution) {
         return res.r("2402")
     } else {
-        let usersUpdateQuery =
-        `
-        UPDATE users 
-        SET name = ?, phone_number = ?, email = ? , image_profile = ?, image_background = ?
-        WHERE idx = ?
-        `; //users_update
+        
 
         let catsUpdateQuery =
         `
@@ -86,7 +112,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, {
         `;//cats_update`
 
         try {
-            await db.Query(usersUpdateQuery, [user_name, user_phone, user_email, image_profile, image_background, user_idx]);
+            await db.Query(usersUpdateQuery, param);
             await db.Query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
 
         } catch (error) {
