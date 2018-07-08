@@ -56,7 +56,7 @@ router.post('/signin', async (req, res, next) => {
         }
         let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
-            result.token = jwt.sign(email, result.user_idx);
+            result.token = jwt.sign(email, _result[0].idx);
             result.email = _result[0].email;
             result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
@@ -105,7 +105,7 @@ router.post('/signup', async (req, res, next) => {
             
         let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
         result.token = jwt.sign(email, userResult.insertId);
-        
+
     } catch (error) {
         return next(error);
     }
