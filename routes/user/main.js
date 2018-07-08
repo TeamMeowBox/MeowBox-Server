@@ -156,85 +156,29 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
 // Written By 신기용
 // 묘등록
 router.post('/cat_signup', async (req, res, next) => {
-  const chkToken = jwt.verify(req.headers.authorization);
+    const chkToken = jwt.verify(req.headers.authorization);
 
-  if (chkToken == undefined) {
-    next("10403"); // "description": "잘못된 인증 방식입니다.",
-  }
+    if (chkToken == undefined) {
+        next("10403"); // "description": "잘못된 인증 방식입니다."
+    }
 
-  const { name, size, birthday, caution } = req.body;
-
-  const selectIdxQuery =
-    `
-    SELECT idx
-    FROM users
-    WHERE email = ?
-    `;
-
+    const { name, size, birthday, caution } = req.body;
 
     let result;
     try {
-        let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
-        if (user_idx.length == 0) {
-	return next("1402"); // "description": "아이디가 존재하지 않습니다.",
-        }
-        else {
-            let catQuery =
-                `
-            SELECT * FROM cats
-            WHERE user_idx  = ?    
-                `;
-            let catResult = await db.Query(catQuery, [user_idx[0].idx]);
-            if(catResult.length !== 0){
-                return next("400")  //잘못된 요청입니다.
-            }
-            else{
-            let insertQuery =
-                `
-            INSERT INTO cats (user_idx, name, size, birthday, caution)
-            VALUES(?,?,?,?,?);
-            `;
-            try {
-                await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
-            } catch (error) {
-              return next(error);
-            }
-        }
-        } // End of else  
-            
+        let insertQuery =
+        `
+        INSERT INTO cats (user_idx, name, size, birthday, caution)
+        VALUES(?,?,?,?,?);
+        `;
+
+        await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
     } catch (error) {
-        return next(error);
+        return next(error)
     }
     return res.r();
 });
 
-  const insertQuery =
-    `
-          INSERT INTO cats (user_idx, name, size, birthday, caution)
-          VALUES(?,?,?,?,?);
-          `;
-  
-  
-  try {
-    let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
-    
-    if (user_idx.length == 0) {
-      next("1402"); // "description": "아이디가 존재하지 않습니다.",
-    }
-    
-    let catResult = await db.Query(catQuery, [user_idx[0].idx]);
-    
-    if(catResult.length !== 0){
-      return next("8400")  //잘못된 요청입니다.
-    }
-
-    await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
-   
-  } catch (error) {
-    return next(error);
-  }
-  return res.r();
-});
 
 // Written By 정경인
 // 회원 탈퇴
