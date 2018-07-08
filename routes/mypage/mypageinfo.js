@@ -14,6 +14,7 @@ const db = require('../../module/pool.js');
 
 router.get('/', async (req, res, next) => {
   let { user_idx } = req.query;
+  console.log('user_idx  : ' + user_idx);
   let catinfo, sendImage, cnt;
 
   const chkToken = jwt.verify(req.headers.authorization);
@@ -69,6 +70,8 @@ router.get('/', async (req, res, next) => {
 
     } else { //정기권 진행중일때
       cnt = orderResult[0].product - orderResult[0].cnt;
+      console.log('orderResult[0].product : ' + orderResult[0].product);
+      console.log('orderResult[0].product : ' + orderResult[0].cnt);
       result.flag = 1;
       result.ticket = orderResult[0].product+"박스"
       result.use =  cnt+"박스"
