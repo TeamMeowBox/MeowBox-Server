@@ -22,14 +22,13 @@ function getFirstMonday(date){
 // Edit by 신기용 (7.5)
 // --> Response Frame 통일 작업 + 로직 변경
 // 데이터 제대로 넣고 다시 수정 필요 !!!
-router.get('/:user_idx', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    let {user_idx} = req.params;
 
-    if(user_idx === null){
+    if(chkToken.user_idx === null){
         return next("1402"); // "description": "아이디가 존재하지 않습니다.",
     } else {
            
@@ -46,8 +45,10 @@ router.get('/:user_idx', async (req, res, next) => {
         result.ticketed = [];
 
         try {
-            selectResult = await db.Query(selectQuery,[user_idx])
+            console.log('chkToken.user_idx : ' + chkToken.user_idx);
+            selectResult = await db.Query(selectQuery,[chkToken.user_idx])
             console.log('111');
+            console.log('selectResult.length : ' + selectResult.length);
             for(let i=0; i< selectResult.length; i++){
                 let product_name = selectResult[i].product;
                 selectResult[i].flag = 0;
@@ -83,13 +84,15 @@ router.get('/:user_idx', async (req, res, next) => {
                         console.log('idx : ' + selectResult[i].idx);
                         console.log('_selectResult : ' + _selectResult.length);
                         console.log('444');
-                        let month = _selectResult[0].delivery_date.substring(5,7);
-                        console.log('month : ' + month);
-                        if( parseInt(month) <= 10){
-                            month = month[1];
+                        if( _selectResult.length > 0 ){ 
+                            let month = _selectResult[0].delivery_date.substring(5,7);
+                            console.log('month : ' + month);
+                            if( parseInt(month) <= 10){
+                                month = month[1];
+                            }
+                            selectResult[i].product = month + "월 패키지 박스";
+                            result.ticketed.push(selectResult[i]);
                         }
-                        selectResult[i].product = month + "월 패키지 박스";
-                        result.ticketed.push(selectResult[i]);
                     } catch (error) {
                         return next(error);
                     }
