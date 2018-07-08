@@ -137,20 +137,20 @@ router.post('/', async(req, res, next) => {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
-   let {email, product, name, address, phone_number, price} = req.body;
+   let {email, product, name, address, phone_number, price, payment_method} = req.body;
  
    let payment_date = [];
    payment_date = yyyymmdd(new Date());
 
     let insertQuery = 
     `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
-    VALUES(?,?,?,?,?,?,?,?);
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product, payment_method)
+    VALUES(?,?,?,?,?,?,?,?,?);
     `;
 
     let result;
     try {
-        let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
+        let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ,payment_method ]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
     
