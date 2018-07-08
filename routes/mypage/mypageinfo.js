@@ -17,7 +17,7 @@ router.get('/', async (req, res, next) => {
   let catinfo, sendImage, cnt;
 
   const chkToken = jwt.verify(req.headers.authorization);
-  if (chkToken == -1) {
+  if (chkToken == undefined) {
       return next("10403")
   }
   let _result, result ={};

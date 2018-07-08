@@ -21,11 +21,11 @@ router.get('/account/:user_idx', async (req, res, next) => {
     let { user_idx } = req.params;
 
     const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403")
     }
 
-    let _result, result;
+    let _result,result;
     let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
     _result = await db.Query(userSelectQuery, [user_idx]);
     if (_result.length === 0) {
@@ -36,12 +36,12 @@ router.get('/account/:user_idx', async (req, res, next) => {
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile, image_background,
                cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
-        FROM users JOIN cats ON users.idx = cats.user_idx
-        WHERE users.idx = cats.user_idx
-        AND users.idx = ?
+        FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
+        WHERE users.idx = ?
         `;
     try {
-        result = await db.Query(accountSelectQuery, [user_idx]);
+        let accountSelectResult= await db.Query(accountSelectQuery, [user_idx]);
+        result = accountSelectResult[0];
     } catch (error) {
         return next(error);
     }

@@ -73,7 +73,7 @@ function getDeliveryDate(payment_date,product){
 		}
 	} else {
 		let testDate = getNextDayofWeek(payment_date,1)
-		deliveryDate.push(testDate)
+		deliveryDate.push(moment(testDate).format('YYYY.MM.DD'))
 	}
 
     return deliveryDate
@@ -91,7 +91,7 @@ Method : Post
 router.post('/', async(req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     
-    if(chkToken == -1) {
+    if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
@@ -122,6 +122,9 @@ router.post('/', async(req, res, next) => {
 
 
         for(var i in deliveryList ){
+            console.log(' i : ' + i);
+            let a = deliveryList[i];
+            console.log('a : ' + a);
             db.Query(insertQuery,[ insertIdx.insertId, deliveryList[i] ]);
         }
     } catch (error) {
