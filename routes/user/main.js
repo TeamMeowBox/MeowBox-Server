@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT email, idx,  name, phone_number,image_profile
+    SELECT idx, email, name, phone_number, image_profile, image_background
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -56,11 +56,13 @@ router.post('/signin', async (req, res, next) => {
         }
         let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
-            result.token = jwt.sign(email);
-            result.user_idx = _result[0].idx;
+            result.token = jwt.sign(email, result.user_idx);
+            result.email = _result[0].email;
+            result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
+            result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
-            result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
+            result.cat_idx = catQueryResult.length > 0 ? Stirng(catQueryResult[0].idx) : "-1";
         }
         else{
             return next("401");
@@ -88,26 +90,22 @@ router.post('/signup', async (req, res, next) => {
     `;
 
     let result = {};
+
     try {
         let selectResult = await db.Query(selectEmail, [email]);
         if (selectResult.length > 0) {
             return next("1401"); // "description": "아이디가 중복됩니다.",
         }
-        else {
-            let insertQuery =
+
+        let insertQuery =
                 `
             INSERT INTO users (email,pwd,name,phone_number)
             VALUES(?,?,?,?);
             `;
-            try {
-                let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
-                result.user_idx = userResult.insertId;
-                result.token = jwt.sign(email, result.user_idx);
-                result.cat_idx = -1;
-            } catch (error) {
-                return next(error);
-            }
-        }
+            
+        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
+        result.token = jwt.sign(email, userResult.insertId);
+        
     } catch (error) {
         return next(error);
     }
