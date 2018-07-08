@@ -164,7 +164,7 @@ router.post('/cat_signup', async (req, res, next) => {
 
     const { name, size, birthday, caution } = req.body;
 
-    let result;
+    let result = {};
     try {
         let insertQuery =
         `
@@ -172,11 +172,13 @@ router.post('/cat_signup', async (req, res, next) => {
         VALUES(?,?,?,?,?);
         `;
 
-        await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
+        let _result = await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
+        result.cat_idx = _result.insertId;;
+
     } catch (error) {
-        return next(error)
+        return next(1407)
     }
-    return res.r();
+    return res.r(result);
 });
 
 

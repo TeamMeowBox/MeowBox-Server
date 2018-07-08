@@ -10,7 +10,7 @@ module.exports = (app) => {
     
     app.use((err, req, res, next) => {
         // 에러 로그
-        log.error(`\n\x1b[31m[ERROR Handler] \u001b[0m \n\x1b[34m[Request PATH - ${req.path}] \u001b[0m \n`, err);
+        // log.error(`\n\x1b[31m[ERROR Handler] \u001b[0m \n\x1b[34m[Request PATH - ${req.path}] \u001b[0m \n`, err);
         
         let miss_param = false;
         if (err instanceof expressValidation.ValidationError) {  // 잘못된 파라미터 확인
