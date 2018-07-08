@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT email, idx,  name, phone_number,image_profile
+    SELECT idx, email, name, phone_number, image_profile, image_background
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -56,11 +56,13 @@ router.post('/signin', async (req, res, next) => {
         }
         let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
-            result.token = jwt.sign(email);
-            result.user_idx = _result[0].idx;
+            result.token = jwt.sign(email, _result[0].idx);
+            result.email = _result[0].email;
+            result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
+            result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
-            result.cat_idx = catQueryResult.length > 0 ? catQueryResult[0].idx : -1;
+            result.cat_idx = catQueryResult.length > 0 ? String(catQueryResult[0].idx) : "-1";
         }
         else{
             return next("401");
@@ -88,26 +90,22 @@ router.post('/signup', async (req, res, next) => {
     `;
 
     let result = {};
+
     try {
         let selectResult = await db.Query(selectEmail, [email]);
         if (selectResult.length > 0) {
             return next("1401"); // "description": "아이디가 중복됩니다.",
         }
-        else {
-            let insertQuery =
+
+        let insertQuery =
                 `
             INSERT INTO users (email,pwd,name,phone_number)
             VALUES(?,?,?,?);
             `;
-            try {
-                let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
-                result.token = jwt.sign(email);
-                result.user_idx = userResult.insertId;
-                result.cat_idx = -1;
-            } catch (error) {
-                return next(error);
-            }
-        }
+            
+        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
+        result.token = jwt.sign(email, userResult.insertId);
+
     } catch (error) {
         return next(error);
     }
@@ -156,54 +154,31 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
 // Written By 신기용
 // 묘등록
 router.post('/cat_signup', async (req, res, next) => {
-  const chkToken = jwt.verify(req.headers.authorization);
+    const chkToken = jwt.verify(req.headers.authorization);
 
-  if (chkToken == undefined) {
-    next("10403"); // "description": "잘못된 인증 방식입니다.",
-  }
-
-  const { name, size, birthday, caution } = req.body;
-
-  const selectIdxQuery =
-    `
-    SELECT idx
-    FROM users
-    WHERE email = ?
-    `;
-
-  const catQuery =
-    `
-          SELECT * FROM cats
-          WHERE user_idx  = ?    
-              `;
-
-  const insertQuery =
-    `
-          INSERT INTO cats (user_idx, name, size, birthday, caution)
-          VALUES(?,?,?,?,?);
-          `;
-  
-  
-  try {
-    let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
-    
-    if (user_idx.length == 0) {
-      next("1402"); // "description": "아이디가 존재하지 않습니다.",
-    }
-    
-    let catResult = await db.Query(catQuery, [user_idx[0].idx]);
-    
-    if(catResult.length !== 0){
-      return next("8400")  //잘못된 요청입니다.
+    if (chkToken == undefined) {
+        next("10403"); // "description": "잘못된 인증 방식입니다."
     }
 
-    await db.Query(insertQuery, [user_idx[0].idx, name, size, birthday, caution]);
-   
-  } catch (error) {
-    return next(error);
-  }
-  return res.r();
+    const { name, size, birthday, caution } = req.body;
+
+    let result = {};
+    try {
+        let insertQuery =
+        `
+        INSERT INTO cats (user_idx, name, size, birthday, caution)
+        VALUES(?,?,?,?,?);
+        `;
+
+        let _result = await db.Query(insertQuery,[chkToken.user_idx,name,size,birthday,caution]);
+        result.cat_idx = _result.insertId;;
+
+    } catch (error) {
+        return next(1407)
+    }
+    return res.r(result);
 });
+
 
 // Written By 정경인
 // 회원 탈퇴
