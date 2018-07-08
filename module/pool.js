@@ -23,50 +23,28 @@ module.exports = {
       pool.releaseConnection(connection);
       return result;
     }
+  },
+  Transaction : async (...args) => {
+    console.log("asdfasdf")
+    var result;
+    try{
+      console.log("11111")
+       var connection = await pool.getConnection();
+       console.log("22222")
+       await conenction.beginTransaction();
+       console.log("transaction first")
+    }catch(err){
+      console.log("catch")
+      await connection.rollback();
+      console.log("rollback")
+      next(err)
+      pool.releaseConnection(connection)
+      result = args
+      return result;
+    }
+    await connection.commit();
+    pool.releaseConnection(connection)
+    result = args
+    return result
   }
 };
-
-const transaction = fn => async(...args) => {
-  const connection = await pool.getConnection();
-  await connection.beginTransaction();
-  const result = await fn(connection, ...args).catch(async (err) => {
-    await connection.rollback();
-    pool.releaseConnection(connection)
-    next(err)
-    return result
-  })
-  await connection.commit();
-  pool.releaseConnection(connection)
-  return result
-  }
-
-// const transaction = async (...args) => {
-//   const connection = await pool.getConnection();
-//   await connection.beginTransaction();
-//   const result = 
-
-// }
-
-module.exports = transaction 
-
-// module.exports = {
-//   transaction : async (...args) => {
-//       /* DB 커넥션을 한다. */
-//   const connection = await pool.getConnection();
-//   /* 트렌젝션 시작 */
-//   await connection.beginTransaction();
-//   /* 비지니스 로직에 con을 넘겨준다. */
-//   const result = await fn(connection, ...args).catch(async (error) => {
-//       /* rollback을 진행한다. */
-//        await connection.rollback();
-//       /* 에러시 con을 닫아준다. */
-//       connection.release();
-//       throw error;
-//   });
-//   /* commit을 해준다. */
-//   await connection.commit();
-//   /* con을 닫아준다. */
-//   connection.release();
-//   return result;
-//   }
-// }
