@@ -36,7 +36,7 @@ router.get('/account', async (req, res, next) => {
 
     let accountSelectQuery =
         `
-        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile, image_background,
+        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
                cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
         FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = ?
@@ -50,14 +50,15 @@ router.get('/account', async (req, res, next) => {
     return res.r(result);
 
 });
+
+
 /*
  Method : post
  */
 // Written By 서연
 // 계정 수정
 // Edit By 기용
-
-// router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }, { name: 'image_background', maxCount: 1 }]), async (req, res, next) => {
+// App 용
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
@@ -66,12 +67,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(user_phone);
     param.push(user_email);
 
-    let flag = 2;
-    /*
-    1 : image_profile만 있는 경우
-    2 : image_background만 있는 경우
-    3 : 2개다 있는 경우
-    */
+
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
     usersUpdateQuery =
@@ -129,14 +125,28 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
 // Written By 기용
 // My page에서 유저 정보 수정
+// Web용
 router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
     }
+    
+    let userSelectQuery = 
+    `
+    SELECT name, pwd, phone_number, image_profile
+    FROM users
+    WHERE user_idx = ?
+    `
+    let result;
+    try {
+        result = await db.Query(userSelectQuery,[chkToken.user_idx]);
+    } catch (error) {
+        return next(error)
+    }
 
     let image_profile;
-    let { name, phone_number, pwd} = req.body;
+    let { name, phone_number, pwd } = req.body;
 
     pwd = encrypt(pwd);
     
@@ -182,12 +192,14 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
 
 // Written By 기용
 // My page에서 고양이 정보 수정 
+// Web용
 router.post('/update_cat', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
         return next("10403")
     }
+
 
     let { name, size, birthday, caution} = req.body;
     let updateQuery = 

@@ -30,8 +30,7 @@ router.get('/', async (req, res, next) => {
 
     if(chkToken.user_idx === null){
         return next("1402"); // "description": "아이디가 존재하지 않습니다.",
-    } else {
-           
+    } else {           
         let selectQuery = 
         `
         SELECT idx,product, payment_date as term
@@ -49,14 +48,14 @@ router.get('/', async (req, res, next) => {
 
             for(let i=0; i< selectResult.length; i++){
                 let product_name = selectResult[i].product;
-                selectResult[i].flag = 0;
+                selectResult[i].flag = "0";
 
                 if(product_name == 3 || product_name == 6 ){    
                     let endDate = selectResult[i].term;
                     endDate = getFirstMonday(moment(endDate).add(selectResult[i].product-1,'M'))
                     selectResult[i].term = selectResult[i].term + ' - ' + moment(endDate).format('YYYY.MM.DD');
                     selectResult[i].product = product_name + "개월 정기권";
-                    selectResult[i].flag = 1;
+                    selectResult[i].flag = "1";
 
 
                     let _endDate = moment(endDate).format('YYYY.MM.DD');
