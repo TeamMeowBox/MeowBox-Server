@@ -171,7 +171,7 @@ router.post('/cat_signup', async (req, res, next) => {
     WHERE email = ?
     `;
 
-<<<<<<< HEAD
+
     let result;
     try {
         let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
@@ -207,13 +207,6 @@ router.post('/cat_signup', async (req, res, next) => {
     }
     return res.r();
 });
-=======
-  const catQuery =
-    `
-          SELECT * FROM cats
-          WHERE user_idx  = ?    
-              `;
->>>>>>> 13d937f4d3e3b1a1c51f8ef0504e35cf2d585751
 
   const insertQuery =
     `
