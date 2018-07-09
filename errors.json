@@ -53,6 +53,12 @@
       "description": "이미 등록된 고양이가 있습니다.",
       "message": "exist_cat"
     },
+    "1408": {
+      "status": 200,
+      "code": 400,
+      "description": "존재하지 않는 주문입니다.",
+      "message": "untitled_order"
+    },
     "2401": {
       "status": 200,
       "code": 400,

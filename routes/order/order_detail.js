@@ -8,17 +8,18 @@ const moment = require('moment');
 
 //Written By 이민형
 //주문내역 상세보기 기능
-
 router.post('/',async (req,res,next) => {
     let { order_idx } = req.body;
-    let result = {}
+    let result = new Array();
     let flag = true;
-    let imageList = new Array();
 
-    // const chkToken = jwt.verify(req.headers.authorization);
-    // if (chkToken == undefined) {
-    //     return next("10403")
-    // }
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+    if (!order_idx){
+        return next("400")
+    }
 
     let selectOrderQuery = 
     `
@@ -33,8 +34,9 @@ router.post('/',async (req,res,next) => {
     }
 
     if(selectOrderResult.length == 0){
-        return next("400")
+        return next("1408")
     }
+
     let payment_date = selectOrderResult[0].payment_date
     let total = selectOrderResult[0].product
 
@@ -56,6 +58,7 @@ router.post('/',async (req,res,next) => {
         WHERE order_idx = ?
         `
         let countResult = await db.Query(countQuery,[order_idx])
+
         if(!countResult){
             return next("500")
         } else {
@@ -63,16 +66,10 @@ router.post('/',async (req,res,next) => {
                 let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
                 if(!selectResult){
                     return next("500")
-                    flag = false;
-                    break;
                 } else if(selectResult.length === 0){
                     return next("400")
-                    flag = false;
-                    break;
                 } else {
-                    let image = new Object();
-                    image.img_url = selectResult[0].img_url;
-                    imageList.push(image);
+                    result.push(selectResult[0].img_url)
                 }
             }
         }
@@ -82,24 +79,14 @@ router.post('/',async (req,res,next) => {
             let selectResult = await db.Query(selectQuery,[test]);
             if(!selectResult){
                 return next("500")
-                flag = false;
-                break;
             } else if(selectResult.length === 0){
                 return next("400")
-                flag = false;
-                break;
             } else {
-                let image = new Object();
-                image.img_url = selectResult[0].img_url;
-                imageList.push(image);
+                result.push(selectResult[0].img_url)
             }
         }
     }
-
-    if(flag){
-        result = {imageList}
-        res.r(result);
-    }
+    res.r(result)
 })
 
 //다음주의 원하는 요일 구하는 함수(한주의 시작을 월요일로 가정)
