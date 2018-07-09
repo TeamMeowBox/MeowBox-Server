@@ -43,8 +43,11 @@ router.get('/account', async (req, res, next) => {
         `;
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
-        accountSelectResult[0].size = accountSelectResult[0].size + ""
         result = accountSelectResult[0];
+        result.cat_name = accountSelectResult[0].cat_name + "";
+        result.size = accountSelectResult[0].size + "";
+        result.birthday = accountSelectResult[0].birthday + "";
+        result.caution = accountSelectResult[0].caution + "";
     } catch (error) {
         return next(error);
     }
@@ -211,6 +214,13 @@ router.post('/update_cat', async (req, res, next) => {
         return next("10403")
     }
 
+    
+    let selectCatQuery=
+    `
+    SELECT *
+    FROM cats
+    WHERE user_idx = ?
+    `
 
     let { name, size, birthday, caution} = req.body;
     let updateQuery = 
@@ -221,7 +231,25 @@ router.post('/update_cat', async (req, res, next) => {
     `
 
     try {
-        await db.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+        let result = await db.Query(selectCatQuery, [chkToken.user_idx]);
+        if( result.length == 0 ){
+            return next(400)
+        }
+        else {
+            if( name == undefined){
+                name = result[0].name;
+            } 
+            if( size == undefined){
+                size = result[0].size;
+            }
+            if( birthday == undefined){
+                birthday = result[0].birthday;
+            }
+            if( caution == undefined){
+                caution = result[0].caution;
+            }
+            await db.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+        }
     } catch (error) {
         return next(error);
     }

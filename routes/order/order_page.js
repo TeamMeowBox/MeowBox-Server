@@ -86,13 +86,6 @@ Method : Get
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
 router.get('/', async(req, res, next) => {
-    let { product } = req.query ;
-    if(product == 3 || product  == 6){
-        console.log("여기냔?")
-        return next("400")
-    }
-    
-    console.log("아니면 여기냔?")
     const chkToken = jwt.verify(req.headers.authorization);
     
     if(chkToken == undefined) {
