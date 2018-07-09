@@ -39,17 +39,16 @@ router.get('/', async (req, res, next) => {
   }
   Query = `
 
-          select orders.product,reservations.*
+          select orders.product ,reservations.*
           from orders left join reservations ON  orders.idx = reservations.order_idx
           WHERE orders.user_idx = ?
           order by reservations.order_idx desc;
           `;
 
   try {
-
     let orderResult = await db.Query(Query, [chkToken.user_idx]);
     console.log(orderResult[0].product)
-    if (orderResult[0].product ===1 ||orderResult[0].product ===2 ||orderResult[0].product === 7 ) {    //정기권 진행 중이 아닐때
+    if (orderResult[0].product ===null || orderResult[0].product ===1 ||orderResult[0].product ===2 ||orderResult[0].product === 7 ) {    //정기권 진행 중이 아닐때
       if (orderResult[0].product ==null || orderResult[0].product === 1) { // 주문기록이 없거나 1달정기권 이용했었던 유저
         sendImage =
         `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-18.png`; //나의 고양이에게 
