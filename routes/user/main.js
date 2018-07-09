@@ -52,7 +52,7 @@ router.post('/signin', async (req, res, next) => {
     `
     SELECT o.product 
     FROM orders as o, reservations as r
-    WHERE o.idx = r.order_idx and o.user_idx = ?
+    WHERE o.idx = r.order_idx and o.user_idx = ? and ( o.product = 3 or o.product = 6 )
     `
 
     let result = {};
