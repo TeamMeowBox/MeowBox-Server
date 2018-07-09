@@ -40,15 +40,16 @@ router.post('/',async (req,res,next) => {
     let payment_date = selectOrderResult[0].payment_date
     let total = selectOrderResult[0].product
 
+    if(selectOrderResult[0].product != 3 && selectOrderResult[0].product != 6){total = 1}
     let deliveryDate = getDeliveryDate(payment_date,total);
     let end_date = deliveryDate[deliveryDate.length-1]
-
     let selectQuery = 
     `
     SELECT img_url 
     FROM products 
     WHERE yearmonth = ?
     `
+    
 
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
         let countQuery = 
@@ -62,8 +63,48 @@ router.post('/',async (req,res,next) => {
         if(!countResult){
             return next("500")
         } else {
-            for(let i=0;i<total-countResult.length;i++){
-                let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
+            //월 패키지 박스일 떄
+            if(selectOrderResult[0].product != 2 && selectOrderResult[0].product != 7){
+                for(let i=0;i<total-countResult.length;i++){
+                    let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
+                    if(!selectResult){
+                        return next("500")
+                    } else if(selectResult.length === 0){
+                        return next("400")
+                    } else {
+                        result.push(selectResult[0].img_url)
+                    }
+                }
+            } else {
+                //생일 또는 처음 박스일 때
+                for(let i=0;i<total-countResult.length;i++){
+                    let selectResult = await db.Query(selectQuery,[selectOrderResult[0].product])
+                    if(!selectResult){
+                        return next("500")
+                    } else if(selectResult.length === 0){
+                        return next("400")
+                    } else {
+                        result.push(selectResult[0].img_url)
+                    }
+                }
+            }
+        }
+    } else {
+        if(selectOrderResult[0].product != 2 && selectOrderResult[0].product != 7){
+            for(let i=0;i<total;i++){
+                let test = moment(payment_date).add(i,'M').format('YYYYMM')
+                let selectResult = await db.Query(selectQuery,[test]);
+                if(!selectResult){
+                    return next("500")
+                } else if(selectResult.length === 0){
+                    return next("400")
+                } else {
+                    result.push(selectResult[0].img_url)
+                } 
+            }
+        } else {
+            for(let i=0;i<total;i++){
+                let selectResult = await db.Query(selectQuery,[selectOrderResult[0].product])
                 if(!selectResult){
                     return next("500")
                 } else if(selectResult.length === 0){
@@ -71,18 +112,6 @@ router.post('/',async (req,res,next) => {
                 } else {
                     result.push(selectResult[0].img_url)
                 }
-            }
-        }
-    } else {
-        for(let i=0;i<total;i++){
-            let test = moment(payment_date).add(i,'M').format('YYYYMM')
-            let selectResult = await db.Query(selectQuery,[test]);
-            if(!selectResult){
-                return next("500")
-            } else if(selectResult.length === 0){
-                return next("400")
-            } else {
-                result.push(selectResult[0].img_url)
             }
         }
     }

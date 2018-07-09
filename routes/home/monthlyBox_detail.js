@@ -10,8 +10,33 @@ const upload = require('../../module/multer.js');
 const secretKey = require('../../config/secretKey').key;
 
 
+// method : Get
+// Written By 서연
+// Home에서 고양이 수
+router.get('/catCount',  async (req, res,next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+    
+    let catCountResult;
+    let _result, result;
+    let catCountQuery = 
+    `
+    SELECT count(*) as catCount
+    FROM cats
+    `;
+    try {
+        catCountResult = await db.Query(catCountQuery);
+        result = catCountResult[0].catCount + 450;
+    } catch (error) {
+        return next(error);
+    }
+    return res.r(result.toString());
+});
 
 
+// method : Get
 // Written By 서연
 // Home에서 이번 달 미유박스 소개 크롤링
 router.get('/crawling',  async (req, res,next) => {
