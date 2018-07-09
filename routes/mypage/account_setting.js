@@ -44,12 +44,8 @@ router.get('/account/:user_idx', async (req, res, next) => {
         WHERE users.idx = ?
         `;
     try {
-<<<<<<< HEAD
-        let accountSelectResult= await db.Query(accountSelectQuery, [user_idx]);
-=======
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
         accountSelectResult[0].size = accountSelectResult[0].size + ""
->>>>>>> 38dffe0225f2ca869c48458944092bf49d1afabb
         result = accountSelectResult[0];
     } catch (error) {
         return next(error);
