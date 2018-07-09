@@ -21,15 +21,17 @@ function encrypt(u_password) {
  */
 // Written By 서연
 // 계정 설정 화면 보기
-router.get('/account', async (req, res, next) => {
+router.get('/account/:user_idx', async (req, res, next) => {
+    let { user_idx } = req.params;
+
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
     }
-    let user_idx = chkToken.user_idx;
+
     let _result,result;
     let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
-    _result = await db.Query(userSelectQuery,[user_idx]);
+    _result = await db.Query(userSelectQuery, [user_idx]);
     if (_result.length === 0) {
         return next("1406")
     }
