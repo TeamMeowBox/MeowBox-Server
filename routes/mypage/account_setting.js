@@ -98,9 +98,6 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(user_idx);
    
     console.log('success connection');
-    if (!user_idx || !user_name || !user_email || !user_phone || !cat_name ||  !cat_size || !cat_birthday || !cat_caution) {
-        return res.r("2402")
-    }
       
     let catsUpdateQuery =
     `
