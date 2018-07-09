@@ -44,7 +44,7 @@ router.get('/account', async (req, res, next) => {
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
         result = accountSelectResult[0];
-        result.cat_idx = accountSelectResult[0].cats_idx + "";
+        result.cats_idx = accountSelectResult[0].cats_idx + "";
         result.cat_name = accountSelectResult[0].cat_name + "";
         result.size = accountSelectResult[0].size + "";
         result.birthday = accountSelectResult[0].birthday + "";
