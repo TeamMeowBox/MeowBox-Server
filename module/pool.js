@@ -26,25 +26,23 @@ module.exports = {
   },
   Transaction : async (...args) => {
     console.log("asdfasdf")
-    var result;
-    try{
-      console.log("11111")
-       var connection = await pool.getConnection();
-       console.log("22222")
-       await conenction.beginTransaction();
-       console.log("transaction first")
-    }catch(err){
-      console.log("catch")
-      await connection.rollback();
+    var connection = await pool.getConnection();
+    console.log("beginTransaction")
+    await connection.beginTransaction();
+    console.log("result")
+    const result = await args[0](connection, ...args).catch(async (err) => {
       console.log("rollback")
-      next(err)
+      await connection.rollback();
+      console.log("releaseConnection")
       pool.releaseConnection(connection)
-      result = args
-      return result;
-    }
+      throw err
+      return result
+    })
+    console.log("commit")
     await connection.commit();
+    console.log("releaseCOnnection")
     pool.releaseConnection(connection)
-    result = args
+    console.log("return")
     return result
   }
 };
