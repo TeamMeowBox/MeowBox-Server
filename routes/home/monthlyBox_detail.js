@@ -9,6 +9,23 @@ const db = require('../../module/pool.js');
 const upload = require('../../module/multer.js');
 const secretKey = require('../../config/secretKey').key;
 
+//숫자 3단위에서 콤마 찍는 함수
+function comma(num){
+    var len, point, str; 
+       
+    num = num + ""; 
+    point = num.length % 3 ;
+    len = num.length; 
+   
+    str = num.substring(0, point); 
+    while (point < len) { 
+        if (str != "") str += ","; 
+        str += num.substring(point, point + 3); 
+        point += 3; 
+    } 
+    return str;
+}
+
 
 // method : Get
 // Written By 서연
@@ -26,13 +43,15 @@ router.get('/catCount',  async (req, res,next) => {
     SELECT count(*) as catCount
     FROM cats
     `;
+    
     try {
         catCountResult = await db.Query(catCountQuery);
-        result = catCountResult[0].catCount + 450;
+        result = catCountResult[0].catCount + 1000;
+        _result = comma(result.toString());
     } catch (error) {
         return next(error);
     }
-    return res.r(result.toString());
+    return res.r(_result);
 });
 
 
