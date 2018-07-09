@@ -153,7 +153,7 @@ router.post('/', async(req, res, next) => {
         let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
-    
+        
         let deliveryList = getDeliveryDate(payment_date[0],product);
         insertQuery = 
         `
