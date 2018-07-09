@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT idx, email, name, phone_number, image_profile, image_background
+    SELECT idx, email, name, phone_number, image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -60,7 +60,6 @@ router.post('/signin', async (req, res, next) => {
             result.email = _result[0].email;
             result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
-            result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
             result.cat_idx = catQueryResult.length > 0 ? String(catQueryResult[0].idx) : "-1";
         }
@@ -137,9 +136,9 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
         if (selectResult.length === 0) {
             result.cat_idx = -1;
         }else{
-            result.cat_idx = selectResult[0].cat_idx
+            result.cat_idx = selectResult[0].cat_idx + ""
             result.name = selectResult[0].name
-            result.size = selectResult[0].size
+            result.size = selectResult[0].size + ""
             result.birthday = selectResult[0].birthday
             result.caution= selectResult[0].caution
         }

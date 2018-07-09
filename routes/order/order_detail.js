@@ -8,17 +8,16 @@ const moment = require('moment');
 
 //Written By 이민형
 //주문내역 상세보기 기능
-
 router.post('/',async (req,res,next) => {
     let { order_idx } = req.body;
     let result = {}
     let flag = true;
     let imageList = new Array();
 
-    // const chkToken = jwt.verify(req.headers.authorization);
-    // if (chkToken == undefined) {
-    //     return next("10403")
-    // }
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
 
     let selectOrderQuery = 
     `
@@ -35,11 +34,16 @@ router.post('/',async (req,res,next) => {
     if(selectOrderResult.length == 0){
         return next("400")
     }
+
+    console.log('123');
     let payment_date = selectOrderResult[0].payment_date
     let total = selectOrderResult[0].product
 
+
+    console.log('payment_date : ' + payment_date);
     let deliveryDate = getDeliveryDate(payment_date,total);
     let end_date = deliveryDate[deliveryDate.length-1]
+    console.log('321');
 
     let selectQuery = 
     `
@@ -48,14 +52,23 @@ router.post('/',async (req,res,next) => {
     WHERE yearmonth = ?
     `
 
+    console.log('111');
+
+
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
+        console.log('222');
         let countQuery = 
         `
         SELECT *
         FROM reservations
         WHERE order_idx = ?
         `
+
+        console.log('is here');
+
         let countResult = await db.Query(countQuery,[order_idx])
+
+        console.log('is here 222');
         if(!countResult){
             return next("500")
         } else {
@@ -77,6 +90,7 @@ router.post('/',async (req,res,next) => {
             }
         }
     } else {
+        console.log('333');
         for(let i=0;i<total;i++){
             let test = moment(payment_date).add(i,'M').format('YYYYMM')
             let selectResult = await db.Query(selectQuery,[test]);

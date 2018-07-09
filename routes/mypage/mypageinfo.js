@@ -38,12 +38,14 @@ router.get('/', async (req, res, next) => {
     result.catinfo = catResult[0].cat_name;
   }
   Query = `
+<<<<<<< HEAD
 
           select orders.product ,reservations.*
           from orders left join reservations ON  orders.idx = reservations.order_idx
           WHERE orders.user_idx = ?
           order by reservations.order_idx desc;
           `;
+
 
   try {
     let orderResult = await db.Query(Query, [chkToken.user_idx]);
@@ -52,9 +54,9 @@ router.get('/', async (req, res, next) => {
       if (orderResult[0].product ==null || orderResult[0].product === 1) { // 주문기록이 없거나 1달정기권 이용했었던 유저
         sendImage =
         `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-18.png`; //나의 고양이에게 
-      } else if (orderResult[0].product === 7) {
+      } else if (orderResult[0].product === 1) {
         sendImage = 
-        `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-18.png`;//생일 축하해요.
+        `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-27.png`;//생일 축하해요.
       } else if (orderResult[0].product === 2) {
         sendImage = 
         `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-22.png`; //앞으로 잘부탁
@@ -63,19 +65,14 @@ router.get('/', async (req, res, next) => {
       result.sendImage = sendImage;
 
     } else { //정기권 진행중일때
-     let selectQuery = `
-
-          select count(*) AS cnt 
-          from reservations
-          where order_idx = ?
-          `;
-    let selectResult = await db.Query(selectQuery, [orderResult[0].order_idx]);
-    console.log(selectResult[0])
-      cnt = orderResult[0].product - Number(selectResult[0].cnt);
+      cnt = orderResult[0].product - orderResult[0].cnt;
+      console.log('orderResult[0].product : ' + orderResult[0].product);
+      console.log('orderResult[0].product : ' + orderResult[0].cnt);
       result.flag = "1";
       result.ticket = orderResult[0].product+"박스"
       result.use =  cnt+"박스"
 
+      console.log(JSON.stringify(result))
     }
 
   } catch (error) {
@@ -85,3 +82,4 @@ router.get('/', async (req, res, next) => {
 })
 
 module.exports = router;
+
