@@ -38,8 +38,6 @@ router.get('/', async (req, res, next) => {
     result.catinfo = catResult[0].cat_name;
   }
   Query = `
-<<<<<<< HEAD
-
           select orders.product ,reservations.*
           from orders left join reservations ON  orders.idx = reservations.order_idx
           WHERE orders.user_idx = ?
@@ -65,16 +63,19 @@ router.get('/', async (req, res, next) => {
       result.sendImage = sendImage;
 
     } else { //정기권 진행중일때
-      cnt = orderResult[0].product - orderResult[0].cnt;
-      console.log('orderResult[0].product : ' + orderResult[0].product);
-      console.log('orderResult[0].product : ' + orderResult[0].cnt);
+
+      let selectQuery = `
+      select count(*) AS cnt
+      from reservations
+      where order_idx = ?
+        `;
+      let selectResult = await db.Query(selectQuery, [orderResult[0].order_idx]);
+      console.log(selectResult[0])
+      cnt = orderResult[0].product - Number(selectResult[0].cnt);
       result.flag = "1";
       result.ticket = orderResult[0].product+"박스"
       result.use =  cnt+"박스"
-
-      console.log(JSON.stringify(result))
     }
-
   } catch (error) {
     return next(error)
   }
