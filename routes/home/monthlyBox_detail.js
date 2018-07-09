@@ -38,7 +38,7 @@ router.get('/',async (req,res,next) => {
         return next(err);
     }
     console.log(result)
-    return res.r(result);
+    return res.r(result[0]);
 })
 
 module.exports = router;
