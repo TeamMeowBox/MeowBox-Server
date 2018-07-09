@@ -52,7 +52,6 @@ router.get('/account', async (req, res, next) => {
         return next(error);
     }
     return res.r(result);
-
 });
 
 
@@ -110,18 +109,18 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     UPDATE cats
     SET  name = ?, size = ?, birthday = ?, caution = ?
     WHERE user_idx = ?
-    `;//cats_update`
+    `;  //cats_update`
 
     let result = {};
-    try {
-        await db.Query(usersUpdateQuery, param);
-        await db.Query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
+
+    //트랜잭션 처리
+    db.Transaction(async (connection) => {  
+        await connection.query(usersUpdateQuery, param);
+        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx])
         result.token = jwt.sign(user_email, user_idx);
-
-    } catch (error) {
+    }).catch(error => {
         return next(error)
-    }
-
+    })
     return res.r(result);
 });
 
@@ -199,7 +198,6 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     } catch (error) {
         return next(error)
     }
-
     return res.r();
 });
 
@@ -229,9 +227,10 @@ router.post('/update_cat', async (req, res, next) => {
     SET name = ?, size = ?, birthday = ? , caution = ?
     WHERE user_idx = ?
     `
-
-    try {
-        let result = await db.Query(selectCatQuery, [chkToken.user_idx]);
+    
+    //트랜잭션 처리
+    db.Transaction(async (connection) => {
+        let result = await connection.Query(selectCatQuery, [chkToken.user_idx]);
         if( result.length == 0 ){
             return next(400)
         }
@@ -248,11 +247,11 @@ router.post('/update_cat', async (req, res, next) => {
             if( caution == undefined){
                 caution = result[0].caution;
             }
-            await db.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+            await connection.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
         }
-    } catch (error) {
-        return next(error);
-    }
+    }).catch(error => {
+        return next(error)
+    })
     return res.r();
 });
 
