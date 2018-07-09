@@ -38,7 +38,6 @@ router.get('/', async (req, res, next) => {
     result.catinfo = catResult[0].cat_name;
   }
   Query = `
-
           select orders.product ,reservations.*
           from orders right join reservations ON  orders.idx = reservations.order_idx
           WHERE orders.user_idx = ?
@@ -74,7 +73,6 @@ router.get('/', async (req, res, next) => {
       result.use = cnt + "박스"
 
     }
-
   } catch (error) {
     return next(error)
   }

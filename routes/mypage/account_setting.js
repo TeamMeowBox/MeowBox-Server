@@ -139,25 +139,37 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     `
     SELECT name, pwd, phone_number, image_profile
     FROM users
-    WHERE user_idx = ?
+    WHERE idx = ?
     `
-    let result;
+    let userSelectResult;
     try {
-        result = await db.Query(userSelectQuery,[chkToken.user_idx]);
+        userSelectResult = await db.Query(userSelectQuery,[chkToken.user_idx]);
     } catch (error) {
         return next(error)
     }
 
+    console.log(' userSelectResult : ' + userSelectResult[0].name);
+
     let image_profile;
     let { name, phone_number, pwd } = req.body;
-
-    pwd = encrypt(pwd);
+    
+    if (name == undefined){
+        name = userSelectResult[0].name;
+    }
+    if( phone_number == undefined){
+        phone_number =  userSelectResult[0].phone_number;
+    }
+    if( pwd == undefined){
+        pwd = userSelectResult[0].pwd;
+    }else {
+        pwd = encrypt(pwd);
+    }
     
     let param = [];
     param.push(name);
     param.push(phone_number);
     param.push(pwd);
-
+u
     let usersUpdateQuery =
     `
     UPDATE users 
@@ -176,11 +188,6 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
         param.push(image_profile) 
     }
    
-
-    if (!name || !phone_number || !pwd ) {
-        return res.r("2402")
-    } 
-
     param.push(String(chkToken.user_idx))
     console.log(param);
     try {

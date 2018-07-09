@@ -47,15 +47,26 @@ router.post('/signin', async (req, res, next) => {
     FROM cats
     WHERE user_idx = ?
     `
-    
+
+    let userTicketQuery=
+    `
+    SELECT o.product 
+    FROM orders as o, reservations as r
+    WHERE o.idx = r.order_idx and o.user_idx = ?
+    `
+
     let result = {};
     try {
+        console.log('111');
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
         if(!_result[0]){
                 return next("401");
         }
         let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
+            let userTicket = await db.Query(userTicketQuery, [_result[0].idx]);
+            
+            result.flag = userTicket.length > 0 ? "1" : "-1" ;
             result.token = jwt.sign(email, _result[0].idx);
             result.email = _result[0].email;
             result.name = _result[0].name;
