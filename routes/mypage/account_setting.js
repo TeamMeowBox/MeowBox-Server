@@ -33,7 +33,6 @@ router.get('/account', async (req, res, next) => {
     if (_result.length === 0) {
         return next("1406")
     }
-
     let accountSelectQuery =
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
