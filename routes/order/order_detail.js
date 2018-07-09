@@ -10,13 +10,15 @@ const moment = require('moment');
 //주문내역 상세보기 기능
 router.post('/',async (req,res,next) => {
     let { order_idx } = req.body;
-    let result = {}
+    let result = new Array();
     let flag = true;
-    let imageList = new Array();
 
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
+    }
+    if (!order_idx){
+        return next("400")
     }
 
     let selectOrderQuery = 
@@ -32,18 +34,14 @@ router.post('/',async (req,res,next) => {
     }
 
     if(selectOrderResult.length == 0){
-        return next("400")
+        return next("1408")
     }
 
-    console.log('123');
     let payment_date = selectOrderResult[0].payment_date
     let total = selectOrderResult[0].product
 
-
-    console.log('payment_date : ' + payment_date);
     let deliveryDate = getDeliveryDate(payment_date,total);
     let end_date = deliveryDate[deliveryDate.length-1]
-    console.log('321');
 
     let selectQuery = 
     `
@@ -52,23 +50,15 @@ router.post('/',async (req,res,next) => {
     WHERE yearmonth = ?
     `
 
-    console.log('111');
-
-
     if(moment(end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
-        console.log('222');
         let countQuery = 
         `
         SELECT *
         FROM reservations
         WHERE order_idx = ?
         `
-
-        console.log('is here');
-
         let countResult = await db.Query(countQuery,[order_idx])
 
-        console.log('is here 222');
         if(!countResult){
             return next("500")
         } else {
@@ -76,44 +66,27 @@ router.post('/',async (req,res,next) => {
                 let selectResult = await db.Query(selectQuery,[moment(payment_date).add(i,'M').format('YYYYMM')])
                 if(!selectResult){
                     return next("500")
-                    flag = false;
-                    break;
                 } else if(selectResult.length === 0){
                     return next("400")
-                    flag = false;
-                    break;
                 } else {
-                    let image = new Object();
-                    image.img_url = selectResult[0].img_url;
-                    imageList.push(image);
+                    result.push(selectResult[0].img_url)
                 }
             }
         }
     } else {
-        console.log('333');
         for(let i=0;i<total;i++){
             let test = moment(payment_date).add(i,'M').format('YYYYMM')
             let selectResult = await db.Query(selectQuery,[test]);
             if(!selectResult){
                 return next("500")
-                flag = false;
-                break;
             } else if(selectResult.length === 0){
                 return next("400")
-                flag = false;
-                break;
             } else {
-                let image = new Object();
-                image.img_url = selectResult[0].img_url;
-                imageList.push(image);
+                result.push(selectResult[0].img_url)
             }
         }
     }
-
-    if(flag){
-        result = {imageList}
-        res.r(result);
-    }
+    res.r(result)
 })
 
 //다음주의 원하는 요일 구하는 함수(한주의 시작을 월요일로 가정)

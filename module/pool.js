@@ -36,7 +36,6 @@ module.exports = {
       console.log("releaseConnection")
       pool.releaseConnection(connection)
       throw err
-      return result
     })
     console.log("commit")
     await connection.commit();
