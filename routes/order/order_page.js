@@ -85,7 +85,8 @@ Method : Get
 
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
-router.get('/', async (req, res, next) => {
+
+router.get('/', async(req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
@@ -161,6 +162,10 @@ router.post('/', async (req, res, next) => {
         `;
         console.log('deleveryList :' + deliveryList);
 
+        if( product == 3 || product == 6){
+            result = "1";
+        }
+
 
         for (var i in deliveryList) {
             console.log(' i : ' + i);
@@ -171,9 +176,9 @@ router.post('/', async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-
-    return res.r();
+    return res.r(result);
 });
+
 //정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
 router.get('/product', async (req, res, next) => {
     let { product } = req.query

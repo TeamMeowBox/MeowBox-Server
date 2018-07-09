@@ -91,8 +91,10 @@ router.get('/', async (req, res, next) => {
                         return next(error);
                     }
                 }
-                else if (product_name == 2) {
-                    selectResult[i].product = "고양이는 처음이지? 박스";
+
+                else if( product_name == 2 ){
+                    selectResult[i].product = "고양이는 처음이지?";
+
                     result.ticketed.push(selectResult[i]);
                 } else if (product_name == 7) {
                     selectResult[i].product = "생일축하해!";
