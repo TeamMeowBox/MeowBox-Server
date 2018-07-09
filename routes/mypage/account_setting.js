@@ -202,6 +202,7 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
 });
 
 
+
 // Written By 기용
 // My page에서 고양이 정보 수정 
 // Web용
