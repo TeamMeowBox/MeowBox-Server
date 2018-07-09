@@ -169,7 +169,7 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     param.push(name);
     param.push(phone_number);
     param.push(pwd);
-
+u
     let usersUpdateQuery =
     `
     UPDATE users 
