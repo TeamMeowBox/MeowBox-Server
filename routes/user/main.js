@@ -57,7 +57,6 @@ router.post('/signin', async (req, res, next) => {
 
     let result = {};
     try {
-        console.log('111');
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
         if(!_result[0]){
                 return next("401");
@@ -109,12 +108,23 @@ router.post('/signup', async (req, res, next) => {
 
         let insertQuery =
                 `
-            INSERT INTO users (email,pwd,name,phone_number)
-            VALUES(?,?,?,?);
+            INSERT INTO users (email,pwd,name,phone_number,image_profile)
+            VALUES(?,?,?,?,?);
             `;
             
-        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
+        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number, 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg']);
         result.token = jwt.sign(email, userResult.insertId);
+
+        result.flag = "-1" ;
+        result.email = email;
+        result.name = name;
+        result.phone_number = phone_number;
+        result.image_profile = 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg';
+        result.cat_idx = "-1";
+
+
+
+
 
     } catch (error) {
         return next(error);
