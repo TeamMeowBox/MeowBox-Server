@@ -29,11 +29,7 @@ router.get('/', async (req, res,next) => {
     let result ={}; 
     try {
         let qnaResult = await db.Query(qnaSelectQuery);
-        // if (qnaResult.length === 0) {
-        //     res.status(404).send({
-        //         message: "server error"
-        //     });
-        // } else {
+
         let product = new Array();
         let delivery = new Array();
         let packing = new Array();
@@ -58,13 +54,6 @@ router.get('/', async (req, res,next) => {
         }   //for 문 
 
         result = {product,delivery,packing,subscribe};
-        // await res.status(200).send({
-        //     state: 'Select Qna Success',
-        //     product: product,
-        //     delivery: delivery,
-        //     packing: packing,
-        //     subscribe: subscribe
-        // });
 
     } catch (error) {
         return next(error)
