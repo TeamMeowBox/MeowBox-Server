@@ -86,16 +86,19 @@ Method : Get
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
 router.get('/', async(req, res, next) => {
+    let { product } = req.query ;
+    if(product == 3|| product  == 6){
+        return next("400")
+    }
     const chkToken = jwt.verify(req.headers.authorization);
     
     if(chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    
     let orderResult, result ={};
     let orderSelectQuery = 
     `
-    SELECT idx as order_idx, name, address, phone_number, email, payment_date
+    SELECT idx as order_idx, name, address, phone_number, email, payment_date, product
     FROM orders
     WHERE user_idx = ? 
     ORDER BY payment_date DESC
@@ -103,11 +106,13 @@ router.get('/', async(req, res, next) => {
     
     try {
          orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
-            
+            if(orderResult[0].product ==3 || orderResult[0].product == 6 ){
+                return next("400")
+            }
          if (orderResult.length === 0) {
             result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
           } else{
-            result.order_idx = orderResult[0].order_idx;
+            result.order_idx = orderResult[0].order_idx + "";
             result.name = orderResult[0].name;
             result.address = orderResult[0].address;
             result.phone_number = orderResult[0].phone_number;
@@ -137,20 +142,20 @@ router.post('/', async(req, res, next) => {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
-   let {email, product, name, address, phone_number, price} = req.body;
+   let {email, product, name, address, phone_number, price, payment_method} = req.body;
  
    let payment_date = [];
    payment_date = yyyymmdd(new Date());
 
     let insertQuery = 
     `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product)
-    VALUES(?,?,?,?,?,?,?,?);
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product, payment_method)
+    VALUES(?,?,?,?,?,?,?,?,?);
     `;
 
     let result;
     try {
-        let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ]);
+        let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ,payment_method ]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
         

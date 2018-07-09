@@ -36,7 +36,7 @@ router.post('/signin', async (req, res, next) => {
 
     let selectQuery =
     `
-    SELECT idx, email, name, phone_number, image_profile, image_background
+    SELECT idx, email, name, phone_number, image_profile
     FROM users
     WHERE email = ? and pwd = ?
     `;
@@ -47,7 +47,14 @@ router.post('/signin', async (req, res, next) => {
     FROM cats
     WHERE user_idx = ?
     `
-    
+
+    let userTicketQuery=
+    `
+    SELECT o.product 
+    FROM orders as o, reservations as r
+    WHERE o.idx = r.order_idx and o.user_idx = ?
+    `
+
     let result = {};
     try {
         let _result = await db.Query(selectQuery, [email, pwd.toString('base64')]);
@@ -56,11 +63,13 @@ router.post('/signin', async (req, res, next) => {
         }
         let catQueryResult = await db.Query(selectCatQuery, [_result[0].idx]);
         if(_result.length > 0){
+            let userTicket = await db.Query(userTicketQuery, [_result[0].idx]);
+            
+            result.flag = userTicket.length > 0 ? "1" : "-1" ;
             result.token = jwt.sign(email, _result[0].idx);
             result.email = _result[0].email;
             result.name = _result[0].name;
             result.phone_number = _result[0].phone_number;
-            result.image_background = _result[0].image_background;
             result.image_profile = _result[0].image_profile;
             result.cat_idx = catQueryResult.length > 0 ? String(catQueryResult[0].idx) : "-1";
         }
@@ -99,12 +108,23 @@ router.post('/signup', async (req, res, next) => {
 
         let insertQuery =
                 `
-            INSERT INTO users (email,pwd,name,phone_number)
-            VALUES(?,?,?,?);
+            INSERT INTO users (email,pwd,name,phone_number,image_profile)
+            VALUES(?,?,?,?,?);
             `;
             
-        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number]);
+        let userResult = await db.Query(insertQuery, [email, pwd, name, phone_number, 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg']);
         result.token = jwt.sign(email, userResult.insertId);
+
+        result.flag = "-1" ;
+        result.email = email;
+        result.name = name;
+        result.phone_number = phone_number;
+        result.image_profile = 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg';
+        result.cat_idx = "-1";
+
+
+
+
 
     } catch (error) {
         return next(error);
@@ -137,9 +157,9 @@ router.get('/cat/:cat_idx', async (req, res, next) => {
         if (selectResult.length === 0) {
             result.cat_idx = -1;
         }else{
-            result.cat_idx = selectResult[0].cat_idx
+            result.cat_idx = selectResult[0].cat_idx + ""
             result.name = selectResult[0].name
-            result.size = selectResult[0].size
+            result.size = selectResult[0].size + ""
             result.birthday = selectResult[0].birthday
             result.caution= selectResult[0].caution
         }
