@@ -44,7 +44,6 @@ router.get('/crawling',  async (req, res,next) => {
     }
     return res.r(result);
 });
-
 module.exports = router;
 
 /* 
