@@ -67,7 +67,7 @@ router.get('/', async (req, res, next) => {
       result.sendImage = sendImage;
 
     } else { //정기권 진행중일때
-      cnt = orderResult.length
+      cnt =  orderResult[0].product - orderResult.length
       result.flag = "1";
       result.ticket = orderResult[0].product + "박스"
       result.use = cnt + "박스"
