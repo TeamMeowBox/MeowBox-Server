@@ -43,11 +43,11 @@ router.get('/account', async (req, res, next) => {
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
         result = accountSelectResult[0];
-        result.cats_idx = accountSelectResult[0].cats_idx + "";
-        result.cat_name = accountSelectResult[0].cat_name + "";
-        result.size = accountSelectResult[0].size + "";
-        result.birthday = accountSelectResult[0].birthday + "";
-        result.caution = accountSelectResult[0].caution + "";
+        result.cat_idx = accountSelectResult[0].cat_idx;
+        result.cat_name = accountSelectResult[0].cat_name;
+        result.size = accountSelectResult[0].size;
+        result.birthday = accountSelectResult[0].birthday;
+        result.caution = accountSelectResult[0].caution;
     } catch (error) {
         return next(error);
     }
@@ -100,9 +100,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     console.log('success connection');
     if (!user_idx || !user_name || !user_email || !user_phone || !cat_name ||  !cat_size || !cat_birthday || !cat_caution) {
         return res.r("2402")
-    } 
-        
-
+    }
       
     let catsUpdateQuery =
     `
