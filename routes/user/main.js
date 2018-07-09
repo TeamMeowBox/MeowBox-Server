@@ -208,13 +208,7 @@ router.delete('/account', async (req, res, next) => {
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-
-    let selectIdxQuery =
-        `
-    SELECT idx
-    FROM users
-    WHERE email = ?
-    `;
+    let user_idx = chkToken.user_idx
     let deleteQuery =
         `
     DELETE
@@ -224,12 +218,11 @@ router.delete('/account', async (req, res, next) => {
 
     let result;
     try {
-        let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
         if (user_idx.length === 0) {
            return next("1402"); // "description": "아이디가 존재하지 않습니다.",
         }
         else{
-        await db.Query(deleteQuery, [user_idx[0].idx]);
+        await db.Query(deleteQuery, [user_idx]);
         }
     } catch (error) {
         next(error);
