@@ -32,7 +32,9 @@ var testhomes = mongoose.model('testhomes',package,'testhomes')
 router.get('/',async (req,res,next) => {
     // let {id} = req.params
     let result;
+    
     try{
+        package.content.detail_text.replace("\n", "\\r\\n");
         result = await testhomes.find({});
     } catch(err){
         return next(err);
