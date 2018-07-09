@@ -37,13 +37,14 @@ router.get('/account', async (req, res, next) => {
     let accountSelectQuery =
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
-               cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cats_idx
         FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = ?
         `;
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
         result = accountSelectResult[0];
+        result.cat_idx = accountSelectResult[0].cats_idx + "";
         result.cat_name = accountSelectResult[0].cat_name + "";
         result.size = accountSelectResult[0].size + "";
         result.birthday = accountSelectResult[0].birthday + "";
