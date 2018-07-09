@@ -167,6 +167,10 @@ router.post('/', async(req, res, next) => {
         `;
         console.log('deleveryList :' +  deliveryList);
 
+        if( product == 3 || product == 6){
+            result = "1";
+        }
+
 
         for(var i in deliveryList ){
             console.log(' i : ' + i);
@@ -178,7 +182,7 @@ router.post('/', async(req, res, next) => {
         return next(error);
     }
     
-    return res.r();
+    return res.r(result);
 });
 
 
