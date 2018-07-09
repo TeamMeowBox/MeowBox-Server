@@ -63,7 +63,76 @@ router.get('/account', async (req, res, next) => {
 // Edit By 기용
 // App 용
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+
+    let user_idx = chkToken.user_idx;
+
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+
+
+    let catSelectQuery = 
+    `
+    SELECT idx
+    FROM cats
+    WHERE user_idx = ?
+    `
+    
+    let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
+
+    let catUpdateQuery ;
+    if( catSelectResult.length > 0 ){ // 고양이 존재 o
+        catsUpdateQuery = 
+        `
+        UPDATE cats
+        SET name = ? , size = ? , birthday = ?, caution = ? 
+        WHERE user_idx = ?  
+        `
+    }
+    else { // 고양이 존재 x
+        catsUpdateQuery =
+        `
+        INSERT INTO cats(user_idx, name, size, birthday, caution)
+        WHERE (?,?,?,?,?)
+        `
+    }
+
+
+    if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
+        return next(400)
+    }
+
+    if( cat_caution == undefined){
+        cat_caution = "";
+    }
+
+    let userSelectQuery = 
+    `
+    SELECT *
+    FROM users
+    WHERE user_idx = ?
+    `
+
+    let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
+    if( userSelectResult.length == 0 ){
+        return next(400)
+    }
+
+
+    user_name, user_email, user_phone
+    if(user_name == undefined ){
+        user_name = userSelectResult[0].name;
+    }
+
+    if(user_email == undefined){
+        user_email = userSelectResult[0].email;
+    }
+
+    if(user_phone == undefined){
+        user_phone = userSelectResult[0].phone_number;
+    }
 
     let param = [];
     param.push(user_name);
@@ -90,22 +159,11 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(req.files['image_profile'][0].location)
    }
    
-   const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
-    let user_idx = chkToken.user_idx;
+   
     param.push(user_idx);
    
     console.log('success connection');
       
-    let catsUpdateQuery =
-    `
-    UPDATE cats
-    SET  name = ?, size = ?, birthday = ?, caution = ?
-    WHERE user_idx = ?
-    `;  //cats_update`
-
     let result = {};
 
     //트랜잭션 처리
