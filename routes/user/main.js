@@ -122,10 +122,6 @@ router.post('/signup', async (req, res, next) => {
         result.image_profile = 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg';
         result.cat_idx = "-1";
 
-
-
-
-
     } catch (error) {
         return next(error);
     }
