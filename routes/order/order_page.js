@@ -105,20 +105,19 @@ router.get('/', async(req, res, next) => {
     `;
     
     try {
-         orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
+        orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
             if(orderResult[0].product ==3 || orderResult[0].product == 6 ){
                 return next("400")
             }
-         if (orderResult.length === 0) {
-            result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
-          } else{
-            result.order_idx = orderResult[0].order_idx + "";
-            result.name = orderResult[0].name;
-            result.address = orderResult[0].address;
-            result.phone_number = orderResult[0].phone_number;
-            result.email = orderResult[0].email;
-            result.payment_date = orderResult[0].payment_date;
-
+            if (orderResult.length === 0) {
+                result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
+          } else {
+                result.order_idx = orderResult[0].order_idx + "";
+                result.name = orderResult[0].name;
+                result.address = orderResult[0].address;
+                result.phone_number = orderResult[0].phone_number;
+                result.email = orderResult[0].email;
+                result.payment_date = orderResult[0].payment_date;
           }
     } catch (error) {
         return next(error);
