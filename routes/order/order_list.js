@@ -47,6 +47,7 @@ router.get('/', async (req, res, next) => {
             selectResult = await db.Query(selectQuery,[chkToken.user_idx])
 
             for(let i=0; i< selectResult.length; i++){
+                selectResult[i].idx = selectResult[i].idx + "";
                 let product_name = selectResult[i].product;
                 selectResult[i].flag = "0";
 
