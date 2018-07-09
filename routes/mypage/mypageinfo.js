@@ -32,7 +32,7 @@ router.get('/', async (req, res, next) => {
 
   let catResult = await db.Query(Query, [chkToken.user_idx]);
 
-  if (catResult.length === 0) {												// 고양이 유무
+  if (catResult.length === 0) {                                                // 고양이 유무
     result.catinfo = "-1";
   } else {
     result.catinfo = catResult[0].cat_name;
@@ -67,7 +67,7 @@ router.get('/', async (req, res, next) => {
       result.sendImage = sendImage;
 
     } else { //정기권 진행중일때
-      cnt = orderResult.length
+      cnt = orderResult[0].product - orderResult.length
       result.flag = "1";
       result.ticket = orderResult[0].product + "박스"
       result.use = cnt + "박스"

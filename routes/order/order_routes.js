@@ -18,6 +18,6 @@ router.use('/order_detail', require('./order_detail.js'));
 router.use('/order_list', require('./order_list.js'));
 
 
-///////mtmtmtmtmtmtmtm
+///////
 
 module.exports = router;

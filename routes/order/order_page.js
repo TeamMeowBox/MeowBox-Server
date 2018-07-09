@@ -86,16 +86,19 @@ Method : Get
 // Written By 권서연
 // 주문 페이지(최근 배송지 가져오기)
 router.get('/', async(req, res, next) => {
+    let { product } = req.query ;
+    if(product == 3|| product  == 6){
+        return next("400")
+    }
     const chkToken = jwt.verify(req.headers.authorization);
     
     if(chkToken == -1) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-    
     let orderResult, result ={};
     let orderSelectQuery = 
     `
-    SELECT idx as order_idx, name, address, phone_number, email, payment_date
+    SELECT idx as order_idx, name, address, phone_number, email, payment_date, product
     FROM orders
     WHERE user_idx = ? 
     ORDER BY payment_date DESC
@@ -103,7 +106,9 @@ router.get('/', async(req, res, next) => {
     
     try {
          orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
-            
+            if(orderResult[0].product ==3 || orderResult[0].product == 6 ){
+                return next("400")
+            }
          if (orderResult.length === 0) {
             result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
           } else{
@@ -153,7 +158,7 @@ router.post('/', async(req, res, next) => {
         let insertIdx = await db.Query(insertQuery,[ chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product ,payment_method ]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
-    
+        
         let deliveryList = getDeliveryDate(payment_date[0],product);
         insertQuery = 
         `
