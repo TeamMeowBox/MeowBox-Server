@@ -52,7 +52,7 @@ router.post('/signin', async (req, res, next) => {
     `
     SELECT o.product 
     FROM orders as o, reservations as r
-    WHERE o.idx = r.order_idx and o.user_idx = ?
+    WHERE o.idx = r.order_idx and o.user_idx = ? and ( o.product = 3 or o.product = 6 )
     `
 
     let result = {};
@@ -121,10 +121,6 @@ router.post('/signup', async (req, res, next) => {
         result.phone_number = phone_number;
         result.image_profile = 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg';
         result.cat_idx = "-1";
-
-
-
-
 
     } catch (error) {
         return next(error);
@@ -208,13 +204,7 @@ router.delete('/account', async (req, res, next) => {
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
-
-    let selectIdxQuery =
-        `
-    SELECT idx
-    FROM users
-    WHERE email = ?
-    `;
+    let user_idx = chkToken.user_idx
     let deleteQuery =
         `
     DELETE
@@ -224,12 +214,11 @@ router.delete('/account', async (req, res, next) => {
 
     let result;
     try {
-        let user_idx = await db.Query(selectIdxQuery, [chkToken.email]);
         if (user_idx.length === 0) {
            return next("1402"); // "description": "아이디가 존재하지 않습니다.",
         }
         else{
-        await db.Query(deleteQuery, [user_idx[0].idx]);
+        await db.Query(deleteQuery, [user_idx]);
         }
     } catch (error) {
         next(error);

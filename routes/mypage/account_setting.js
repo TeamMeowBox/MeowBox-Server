@@ -33,23 +33,25 @@ router.get('/account', async (req, res, next) => {
     if (_result.length === 0) {
         return next("1406")
     }
-
     let accountSelectQuery =
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
-               cats.name AS cat_name, cats.size, cats.birthday, cats.caution 
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cats_idx
         FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = ?
         `;
     try {
         let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
-        accountSelectResult[0].size = accountSelectResult[0].size + ""
         result = accountSelectResult[0];
+        result.cat_idx = accountSelectResult[0].cat_idx;
+        result.cat_name = accountSelectResult[0].cat_name;
+        result.size = accountSelectResult[0].size;
+        result.birthday = accountSelectResult[0].birthday;
+        result.caution = accountSelectResult[0].caution;
     } catch (error) {
         return next(error);
     }
     return res.r(result);
-
 });
 
 
@@ -61,7 +63,88 @@ router.get('/account', async (req, res, next) => {
 // Edit By 기용
 // App 용
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+
+    let user_idx = chkToken.user_idx;
+    console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+
+    let catSelectQuery = 
+    `
+    SELECT *
+    FROM cats
+    WHERE user_idx = ?
+    `
+    
+    let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
+    let catsUpdateQuery ;
+
+
+    if( catSelectResult.length > 0 ){ // 고양이 존재 o
+        catsUpdateQuery = 
+        `
+        UPDATE cats
+        SET name = ? , size = ? , birthday = ?, caution = ? 
+        WHERE user_idx = ?  
+        `
+        if( cat_name == undefined){
+            cat_name = catSelectResult[0].name;
+        }
+        if( cat_size == undefined){
+            cat_size = catSelectResult[0].size;
+        }
+        if( cat_birthday == undefined){
+            cat_birthday = catSelectResult[0].birthday;
+        }
+        if( cat_caution == undefined){
+            cat_caution = catSelectResult[0].caution;
+        }
+
+    }
+    else { // 고양이 존재 x
+        catsUpdateQuery =
+        `
+        INSERT INTO cats(name, size, birthday, caution, user_idx)
+        VALUES (?,?,?,?,?)
+        `
+        if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
+            return next(400)
+        }
+        else if(cat_caution == undefined){
+                cat_caution = "";
+        }
+    }
+
+
+
+    let userSelectQuery = 
+    `
+    SELECT *
+    FROM users
+    WHERE idx = ?
+    `
+    console.log("123");
+    let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
+    if( userSelectResult.length == 0 ){
+        return next(400)
+    }
+
+    console.log("234");
+    user_name, user_email, user_phone
+    if(user_name == undefined ){
+        user_name = userSelectResult[0].name;
+    }
+
+    if(user_email == undefined){
+        user_email = userSelectResult[0].email;
+    }
+
+    if(user_phone == undefined){
+        user_phone = userSelectResult[0].phone_number;
+    }
 
     let param = [];
     param.push(user_name);
@@ -71,6 +154,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
+    console.log(" image no " );
     usersUpdateQuery =
     `
     UPDATE users 
@@ -79,6 +163,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     `; //users_update
    }
    else{
+    console.log(" image yes ");
     usersUpdateQuery =
     `
     UPDATE users 
@@ -88,37 +173,26 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(req.files['image_profile'][0].location)
    }
    
-   const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
-    let user_idx = chkToken.user_idx;
+   
     param.push(user_idx);
    
     console.log('success connection');
-    if (!user_idx || !user_name || !user_email || !user_phone || !cat_name ||  !cat_size || !cat_birthday || !cat_caution) {
-        return res.r("2402")
-    } 
-        
-
+    console.log('catsUpdateQuery : ' + catsUpdateQuery);
       
-    let catsUpdateQuery =
-    `
-    UPDATE cats
-    SET  name = ?, size = ?, birthday = ?, caution = ?
-    WHERE user_idx = ?
-    `;//cats_update`
-
     let result = {};
-    try {
-        await db.Query(usersUpdateQuery, param);
-        await db.Query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
-        result.token = jwt.sign(user_email, user_idx);
 
-    } catch (error) {
+    //트랜잭션 처리
+    db.Transaction(async (connection) => {  
+        console.log('111');
+        await connection.query(usersUpdateQuery, param);
+        console.log('222');
+        console.log('cat_name : ' +cat_name);
+        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        console.log('333');
+    }).catch(error => {
         return next(error)
-    }
-
+    })
+    result.token = jwt.sign(user_email, user_idx); 
     return res.r(result);
 });
 
@@ -188,7 +262,7 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
         param.push(image_profile) 
     }
    
-    param.push(String(chkToken.usear_idx))
+    param.push(String(chkToken.user_idx))
     console.log(param);
     try {
         await db.Query(usersUpdateQuery, param);
@@ -196,9 +270,9 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     } catch (error) {
         return next(error)
     }
-
     return res.r();
 });
+
 
 
 // Written By 기용
@@ -211,6 +285,13 @@ router.post('/update_cat', async (req, res, next) => {
         return next("10403")
     }
 
+    
+    let selectCatQuery=
+    `
+    SELECT *
+    FROM cats
+    WHERE user_idx = ?
+    `
 
     let { name, size, birthday, caution} = req.body;
     let updateQuery = 
@@ -219,12 +300,31 @@ router.post('/update_cat', async (req, res, next) => {
     SET name = ?, size = ?, birthday = ? , caution = ?
     WHERE user_idx = ?
     `
-
-    try {
-        await db.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
-    } catch (error) {
-        return next(error);
-    }
+    
+    //트랜잭션 처리
+    db.Transaction(async (connection) => {
+        let result = await connection.Query(selectCatQuery, [chkToken.user_idx]);
+        if( result.length == 0 ){
+            return next(400)
+        }
+        else {
+            if( name == undefined){ 
+                name = result[0].name;
+            } 
+            if( size == undefined){
+                size = result[0].size;
+            }
+            if( birthday == undefined){
+                birthday = result[0].birthday;
+            }
+            if( caution == undefined){
+                caution = result[0].caution;
+            }
+            await connection.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+        }
+    }).catch(error => {
+        return next(error)
+    })
     return res.r();
 });
 
