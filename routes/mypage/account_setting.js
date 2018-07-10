@@ -72,6 +72,8 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
+    console.log('cat_name : ' + cat_name);
+
     let catSelectQuery = 
     `
     SELECT *
@@ -81,6 +83,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
+    let catSignUpFlag = 0 ;
 
 
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
@@ -90,6 +93,8 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
+        catSignUpFlag = 1;
+
         if( cat_name == undefined){
             cat_name = catSelectResult[0].name;
         }
@@ -186,13 +191,15 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         console.log('111');
         await connection.query(usersUpdateQuery, param);
         console.log('222');
-        console.log('cat_name : ' +cat_name);
-        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        console.log('cat_name : ' + cat_name);
+        if( catSignUpFlag ){
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        }
         console.log('333');
     }).catch(error => {
         return next(error)
     })
-    result.token = jwt.sign(user_email, user_idx); 
+    result.token = jwt.sign(user_email, user_idx) ; 
     return res.r(result);
 });
 
