@@ -7,6 +7,7 @@ const router = express.Router();
 const async = require('async');
 const jwt = require('../../module/jwt.js');
 const db = require('../../module/pool.js');
+
 // 
 // Written By 정경인
 // 마이페이지 첫 화면
