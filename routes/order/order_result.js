@@ -47,7 +47,7 @@ router.get('/', async (req, res, next) => {
     }
 
     // Web상으로 성공 이미지 보여준다
-    res.render('order_success');
+    return  res.render('order_success');
 });
 
 
