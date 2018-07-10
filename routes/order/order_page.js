@@ -113,7 +113,7 @@ router.get('/', async(req, res, next) => {
                 result.order_idx = orderResult[0].order_idx + "";
                 result.name = orderResult[0].name;
                 result.address = orderResult[0].address;
-                result.phone_number = orderResult[0].phone_number;
+                result.phone_number = orderResult[0].phone_number;  
                 result.email = orderResult[0].email;
                 result.payment_date = orderResult[0].payment_date;
           }
