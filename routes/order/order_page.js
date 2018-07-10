@@ -104,9 +104,7 @@ router.get('/', async(req, res, next) => {
     try {
         orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
 
-            if(orderResult[0].product ==3 || orderResult[0].product == 6 ){
-                return next("400")
-            }
+           
             if (orderResult.length === 0) {
                 result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
           } else {
