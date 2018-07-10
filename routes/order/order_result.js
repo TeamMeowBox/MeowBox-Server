@@ -4,10 +4,9 @@ const router = express.Router();
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt');
 
-const moment = require('moment')
 
-
-
+// Written By 신기용
+// iOS 주문결제시 호출 
 router.get('/', async (req, res, next) => {
     let imp_uid = req.query.imp_uid;
     let imp_success = req.query.imp_success;
@@ -17,6 +16,10 @@ router.get('/', async (req, res, next) => {
 
     let cat_idx = merchant_uid[0];
     let random_key = merchant_uid[1];
+    console.log('cat_idx : ' + cat_idx);
+    console.log('random_key : ' + random_key);
+
+
 
     let selectUserIdxQuery=
     `
@@ -48,7 +51,8 @@ router.get('/', async (req, res, next) => {
 });
 
 
-
+// Written By 신기용
+// iOS 결제 유무 체크 
 router.post('/check_order', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken  == undefined) {
@@ -61,17 +65,16 @@ router.post('/check_order', async (req, res, next) => {
     `
     SELECT *
     FROM order_result
-    WHERE user_idx = ? , random_key = ?
+    WHERE user_idx = ? AND random_key = ?
     `
 
+    console.log('user_idx : ' + chkToken.user_idx );
+    console.log('random_key : ' + random_key);
+
     let result = {};
-    result.order_result = false;
     try{
         let selectOrderHistoryResult = await db.Query(selectOrderHistoryQuery,[chkToken.user_idx, random_key]);
-        if( selectOrderHistoryResult.length == 0){
-            res.render('order_fail');
-        }
-        result.order_result = true;
+        result.order_result = selectOrderHistoryResult.length == 0 ? false : true;
 
     }catch(error){
         return next(error);
