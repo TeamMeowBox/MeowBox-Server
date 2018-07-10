@@ -72,7 +72,6 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
-
     let catSelectQuery = 
     `
     SELECT *
@@ -309,7 +308,7 @@ router.post('/update_cat', async (req, res, next) => {
             return next(400)
         }
         else {
-            if( name == undefined){
+            if( name == undefined){ 
                 name = result[0].name;
             } 
             if( size == undefined){
