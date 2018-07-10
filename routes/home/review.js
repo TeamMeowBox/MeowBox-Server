@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const mongoose = require('../../config/mongoose')
+const db = require('../../config/mongoPool');
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 var frame = {
