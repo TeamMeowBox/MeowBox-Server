@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 var frame = {
+    title : String,
     comment : String,
     image_list : [String],
     hashtag : [String],
