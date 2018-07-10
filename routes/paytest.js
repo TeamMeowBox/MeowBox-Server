@@ -27,20 +27,21 @@ const iamporter = new Iamporter({
 // 	fail_post_process(payment_result) //결제실패 처리
 
 router.post('/',async (req,res,next) => {
-    let {imp_uid,merchant_uid,imp_success} = req.query
+    console.log(req.body)
+    let {imp_uid,merchant_uid,imp_success} = req.body
 
     
     if(imp_success){
         //결제 성공
         iamporter.findByMerchantUid(merchant_uid)
-        .then({
-
-        }).catch({
-
+        .then(result => {
+            return res.r(result)
+        }).catch(err=>{
+            return next(err)
         })
     } else {
         //결제 실패
-
+        return next("400")
     }
 })
 
