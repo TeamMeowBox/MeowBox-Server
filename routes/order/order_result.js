@@ -8,9 +8,11 @@ const moment = require('moment')
 
 
 
-router.get('/:imp_uid/:merchant_uid/;imp_success', async (req, res, next) => {
-    let {imp_uid, merchant_uid, imp_success} = req.params;
-    console.log('img_uid : ' + img_uid);
+router.get('/', async (req, res, next) => {
+console.log("123");
+let imp_success = req.query.imp_success;
+  //  let {imp_uid, merchant_uid, imp_success} = req.params;
+    console.log('img_success : ' + imp_success);
     res.send("End");
 });
 
