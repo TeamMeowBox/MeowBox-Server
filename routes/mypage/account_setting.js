@@ -309,7 +309,7 @@ router.post('/update_cat', async (req, res, next) => {
             return next(400)
         }
         else {
-            if( name == undefined){
+            if( name == undefined){ 
                 name = result[0].name;
             } 
             if( size == undefined){
