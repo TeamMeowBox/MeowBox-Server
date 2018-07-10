@@ -59,11 +59,6 @@ router.get('/catCount',  async (req, res,next) => {
 // Written By 서연
 // Home에서 이번 달 미유박스 소개 크롤링
 router.get('/crawling',  async (req, res,next) => {
-    const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
- 
     let randomSelectResult;
     let result;
    
