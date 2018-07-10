@@ -122,7 +122,7 @@ router.delete('/', async (req, res, next) => {
     WHERE order_idx = ?
     `
     try {
-        await db.Query(Query, [order_idx])
+        await db.Query(Query, [Number(order_idx)])
     } catch (error) {
         return next(error)
     }
