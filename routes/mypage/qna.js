@@ -49,8 +49,6 @@ router.get('/', async (req, res,next) => {
                     subscribe.push(qnaResult[i]);
                     break;
             }
-            // }
-            // console.log(product)
         }   //for 문 
 
         result = {product,delivery,packing,subscribe};
