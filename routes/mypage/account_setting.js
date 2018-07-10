@@ -69,20 +69,21 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     }
 
     let user_idx = chkToken.user_idx;
-console(user_idx);
+    console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
 
 
     let catSelectQuery = 
     `
-    SELECT idx
+    SELECT *
     FROM cats
     WHERE user_idx = ?
     `
     
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
+    let catsUpdateQuery ;
 
-    let catUpdateQuery ;
+
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
         catsUpdateQuery = 
         `
@@ -90,38 +91,49 @@ console(user_idx);
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
+        if( cat_name == undefined){
+            cat_name = catSelectResult[0].name;
+        }
+        if( cat_size == undefined){
+            cat_size = catSelectResult[0].size;
+        }
+        if( cat_birthday == undefined){
+            cat_birthday = catSelectResult[0].birthday;
+        }
+        if( cat_caution == undefined){
+            cat_caution = catSelectResult[0].caution;
+        }
+
     }
     else { // 고양이 존재 x
         catsUpdateQuery =
         `
-        INSERT INTO cats(user_idx, name, size, birthday, caution)
-        WHERE (?,?,?,?,?)
+        INSERT INTO cats(name, size, birthday, caution, user_idx)
+        VALUES (?,?,?,?,?)
         `
+        if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
+            return next(400)
+        }
+        else if(cat_caution == undefined){
+                cat_caution = "";
+        }
     }
 
 
-    if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-        return next(400)
-    }
-
-    if( cat_caution == undefined){
-        cat_caution = "";
-    }
 
     let userSelectQuery = 
     `
     SELECT *
     FROM users
-    WHERE user_idx = ?
+    WHERE idx = ?
     `
-console.log("123");
+    console.log("123");
     let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
     if( userSelectResult.length == 0 ){
         return next(400)
     }
 
-
-console.log("234");
+    console.log("234");
     user_name, user_email, user_phone
     if(user_name == undefined ){
         user_name = userSelectResult[0].name;
@@ -143,7 +155,7 @@ console.log("234");
 
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
-console.log(" image no " );
+    console.log(" image no " );
     usersUpdateQuery =
     `
     UPDATE users 
@@ -152,7 +164,7 @@ console.log(" image no " );
     `; //users_update
    }
    else{
-console.log(" image yes ");
+    console.log(" image yes ");
     usersUpdateQuery =
     `
     UPDATE users 
@@ -166,13 +178,18 @@ console.log(" image yes ");
     param.push(user_idx);
    
     console.log('success connection');
+    console.log('catsUpdateQuery : ' + catsUpdateQuery);
       
     let result = {};
 
     //트랜잭션 처리
     db.Transaction(async (connection) => {  
+        console.log('111');
         await connection.query(usersUpdateQuery, param);
-        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, user_idx]);
+        console.log('222');
+        console.log('cat_name : ' +cat_name);
+        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        console.log('333');
     }).catch(error => {
         return next(error)
     })

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const db = require('../../config/mongoPool');
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
@@ -26,6 +27,7 @@ var reviewSchema = new Schema({
 var test = mongoose.model('review', reviewSchema, 'review');
 
 router.get('/',async (req,res,next) => {
+    console.log('here');
     let result;
     try{
         result = await test.find({
