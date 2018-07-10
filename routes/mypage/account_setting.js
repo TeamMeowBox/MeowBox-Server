@@ -127,17 +127,13 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     FROM users
     WHERE idx = ?
     `
-console.log("123");
+    console.log("123");
     let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
     if( userSelectResult.length == 0 ){
         return next(400)
     }
 
-
-
-
-
-console.log("234");
+    console.log("234");
     user_name, user_email, user_phone
     if(user_name == undefined ){
         user_name = userSelectResult[0].name;
@@ -159,7 +155,7 @@ console.log("234");
 
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
-console.log(" image no " );
+    console.log(" image no " );
     usersUpdateQuery =
     `
     UPDATE users 
@@ -168,7 +164,7 @@ console.log(" image no " );
     `; //users_update
    }
    else{
-console.log(" image yes ");
+    console.log(" image yes ");
     usersUpdateQuery =
     `
     UPDATE users 

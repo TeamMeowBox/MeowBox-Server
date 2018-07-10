@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const mongoose = require('mongoose')
+const mongoose = require('../../config/mongoose')
 const Schema = mongoose.Schema;
 
 var frame = {
@@ -26,6 +26,7 @@ var reviewSchema = new Schema({
 var test = mongoose.model('review', reviewSchema, 'review');
 
 router.get('/',async (req,res,next) => {
+    console.log('here');
     let result;
     try{
         result = await test.find({
