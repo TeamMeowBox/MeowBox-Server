@@ -75,7 +75,15 @@ router.post('/check_order', async (req, res, next) => {
     try{
         let selectOrderHistoryResult = await db.Query(selectOrderHistoryQuery,[chkToken.user_idx, random_key]);
         result.order_result = selectOrderHistoryResult.length == 0 ? false : true;
-
+        if( result.order_result ){
+            let updateUsedQuery = 
+            `
+            UPDATE order_result
+            SET used = TRUE;
+            WHERE user_idx = ?
+            `
+            await db.Query(updateUsedQuery,[chkToken.user_idx]);
+        }
     }catch(error){
         return next(error);
     }
