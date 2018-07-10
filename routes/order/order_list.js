@@ -121,12 +121,14 @@ router.delete('/', async (req, res, next) => {
     DELETE FROM reservations
     WHERE order_idx = ?
     `
+    let result ={};
     try {
         await db.Query(Query, [Number(order_idx)])
     } catch (error) {
         return next(error)
     }
-    return res.r()
+    result.flag = "-1";
+    return res.r(result)
 
 })
 
