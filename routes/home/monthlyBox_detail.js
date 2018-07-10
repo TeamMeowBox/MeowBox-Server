@@ -31,10 +31,6 @@ function comma(num){
 // Written By 서연
 // Home에서 고양이 수
 router.get('/catCount',  async (req, res,next) => {
-    const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
     
     let catCountResult;
     let _result, result;
