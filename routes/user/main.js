@@ -52,7 +52,7 @@ router.post('/signin', async (req, res, next) => {
     `
     SELECT o.product 
     FROM orders as o, reservations as r
-    WHERE o.idx = r.order_idx and o.user_idx = ?
+    WHERE o.idx = r.order_idx and o.user_idx = ? and ( o.product = 3 or o.product = 6 )
     `
 
     let result = {};
@@ -121,10 +121,6 @@ router.post('/signup', async (req, res, next) => {
         result.phone_number = phone_number;
         result.image_profile = 'https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/meow_box_logo.jpeg';
         result.cat_idx = "-1";
-
-
-
-
 
     } catch (error) {
         return next(error);

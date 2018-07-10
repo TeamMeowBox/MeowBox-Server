@@ -17,6 +17,9 @@ router.use('/order_detail', require('./order_detail.js'));
 // //Order List
 router.use('/order_list', require('./order_list.js'));
 
+// Order Result
+router.use('/order_result', require('./order_result.js'));
+
 
 ///////
 
