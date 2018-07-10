@@ -36,7 +36,7 @@ router.get('/account', async (req, res, next) => {
     let accountSelectQuery =
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
-               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cats_idx
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cat_idx
         FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = ?
         `;
