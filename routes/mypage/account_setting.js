@@ -115,13 +115,21 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
+        console.log("cat_name : " + cat_name);
+        console.log("cat_size : " + cat_size);
+        console.log("cat_birthday : " + cat_birthday);
         if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
+            console.log('undefined 영역 !!!');
             catSignUpFlag = 0 ;
         }
         else if(cat_caution == undefined){
             catSignUpFlag = 1;
-		console.log(" 고양이 존재 x  --> catSignUpFlag : " + catSignUpFlag );
+		console.log(" 고양이 존재 x - 1   --> catSignUpFlag : " + catSignUpFlag );
             cat_caution = "";
+        }
+        else{
+            catSignUpFlag = 1;
+            console.log(" 고양이 존재 x - 2  --> catSignUpFlag : " + catSignUpFlag );
         }
     }
 	console.log("catSignUpFlag : " + catSignUpFlag);
