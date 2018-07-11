@@ -147,15 +147,20 @@ router.get('/', async (req, res, next) => {
 // APP 결제 유무 체크 
 router.post('/check_order', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
+
     if (chkToken  == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
 
     let {merchant_uid} = req.body;
 
+    console.log('user_idx : ' + chkToken.user_idx);
+    console.log('merchant_uid : ' + merchant_uid);
+    
+
     let selectOrderHistoryQuery =
     `
-    SELECT *
+    SELECT count(*) as cnt
     FROM order_result
     WHERE user_idx = ? AND merchant_uid = ? AND used = FALSE;
     `
@@ -163,15 +168,17 @@ router.post('/check_order', async (req, res, next) => {
     let result = {};
     try{
         let selectOrderHistoryResult = await db.Query(selectOrderHistoryQuery,[chkToken.user_idx, merchant_uid]);
-        result.order_result = selectOrderHistoryResult.length == 0 ? false : true;
+
+        console.log('selectOrderHistoryResult.cnt : ' + selectOrderHistoryResult[0].cnt);
+        result.order_result = selectOrderHistoryResult[0].cnt == 0 ? false : true;
         if( result.order_result ){
             let updateUsedQuery = 
             `
             UPDATE order_result
-            SET used = TRUE;
-            WHERE user_idx = ?
+            SET used = 1
+            WHERE merchant_uid = ?
             `
-            await db.Query(updateUsedQuery,[chkToken.user_idx]);
+            await db.Query(updateUsedQuery,[merchant_uid]);
         }
     }catch(error){
         return next(error);
