@@ -92,7 +92,7 @@ router.get('/', async (req, res, next) => {
                     }
                 }
 
-                else if( product_name == 2 ){
+                else if (product_name == 2) {
                     selectResult[i].product = "고양이는 처음이지?";
 
                     result.ticketed.push(selectResult[i]);
@@ -109,29 +109,36 @@ router.get('/', async (req, res, next) => {
 });
 
 // Written by 정경인
-// 주문 삭제 
+// Edit by 권서연
+// 정기권 삭제 
 router.delete('/:order_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
-    let { order_idx } = req.params
+    let { order_idx } = req.params;
 
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
-    }    
-    let Query = `
+    }
+    let reserveDeleteQuery =
+    `
     DELETE FROM reservations
     WHERE order_idx = ?
+    `;
+    let endDateUpdateQuery =
     `
+    UPDATE orders
+    SET end_date = ?
+    WHERE idx = ?
+    `;
+    let currentDate = moment().format('YYYY.MM.DD');
     let result ={};
-    try {
-        await db.Query(Query, [Number(order_idx)])
-    } catch (error) {
-        return next(error)
-    }
+    db.Transaction(async (connection) => {
+        await connection.query(reserveDeleteQuery, [Number(order_idx)]);
+        await connection.query(endDateUpdateQuery, [currentDate.toString(), Number(order_idx)]);
+    }).catch(error => {
+        return next(error);
+    });
     result.flag = "-1";
     return res.r(result)
-
-})
-
-
+});
 
 module.exports = router;
