@@ -45,6 +45,7 @@ router.get('/', async (req, res, next) => {
             headers: { "Authorization": access_token } // 인증 토큰 Authorization header에 추가
         });
         const paymentData = getPaymentData.data.response; // 조회한 결제 정보
+        console.log('paymentData : ' + paymentData);
          
 
         let selectAmountQuery=
