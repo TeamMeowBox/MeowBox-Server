@@ -5,21 +5,25 @@ const db = require('../../config/mongoPool');
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
+var frameElement = {
+  id: String,
+  image : String,
+  hash : String,
+  insta : String
+
+}
+
 var frame = {
-  id_1: [String],
-  id_2: [String],
-  id_3: [String],
-  title: String,
-  comment: String
+  birthday : [frameElement],
+  best_image_7 :[frameElement],
+  best_image_6 :[frameElement],
+  title : Object,
+  comment : Object
 }
 
 
 var reviewSchema = new Schema({
-  content: {
-    "birthday": frame,
-    "best_image_7": frame,
-    "best_image_6": frame
-  }
+  content: frame
 }, {
     versionKey: false // You should be aware of the outcome after set to false
   });
