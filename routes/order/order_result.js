@@ -5,6 +5,104 @@ const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt');
 
 
+
+// Written By 신기용
+router.get('/', async (req, res, next) => {
+    try {
+        let imp_uid = req.query.imp_uid;
+        let imp_success = req.query.imp_success;
+        let merchant_uid = req.query.merchant_uid; 
+
+
+        console.log(' Before Access token ');
+        // 액세스 토큰(access token) 발급 받기
+        const getToken = await axios({
+            url: "https://api.iamport.kr/users/getToken",
+            method: "post", // POST method
+            headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
+            data: {
+                imp_key: "6141135946318499", // REST API키
+                imp_secret: "7obvU0Ezc4IlpglPXJZPcZKTLDgyotdwRp1MpGlBL4Xali0j1Z8eZT8KxpjVSwrJVtwlaSWVWT5ib5Bd" // REST API Secret
+            }
+        });
+        const { access_token } = getToken.data.response; // 인증 토큰
+
+
+        console.log(' Before Get getPaymentData ');
+        // imp_uid로 아임포트 서버에서 결제 정보 조회
+        const getPaymentData = await axios({
+            url: `https://api.iamport.kr/payments/${imp_uid}`, // imp_uid 전달
+            method: "get", // GET method
+            headers: { "Authorization": access_token } // 인증 토큰 Authorization header에 추가
+        });
+        const paymentData = getPaymentData.data.response; // 조회한 결제 정보
+         
+
+        let selectAmountQuery=
+        `
+        SELECT price
+        FROM orders
+        WHERE idx = ?
+        `
+        
+
+        //  const order = await Orders.findById(paymentData.merchant_uid);
+        //  const amountToBePaid = order.amount; // 결제 되어야 하는 금액
+
+        // DB에서 결제되어야 하는 금액 조회
+         const amountToBePaid = await db.Query(selectAmountQuery,[merchant_uid]);
+ 
+         // 결제 검증하기
+         const { amount, status } = paymentData;
+         console.log('amount : ' + amount);
+         if (amount === amountToBePaid[0].price){
+             console.log(' 3개 ===');
+         }
+
+         if (amount == amountToBePaid[0].price){
+            console.log(' 2개 ===');
+        }
+
+         if ( amount === amountToBePaid[0].price || amount === amountToBePaid[0].price) { // 결제 금액 일치. 결제 된 금액 === 결제 되어야 하는 금액
+            //  await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData }); // DB에 결제 정보 저장
+
+            console.log('status : ' + status);
+ 
+             switch (status) {
+                 case "ready": // 가상계좌 발급
+                     // DB에 가상계좌 발급 정보 저장
+                     const { vbank_num, vbank_date, vbank_name } = paymentData;
+                     await Users.findByIdAndUpdate("/* 고객 id */", { $set: { vbank_num, vbank_date, vbank_name }});
+                     // 가상계좌 발급 안내 문자메시지 발송
+                     SMS.send({ text: `가상계좌 발급이 성공되었습니다. 계좌 정보 ${vbank_num} ${vbank_date} ${vbank_name}`});
+                     res.send({ status: "vbankIssued", message: "가상계좌 발급 성공" });
+                     break;
+                 case "paid": // 결제 완료
+                     res.send({ status: "success", message: "일반 결제 성공" });
+                     break;
+             }
+         } else { // 결제 금액 불일치. 위/변조 된 결제
+             throw { status: "forgery", message: "위조된 결제시도" };
+         }
+    } catch (e) {
+        res.status(400).send(e);
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Written By 신기용
 // iOS 주문결제시 호출 
 router.get('/', async (req, res, next) => {
@@ -18,8 +116,6 @@ router.get('/', async (req, res, next) => {
     let random_key = merchant_uid[1];
     console.log('cat_idx : ' + cat_idx);
     console.log('random_key : ' + random_key);
-
-
 
     let selectUserIdxQuery=
     `
