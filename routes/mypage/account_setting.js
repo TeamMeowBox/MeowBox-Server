@@ -83,19 +83,19 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
-    let catSignUpFlag = 0 ;
-
-
+    let catSignUpFlag;
+	console.log("catSelectResult.length : " + catSelectResult.length);
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
+        catSignUpFlag = 1;
+	console.log(" catSelectResult.length > 0 --> catSignUpFlag : " + catSignUpFlag );
         catsUpdateQuery = 
         `
         UPDATE cats
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
-        catSignUpFlag = 1;
 
-        if( cat_name == undefined){
+        if( cat_name == undefined ){
             cat_name = catSelectResult[0].name;
         }
         if( cat_size == undefined){
@@ -115,15 +115,24 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
+        console.log("cat_name : " + cat_name);
+        console.log("cat_size : " + cat_size);
+        console.log("cat_birthday : " + cat_birthday);
         if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-            return next(400)
+            console.log('undefined 영역 !!!');
+            catSignUpFlag = 0 ;
         }
         else if(cat_caution == undefined){
-                cat_caution = "";
+            catSignUpFlag = 1;
+		console.log(" 고양이 존재 x - 1   --> catSignUpFlag : " + catSignUpFlag );
+            cat_caution = "";
+        }
+        else{
+            catSignUpFlag = 1;
+            console.log(" 고양이 존재 x - 2  --> catSignUpFlag : " + catSignUpFlag );
         }
     }
-
-
+	console.log("catSignUpFlag : " + catSignUpFlag);
 
     let userSelectQuery = 
     `
