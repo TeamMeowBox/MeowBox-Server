@@ -69,11 +69,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     }
 
     let user_idx = chkToken.user_idx;
-    console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
-
-    console.log('cat_name : ' + cat_name);
-
     let catSelectQuery = 
     `
     SELECT *
@@ -84,10 +80,8 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
     let catSignUpFlag;
-	console.log("catSelectResult.length : " + catSelectResult.length);
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
         catSignUpFlag = 1;
-	console.log(" catSelectResult.length > 0 --> catSignUpFlag : " + catSignUpFlag );
         catsUpdateQuery = 
         `
         UPDATE cats
@@ -115,24 +109,17 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
-        console.log("cat_name : " + cat_name);
-        console.log("cat_size : " + cat_size);
-        console.log("cat_birthday : " + cat_birthday);
         if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-            console.log('undefined 영역 !!!');
             catSignUpFlag = 0 ;
         }
         else if(cat_caution == undefined){
             catSignUpFlag = 1;
-		console.log(" 고양이 존재 x - 1   --> catSignUpFlag : " + catSignUpFlag );
             cat_caution = "";
         }
         else{
             catSignUpFlag = 1;
-            console.log(" 고양이 존재 x - 2  --> catSignUpFlag : " + catSignUpFlag );
         }
     }
-	console.log("catSignUpFlag : " + catSignUpFlag);
 
     let userSelectQuery = 
     `
@@ -140,13 +127,11 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     FROM users
     WHERE idx = ?
     `
-    console.log("123");
     let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
     if( userSelectResult.length == 0 ){
         return next(400)
     }
 
-    console.log("234");
     user_name, user_email, user_phone
     if(user_name == undefined ){
         user_name = userSelectResult[0].name;
@@ -168,7 +153,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
-    console.log(" image no " );
+    console.log(" Image no " );
     usersUpdateQuery =
     `
     UPDATE users 
@@ -177,7 +162,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     `; //users_update
    }
    else{
-    console.log(" image yes ");
+    console.log(" Image yes ");
     usersUpdateQuery =
     `
     UPDATE users 
@@ -187,24 +172,15 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(req.files['image_profile'][0].location)
    }
    
-   
     param.push(user_idx);
-   
-    console.log('success connection');
-    console.log('catsUpdateQuery : ' + catsUpdateQuery);
-      
     let result = {};
 
     //트랜잭션 처리
     db.Transaction(async (connection) => {  
-        console.log('111');
         await connection.query(usersUpdateQuery, param);
-        console.log('222');
-        console.log('cat_name : ' + cat_name);
         if( catSignUpFlag ){
             await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
         }
-        console.log('333');
     }).catch(error => {
         return next(error)
     })
