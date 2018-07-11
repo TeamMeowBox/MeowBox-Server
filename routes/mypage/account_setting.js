@@ -83,19 +83,19 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
-    let catSignUpFlag = 0 ;
+    let catSignUpFlag;
 
 
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
+        catSignUpFlag = 1;
         catsUpdateQuery = 
         `
         UPDATE cats
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
-        catSignUpFlag = 1;
 
-        if( cat_name == undefined){
+        if( cat_name == undefined ){
             cat_name = catSelectResult[0].name;
         }
         if( cat_size == undefined){
@@ -116,10 +116,11 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         VALUES (?,?,?,?,?)
         `
         if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-            return next(400)
+            catSignUpFlag = 0 ;
         }
         else if(cat_caution == undefined){
-                cat_caution = "";
+            catSignUpFlag = 1;
+            cat_caution = "";
         }
     }
 
