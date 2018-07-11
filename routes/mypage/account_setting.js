@@ -36,7 +36,7 @@ router.get('/account', async (req, res, next) => {
     let accountSelectQuery =
         `
         SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
-               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cats_idx
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cat_idx
         FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
         WHERE users.idx = ?
         `;
@@ -69,9 +69,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     }
 
     let user_idx = chkToken.user_idx;
-    console.log("user_idx : " + user_idx);
     let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
-
     let catSelectQuery = 
     `
     SELECT *
@@ -81,16 +79,17 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
-
-
+    let catSignUpFlag;
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
+        catSignUpFlag = 1;
         catsUpdateQuery = 
         `
         UPDATE cats
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
-        if( cat_name == undefined){
+
+        if( cat_name == undefined ){
             cat_name = catSelectResult[0].name;
         }
         if( cat_size == undefined){
@@ -111,14 +110,16 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         VALUES (?,?,?,?,?)
         `
         if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-            return next(400)
+            catSignUpFlag = 0 ;
         }
         else if(cat_caution == undefined){
-                cat_caution = "";
+            catSignUpFlag = 1;
+            cat_caution = "";
+        }
+        else{
+            catSignUpFlag = 1;
         }
     }
-
-
 
     let userSelectQuery = 
     `
@@ -126,13 +127,11 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     FROM users
     WHERE idx = ?
     `
-    console.log("123");
     let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
     if( userSelectResult.length == 0 ){
         return next(400)
     }
 
-    console.log("234");
     user_name, user_email, user_phone
     if(user_name == undefined ){
         user_name = userSelectResult[0].name;
@@ -154,7 +153,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
    let usersUpdateQuery;
    if(req.files['image_profile'] == undefined){
-    console.log(" image no " );
+    console.log(" Image no " );
     usersUpdateQuery =
     `
     UPDATE users 
@@ -163,7 +162,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     `; //users_update
    }
    else{
-    console.log(" image yes ");
+    console.log(" Image yes ");
     usersUpdateQuery =
     `
     UPDATE users 
@@ -173,26 +172,19 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(req.files['image_profile'][0].location)
    }
    
-   
     param.push(user_idx);
-   
-    console.log('success connection');
-    console.log('catsUpdateQuery : ' + catsUpdateQuery);
-      
     let result = {};
 
     //트랜잭션 처리
     db.Transaction(async (connection) => {  
-        console.log('111');
         await connection.query(usersUpdateQuery, param);
-        console.log('222');
-        console.log('cat_name : ' +cat_name);
-        await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
-        console.log('333');
+        if( catSignUpFlag ){
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        }
     }).catch(error => {
         return next(error)
     })
-    result.token = jwt.sign(user_email, user_idx); 
+    result.token = jwt.sign(user_email, user_idx) ; 
     return res.r(result);
 });
 
