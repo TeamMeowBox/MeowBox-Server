@@ -84,10 +84,10 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
     let catsUpdateQuery ;
     let catSignUpFlag;
-
-
+	console.log("catSelectResult.length : " + catSelectResult.length);
     if( catSelectResult.length > 0 ){ // 고양이 존재 o
         catSignUpFlag = 1;
+	console.log(" catSelectResult.length > 0 --> catSignUpFlag : " + catSignUpFlag );
         catsUpdateQuery = 
         `
         UPDATE cats
@@ -120,11 +120,11 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         }
         else if(cat_caution == undefined){
             catSignUpFlag = 1;
+		console.log(" 고양이 존재 x  --> catSignUpFlag : " + catSignUpFlag );
             cat_caution = "";
         }
     }
-
-
+	console.log("catSignUpFlag : " + catSignUpFlag);
 
     let userSelectQuery = 
     `
