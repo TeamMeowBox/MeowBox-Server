@@ -180,8 +180,8 @@ router.post('/', async (req, res, next) => {
 });
 
 //정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
-router.get('/product', async (req, res, next) => {
-    let { product } = req.query
+router.get('/product/:product', async (req, res, next) => {
+    let { product } = req.params
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
@@ -200,13 +200,13 @@ router.get('/product', async (req, res, next) => {
         if(product == 3 || product == 6){
             if(Result.length !== 0 && (Result[0].product == 3 ||Result[0].product == 6) )
             {
-                return next("400")
+                return res.r("-1")
             }
         }
     } catch (error) {
         return next(error)
     }
-    return res.r();
+    return res.r("1");
 
 })
 
