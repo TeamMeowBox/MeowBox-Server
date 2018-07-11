@@ -111,7 +111,7 @@ router.get('/', async (req, res, next) => {
 // Written by 정경인
 // Edit by 권서연
 // 정기권 삭제 
-router.delete('/:order_idx', async (req, res, next) => {
+router.delete('/', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     let { order_idx } = req.params;
 
