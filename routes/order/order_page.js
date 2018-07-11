@@ -156,7 +156,7 @@ router.post('/', async (req, res, next) => {
 
         let deliveryList = getDeliveryDate(payment_date[0], product);
         insertQuery =
-            `
+        `
         INSERT INTO reservations (order_idx, delivery_date)
         VALUES(?,?);
         `;
