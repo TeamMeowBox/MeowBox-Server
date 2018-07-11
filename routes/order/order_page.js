@@ -142,19 +142,22 @@ router.post('/', async (req, res, next) => {
     let payment_date = [];
     payment_date = yyyymmdd(new Date());
 
+    //Edit By 이민형
+    //07.11
+    //end_date추가
     let insertQuery =
         `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product, payment_method)
-    VALUES(?,?,?,?,?,?,?,?,?);
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, end_date,price, product, payment_method)
+    VALUES(?,?,?,?,?,?,?,?,?,?);
     `;
 
     let result;
     try {
-        let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product, payment_method]);
+        let deliveryList = getDeliveryDate(payment_date[0], product);
+        let end_date = deliveryList[deliveryList.length-1]
+        let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1],end_date,price, product, payment_method]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
-
-        let deliveryList = getDeliveryDate(payment_date[0], product);
         insertQuery =
             `
         INSERT INTO reservations (order_idx, delivery_date)
