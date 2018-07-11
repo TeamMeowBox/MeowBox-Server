@@ -6,11 +6,11 @@ const {Iamporter, IamporterError} = require('iamporter')
 
 const iamporter = new Iamporter({
     apiKey : '6141135946318499',
-    secret : '7obvU0Ezc4IlpglPXJZPcZKTLDgyotdwRp1MpGlBL4Xali0j1Z8eZT8KxpjVSwrJVtwlaSWVWT5ib5Bd'
+    secret : 'GLE2IBlYDgJLzGlSbC40lbCDbBbSDv9khOnZpIX3YGPxmbqyOuy9GbNRNYJquTLLH8L7RIbPp0nMbNk0'
 })
 // const iamport = new Iamport({
 //     impKey: '6141135946318499',
-//     impSecret: '7obvU0Ezc4IlpglPXJZPcZKTLDgyotdwRp1MpGlBL4Xali0j1Z8eZT8KxpjVSwrJVtwlaSWVWT5ib5Bd'
+//     impSecret: 'GLE2IBlYDgJLzGlSbC40lbCDbBbSDv9khOnZpIX3YGPxmbqyOuy9GbNRNYJquTLLH8L7RIbPp0nMbNk0'
 // })
 //***************************************************************************************//
 // server 확인 의사코드
@@ -27,20 +27,26 @@ const iamporter = new Iamporter({
 // 	fail_post_process(payment_result) //결제실패 처리
 
 router.post('/',async (req,res,next) => {
-    console.log(req.body)
-    let {imp_uid,merchant_uid,imp_success} = req.body
+    console.log(req.query)
+    let {imp_uid,merchant_uid,imp_success} = req.query
 
     
     if(imp_success){
         //결제 성공
-        iamporter.findByMerchantUid(merchant_uid)
+        iamporter.findByImpUid(imp_uid)
         .then(result => {
+            console.log("result")
             return res.r(result)
         }).catch(err=>{
+            console.log("err")
             return next(err)
         })
     } else {
         //결제 실패
+        iamporter.cancelByImpUid(imp).then(result => {
+            console.log("result")
+            return res.r(result)
+        })
         return next("400")
     }
 })
