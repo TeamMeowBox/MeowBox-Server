@@ -72,6 +72,7 @@ router.get('/', async (req, res, next) => {
       result.flag = "1";
       result.ticket = selectOrderResult[0].product + "박스"
       result.use = cnt + "박스"
+      result.percent = Number(((cnt/selectOrderResult[0].product)*100).toFixed() ) //소수점 제거
 
     }
   } catch (error) {
