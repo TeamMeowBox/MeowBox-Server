@@ -176,15 +176,17 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     let result = {};
 
     //트랜잭션 처리
+    let catsUpdateResut = "-1";
     db.Transaction(async (connection) => {
         await connection.query(usersUpdateQuery, param);
         if (catSignUpFlag) {
-            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
+            catsUpdateResut = await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
         }
     }).catch(error => {
         return next(error)
     })
     result.token = jwt.sign(user_email, user_idx);
+    result.cat_idx = catsUpdateResut.insertId + "";
     return res.r(result);
 });
 
