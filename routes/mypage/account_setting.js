@@ -295,8 +295,8 @@ router.post('/update_cat', async (req, res, next) => {
 
     //트랜잭션 처리
     db.Transaction(async (connection) => {
-        let result = await connection.Query(selectCatQuery, [chkToken.user_idx]);
-        if (result.length == 0) {
+        let result = await connection.query(selectCatQuery, [chkToken.user_idx]);
+        if( result.length == 0 ){
             return next(400)
         }
         else {
@@ -312,7 +312,7 @@ router.post('/update_cat', async (req, res, next) => {
             if (caution == undefined) {
                 caution = result[0].caution;
             }
-            await connection.Query(updateQuery, [name, size, birthday, caution, chkToken.user_idx]);
+            await connection.query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
         }
     }).catch(error => {
         return next(error)

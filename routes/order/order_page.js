@@ -183,7 +183,9 @@ router.post('/', async (req, res, next) => {
     return res.r(result);
 });
 
-//정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
+
+// Written By 정경인
+// 정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
 router.get('/product/:product', async (req, res, next) => {
     let { product } = req.params
     const chkToken = jwt.verify(req.headers.authorization);
