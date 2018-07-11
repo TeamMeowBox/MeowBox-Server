@@ -4,7 +4,67 @@ const router = express.Router();
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt');
 
-var axios = require('axios')
+const axios = require('axios')
+const request = require('request');
+
+ 
+    function updateClient(postData){
+            var clientServerOptions = {
+                // uri: 'http://'+clientHost+''+clientContext,
+                uri: 'https://api.iamport.kr/payments/prepare/305?_token=2957e399927521c8ce899594f62bdcdfffeb5e3a',
+                // body: JSON.stringify(postData),
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            request(clientServerOptions, function (error, response) {
+                console.log(error,response.body);
+                return;
+            });
+        }
+
+
+    function updateClient(postData){
+        var clientServerOptions = {
+            // uri: 'http://'+clientHost+''+clientContext,
+            // https://api.iamport.kr/payments/prepare?_token=2957e399927521c8ce899594f62bdcdfffeb5e3a
+            uri: 'https://api.iamport.kr/payments/prepare/305?_token=2957e399927521c8ce899594f62bdcdfffeb5e3a',
+            // body: JSON.stringify(postData),
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        request(clientServerOptions, function (error, response) {
+            console.log(error,response.body);
+            return;
+        });
+    }
+
+
+
+    function test(){
+
+        console.log('123123123123123123');
+        var clientServerOptions = {
+            // uri: 'http://'+clientHost+''+clientContext,
+            uri: `https://api.iamport.kr/payments/${imp_uid}`,
+            // body: JSON.stringify(postData),
+            method: 'GET',
+            headers: { "Authorization": "Bearer " + access_token } // 인증 토큰 Authorization header에 추가
+        }
+        request(clientServerOptions, function (error, response) {
+            console.log(error,response.body);
+            return;
+        });
+    }
+
+
+
+
+        
+
 
 
 
@@ -12,6 +72,7 @@ var axios = require('axios')
 // Written By 신기용
 router.get('/', async (req, res, next) => {
     try {
+        test();
         let imp_uid = req.query.imp_uid;
         let imp_success = req.query.imp_success;
         let merchant_uid = req.query.merchant_uid; 
@@ -21,6 +82,12 @@ router.get('/', async (req, res, next) => {
         console.log('merchant_uid : ' + merchant_uid);
 
 
+        return res.render('order_success');
+
+    
+
+
+        
         console.log(' Before Access token ');
         // 액세스 토큰(access token) 발급 받기
         getToken = await axios({
@@ -37,15 +104,57 @@ router.get('/', async (req, res, next) => {
         console.log('access_token : ' + access_token);
 
 
+        
+
         console.log(' Before Get getPaymentData ');
         // imp_uid로 아임포트 서버에서 결제 정보 조회
         const getPaymentData = await axios({
             url: `https://api.iamport.kr/payments/${imp_uid}`, // imp_uid 전달
             method: "get", // GET method
-            headers: { "Authorization": access_token } // 인증 토큰 Authorization header에 추가
+            headers: { "Authorization": "Bearer " + access_token } // 인증 토큰 Authorization header에 추가
         });
         const paymentData = getPaymentData.data.response; // 조회한 결제 정보
         console.log('paymentData : ' + paymentData);
+        
+
+
+        /*
+        console.log('here ?');
+
+        let preOrder = await axios({
+            url: "https://api.iamport.kr/payments/prepare?_token=61128c0a4e13aa8254ab45838fdec0ec92c3388b",
+            method: "post", // POST method
+            headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
+            body: {
+                merchant_uid : "306",
+                amount : 100
+            }
+        })
+        console.log('preOrder : ' +  preOrder);
+        */
+
+        
+
+        /*
+        https://api.iamport.kr/payments/prepare?_token=61128c0a4e13aa8254ab45838fdec0ec92c3388b
+        body
+        merchant_uid
+        amount
+        */
+
+
+
+        /*
+
+       let afterOrder = await axios({
+            url: "https://api.iamport.kr/payments/prepare/305?_token=61128c0a4e13aa8254ab45838fdec0ec92c3388b",
+            method: "get" // GET method
+        })
+        console.log('afterOrder : ' +  afterOrder);
+
+        
+        */
+
          
 
         let selectAmountQuery=
