@@ -114,7 +114,7 @@ router.get('/', async (req, res, next) => {
 router.delete('/', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     let { order_idx } = req.query;
-    console.log(order_idx)
+
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
     }
@@ -130,13 +130,15 @@ router.delete('/', async (req, res, next) => {
     WHERE idx = ?
     `;
     let currentDate = moment().format('YYYY.MM.DD');
-  
+    let result ={};
     db.Transaction(async (connection) => {
         await connection.query(reserveDeleteQuery, [Number(order_idx)]);
         await connection.query(endDateUpdateQuery, [currentDate.toString(), Number(order_idx)]);
     }).catch(error => {
         return next(error);
-    })
+    });
+    result.flag = "-1";
+    return res.r(result)
 });
 
 module.exports = router;
