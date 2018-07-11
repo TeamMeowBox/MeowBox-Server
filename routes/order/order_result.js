@@ -4,6 +4,9 @@ const router = express.Router();
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt');
 
+var axios = require('axios')
+
+
 
 
 // Written By 신기용
@@ -13,19 +16,25 @@ router.get('/', async (req, res, next) => {
         let imp_success = req.query.imp_success;
         let merchant_uid = req.query.merchant_uid; 
 
+        console.log('imp_uid : ' + imp_uid);
+        console.log('imp_success : ' + imp_success);
+        console.log('merchant_uid : ' + merchant_uid);
+
 
         console.log(' Before Access token ');
         // 액세스 토큰(access token) 발급 받기
-        const getToken = await axios({
+        getToken = await axios({
             url: "https://api.iamport.kr/users/getToken",
             method: "post", // POST method
             headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
             data: {
-                imp_key: "6141135946318499", // REST API키
-                imp_secret: "7obvU0Ezc4IlpglPXJZPcZKTLDgyotdwRp1MpGlBL4Xali0j1Z8eZT8KxpjVSwrJVtwlaSWVWT5ib5Bd" // REST API Secret
+                imp_key: "7887838073153140", // REST API키
+                imp_secret: "1jtwZfvM7ouZLk2wHb74jw7LoZKOb1Acl4Jkjf7rDBqoVtVDE2IYzPKXOuL0wmcRrWcLbjcOVDdQ68tL" // REST API Secret
             }
         });
         const { access_token } = getToken.data.response; // 인증 토큰
+
+        console.log('access_token : ' + access_token);
 
 
         console.log(' Before Get getPaymentData ');
@@ -51,6 +60,8 @@ router.get('/', async (req, res, next) => {
 
         // DB에서 결제되어야 하는 금액 조회
          const amountToBePaid = await db.Query(selectAmountQuery,[merchant_uid]);
+
+        console.log('amountToBePaid : ' + amountToBePaid[0].price);
  
          // 결제 검증하기
          const { amount, status } = paymentData;
@@ -87,6 +98,8 @@ router.get('/', async (req, res, next) => {
     } catch (e) {
         res.status(400).send(e);
     }
+
+    return res.render('order_success');
 
 });
 
