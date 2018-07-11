@@ -109,7 +109,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
-        if (cat_name == undefined || cat_size == undefined || cat_birthday == undefined) {
+        if (cat_name == undefined || cat_name == "-1" || cat_size == undefined || cat_birthday == undefined) {
             catSignUpFlag = 0;
         }
         else if (cat_caution == undefined) {
