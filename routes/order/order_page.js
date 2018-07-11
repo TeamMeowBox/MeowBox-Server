@@ -148,7 +148,7 @@ router.post('/', async (req, res, next) => {
     VALUES(?,?,?,?,?,?,?,?,?);
     `;
 
-    let result;
+    let result ={};
     try {
         let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product, payment_method]);
 
@@ -161,17 +161,18 @@ router.post('/', async (req, res, next) => {
         VALUES(?,?);
         `;
         console.log('deleveryList :' + deliveryList);
-
+        console.log(insertIdx.insertId)
+        result.flag = "-1";
         if( product == 3 || product == 6){
-            result = "1";
+            result.flag = "1";
         }
-
-
+        result.order_idx =insertIdx.insertId;
+        console.log( result.order_idx)
         for (var i in deliveryList) {
             console.log(' i : ' + i);
             let a = deliveryList[i];
             console.log('a : ' + a);
-            db.Query(insertQuery, [insertIdx.insertId, deliveryList[i]]);
+            db.Query(insertQuery, [ result.order_idx, deliveryList[i]]);
         }
     } catch (error) {
         return next(error);
