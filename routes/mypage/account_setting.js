@@ -27,9 +27,9 @@ router.get('/account', async (req, res, next) => {
         return next("10403")
     }
     let user_idx = chkToken.user_idx;
-    let _result,result;
+    let _result, result;
     let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
-    _result = await db.Query(userSelectQuery,[user_idx]);
+    _result = await db.Query(userSelectQuery, [user_idx]);
     if (_result.length === 0) {
         return next("1406")
     }
@@ -41,7 +41,7 @@ router.get('/account', async (req, res, next) => {
         WHERE users.idx = ?
         `;
     try {
-        let accountSelectResult= await db.Query(accountSelectQuery,[user_idx]);
+        let accountSelectResult = await db.Query(accountSelectQuery, [user_idx]);
         result = accountSelectResult[0];
         result.cat_idx = accountSelectResult[0].cat_idx;
         result.cat_name = accountSelectResult[0].cat_name;
@@ -69,94 +69,79 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     }
 
     let user_idx = chkToken.user_idx;
-    console.log("user_idx : " + user_idx);
-    let {user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
-
-    console.log('cat_name : ' + cat_name);
-
-    let catSelectQuery = 
-    `
+    let { user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+    let catSelectQuery =
+        `
     SELECT *
     FROM cats
     WHERE user_idx = ?
     `
-    
-    let catSelectResult = await db.Query(catSelectQuery,[chkToken.user_idx]);
-    let catsUpdateQuery ;
+
+    let catSelectResult = await db.Query(catSelectQuery, [chkToken.user_idx]);
+    let catsUpdateQuery;
     let catSignUpFlag;
-	console.log("catSelectResult.length : " + catSelectResult.length);
-    if( catSelectResult.length > 0 ){ // 고양이 존재 o
+    if (catSelectResult.length > 0) { // 고양이 존재 o
         catSignUpFlag = 1;
-	console.log(" catSelectResult.length > 0 --> catSignUpFlag : " + catSignUpFlag );
-        catsUpdateQuery = 
-        `
+        catsUpdateQuery =
+            `
         UPDATE cats
         SET name = ? , size = ? , birthday = ?, caution = ? 
         WHERE user_idx = ?  
         `
 
-        if( cat_name == undefined ){
+        if (cat_name == undefined) {
             cat_name = catSelectResult[0].name;
         }
-        if( cat_size == undefined){
+        if (cat_size == undefined) {
             cat_size = catSelectResult[0].size;
         }
-        if( cat_birthday == undefined){
+        if (cat_birthday == undefined) {
             cat_birthday = catSelectResult[0].birthday;
         }
-        if( cat_caution == undefined){
+        if (cat_caution == undefined) {
             cat_caution = catSelectResult[0].caution;
         }
 
     }
     else { // 고양이 존재 x
         catsUpdateQuery =
-        `
+            `
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
-        console.log("cat_name : " + cat_name);
-        console.log("cat_size : " + cat_size);
-        console.log("cat_birthday : " + cat_birthday);
-        if(cat_name == undefined || cat_size == undefined || cat_birthday == undefined){
-            console.log('undefined 영역 !!!');
-            catSignUpFlag = 0 ;
+        if (cat_name == undefined || cat_size == undefined || cat_birthday == undefined) {
+            catSignUpFlag = 0;
         }
-        else if(cat_caution == undefined){
+        else if (cat_caution == undefined) {
             catSignUpFlag = 1;
-		console.log(" 고양이 존재 x - 1   --> catSignUpFlag : " + catSignUpFlag );
             cat_caution = "";
         }
-        else{
+        else {
             catSignUpFlag = 1;
-            console.log(" 고양이 존재 x - 2  --> catSignUpFlag : " + catSignUpFlag );
         }
     }
-	console.log("catSignUpFlag : " + catSignUpFlag);
 
-    let userSelectQuery = 
-    `
+    let userSelectQuery =
+        `
     SELECT *
     FROM users
     WHERE idx = ?
     `
-    console.log("123");
     let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
-    if( userSelectResult.length == 0 ){
+    if (userSelectResult.length == 0) {
         return next(400)
     }
 
-    console.log("234");
     user_name, user_email, user_phone
-    if(user_name == undefined ){
+    if (user_name == undefined) {
         user_name = userSelectResult[0].name;
     }
 
-    if(user_email == undefined){
+    if (user_email == undefined) {
         user_email = userSelectResult[0].email;
     }
 
-    if(user_phone == undefined){
+    if (user_phone == undefined) {
         user_phone = userSelectResult[0].phone_number;
     }
 
@@ -166,49 +151,40 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     param.push(user_email);
 
 
-   let usersUpdateQuery;
-   if(req.files['image_profile'] == undefined){
-    console.log(" image no " );
-    usersUpdateQuery =
-    `
+    let usersUpdateQuery;
+    if (req.files['image_profile'] == undefined) {
+        console.log(" Image no ");
+        usersUpdateQuery =
+            `
     UPDATE users 
     SET name = ?, phone_number = ?, email = ?
     WHERE idx = ?
     `; //users_update
-   }
-   else{
-    console.log(" image yes ");
-    usersUpdateQuery =
-    `
+    }
+    else {
+        console.log(" Image yes ");
+        usersUpdateQuery =
+            `
     UPDATE users 
     SET name = ?, phone_number = ?, email = ?, image_profile = ?
     WHERE idx = ?
     `; //users_update
-    param.push(req.files['image_profile'][0].location)
-   }
-   
-   
+        param.push(req.files['image_profile'][0].location)
+    }
+
     param.push(user_idx);
-   
-    console.log('success connection');
-    console.log('catsUpdateQuery : ' + catsUpdateQuery);
-      
     let result = {};
 
     //트랜잭션 처리
-    db.Transaction(async (connection) => {  
-        console.log('111');
+    db.Transaction(async (connection) => {
         await connection.query(usersUpdateQuery, param);
-        console.log('222');
-        console.log('cat_name : ' + cat_name);
-        if( catSignUpFlag ){
-            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx ]);
+        if (catSignUpFlag) {
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
         }
-        console.log('333');
     }).catch(error => {
         return next(error)
     })
-    result.token = jwt.sign(user_email, user_idx) ; 
+    result.token = jwt.sign(user_email, user_idx);
     return res.r(result);
 });
 
@@ -224,16 +200,16 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
     }
 
     console.log('user_idx  : ' + chkToken.user_idx);
-    
-    let userSelectQuery = 
-    `
+
+    let userSelectQuery =
+        `
     SELECT name, pwd, phone_number, image_profile
     FROM users
     WHERE idx = ?
     `
     let userSelectResult;
     try {
-        userSelectResult = await db.Query(userSelectQuery,[chkToken.user_idx]);
+        userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
     } catch (error) {
         return next(error)
     }
@@ -242,42 +218,42 @@ router.post('/update_user', upload.fields([{ name: 'image_profile', maxCount: 1 
 
     let image_profile;
     let { name, phone_number, pwd } = req.body;
-    
-    if (name == undefined){
+
+    if (name == undefined) {
         name = userSelectResult[0].name;
     }
-    if( phone_number == undefined){
-        phone_number =  userSelectResult[0].phone_number;
+    if (phone_number == undefined) {
+        phone_number = userSelectResult[0].phone_number;
     }
-    if( pwd == undefined){
+    if (pwd == undefined) {
         pwd = userSelectResult[0].pwd;
-    }else {
+    } else {
         pwd = encrypt(pwd);
     }
-    
+
     let param = [];
     param.push(name);
     param.push(phone_number);
     param.push(pwd);
 
     let usersUpdateQuery =
-    `
+        `
     UPDATE users 
     SET name = ?, phone_number = ?, pwd = ?
     WHERE idx = ?
-    `; 
+    `;
 
-    if (req.files['image_profile'] != undefined){
+    if (req.files['image_profile'] != undefined) {
         image_profile = req.files['image_profile'][0].location;
         usersUpdateQuery =
-        `
+            `
         UPDATE users 
         SET name = ?, phone_number = ?, pwd = ? , image_profile = ?
         WHERE idx = ?
         `;
-        param.push(image_profile) 
+        param.push(image_profile)
     }
-   
+
     param.push(String(chkToken.user_idx))
     console.log(param);
     try {
@@ -301,42 +277,42 @@ router.post('/update_cat', async (req, res, next) => {
         return next("10403")
     }
 
-    
-    let selectCatQuery=
-    `
+
+    let selectCatQuery =
+        `
     SELECT *
     FROM cats
     WHERE user_idx = ?
     `
 
-    let { name, size, birthday, caution} = req.body;
-    let updateQuery = 
-    `
+    let { name, size, birthday, caution } = req.body;
+    let updateQuery =
+        `
     UPDATE cats 
     SET name = ?, size = ?, birthday = ? , caution = ?
     WHERE user_idx = ?
     `
-    
+
     //트랜잭션 처리
     db.Transaction(async (connection) => {
         let result = await connection.Query(selectCatQuery, [chkToken.user_idx]);
-        if( result.length == 0 ){
+        if (result.length == 0) {
             return next(400)
         }
         else {
-            if( name == undefined){ 
+            if (name == undefined) {
                 name = result[0].name;
-            } 
-            if( size == undefined){
+            }
+            if (size == undefined) {
                 size = result[0].size;
             }
-            if( birthday == undefined){
+            if (birthday == undefined) {
                 birthday = result[0].birthday;
             }
-            if( caution == undefined){
+            if (caution == undefined) {
                 caution = result[0].caution;
             }
-            await connection.Query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+            await connection.Query(updateQuery, [name, size, birthday, caution, chkToken.user_idx]);
         }
     }).catch(error => {
         return next(error)

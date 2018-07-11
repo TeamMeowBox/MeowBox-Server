@@ -151,7 +151,7 @@ router.post('/', async (req, res, next) => {
     VALUES(?,?,?,?,?,?,?,?,?,?);
     `;
 
-    let result;
+    let result ={};
     try {
         let deliveryList = getDeliveryDate(payment_date[0], product);
         let end_date = deliveryList[deliveryList.length-1]
@@ -159,22 +159,23 @@ router.post('/', async (req, res, next) => {
 
         console.log('insertIdx : ' + insertIdx.insertId);
         insertQuery =
-            `
+        `
         INSERT INTO reservations (order_idx, delivery_date)
         VALUES(?,?);
         `;
         console.log('deleveryList :' + deliveryList);
-
+        console.log(insertIdx.insertId)
+        result.flag = "-1";
         if( product == 3 || product == 6){
-            result = "1";
+            result.flag = "1";
         }
-
-
+        result.order_idx =insertIdx.insertId;
+        console.log( result.order_idx)
         for (var i in deliveryList) {
             console.log(' i : ' + i);
             let a = deliveryList[i];
             console.log('a : ' + a);
-            db.Query(insertQuery, [insertIdx.insertId, deliveryList[i]]);
+            db.Query(insertQuery, [ result.order_idx, deliveryList[i]]);
         }
     } catch (error) {
         return next(error);
