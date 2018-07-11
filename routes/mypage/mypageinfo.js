@@ -26,7 +26,7 @@ router.get('/', async (req, res, next) => {
         `;
 
   _result = await db.Query(userSelectQuery, [chkToken.user_idx]);
-  result.user_image_profile =_result[0].image_profile
+  result.image_profile =_result[0].image_profile
 
   let selectCatQuery = ` 
                 SELECT cats.name as cat_name 
