@@ -21,6 +21,8 @@
     "express-session": "^1.15.6",
     "express-validation": "^1.0.2",
     "helmet": "^3.9.0",
+    "iamport": "^0.3.4",
+    "iamporter": "^1.4.2",
     "instagram-crawling": "^1.1.2",
     "jade": "~1.11.0",
     "joi": "^13.4.0",
