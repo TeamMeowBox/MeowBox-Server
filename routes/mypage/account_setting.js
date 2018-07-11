@@ -70,6 +70,10 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     let user_idx = chkToken.user_idx;
     let { user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+
+	console.log(" cat_name : " + cat_name);
+	console.log(" cat_szie : " + cat_size);
+	console.log(" cat_birthday " + cat_birthday);
     let catSelectQuery =
         `
     SELECT *
@@ -81,6 +85,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     let catsUpdateQuery;
     let catSignUpFlag;
     if (catSelectResult.length > 0) { // 고양이 존재 o
+	console.log(" You have Cat ") ;
         catSignUpFlag = 1;
         catsUpdateQuery =
             `
@@ -104,12 +109,15 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     }
     else { // 고양이 존재 x
+	console.log(" You don't have cat " );
         catsUpdateQuery =
             `
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
+
         if (cat_name == undefined || cat_name == "-1" || cat_size == undefined || cat_birthday == undefined) {
+		console.log(" Don't wanna catSingUp " );
             catSignUpFlag = 0;
         }
         else if (cat_caution == undefined) {
