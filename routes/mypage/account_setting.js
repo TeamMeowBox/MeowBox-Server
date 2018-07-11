@@ -17,45 +17,6 @@ function encrypt(u_password) {
 
 
 /*
- Method : get
- */
-// Written By 서연
-// 계정 설정 화면 보기
-router.get('/account', async (req, res, next) => {
-    const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
-    let user_idx = chkToken.user_idx;
-    let _result, result;
-    let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
-    _result = await db.Query(userSelectQuery, [user_idx]);
-    if (_result.length === 0) {
-        return next("1406")
-    }
-    let accountSelectQuery =
-        `
-        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
-               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cat_idx
-        FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
-        WHERE users.idx = ?
-        `;
-    try {
-        let accountSelectResult = await db.Query(accountSelectQuery, [user_idx]);
-        result = accountSelectResult[0];
-        result.cat_idx = accountSelectResult[0].cat_idx;
-        result.cat_name = accountSelectResult[0].cat_name;
-        result.size = accountSelectResult[0].size;
-        result.birthday = accountSelectResult[0].birthday;
-        result.caution = accountSelectResult[0].caution;
-    } catch (error) {
-        return next(error);
-    }
-    return res.r(result);
-});
-
-
-/*
  Method : post
  */
 // Written By 서연
@@ -174,20 +135,21 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     param.push(user_idx);
     let result = {};
-
+    let catResult;
     //트랜잭션 처리
-    let catsUpdateResut = "-1";
     db.Transaction(async (connection) => {
         await connection.query(usersUpdateQuery, param);
         if (catSignUpFlag) {
-            catsUpdateResut = await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
         }
+        catResult = await connection.query(catSelectQuery, [chkToken.user_idx]);
+        result.cat_idx = catResult[0].idx
+        result.token = jwt.sign(user_email, user_idx);
+        return res.r(result);
+
     }).catch(error => {
         return next(error)
     })
-    result.token = jwt.sign(user_email, user_idx);
-    result.cat_idx = catsUpdateResut.insertId + "";
-    return res.r(result);
 });
 
 
@@ -298,7 +260,7 @@ router.post('/update_cat', async (req, res, next) => {
     //트랜잭션 처리
     db.Transaction(async (connection) => {
         let result = await connection.query(selectCatQuery, [chkToken.user_idx]);
-        if( result.length == 0 ){
+        if (result.length == 0) {
             return next(400)
         }
         else {
@@ -314,7 +276,7 @@ router.post('/update_cat', async (req, res, next) => {
             if (caution == undefined) {
                 caution = result[0].caution;
             }
-            await connection.query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+            await connection.query(updateQuery, [name, size, birthday, caution, chkToken.user_idx]);
         }
     }).catch(error => {
         return next(error)
