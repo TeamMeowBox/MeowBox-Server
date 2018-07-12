@@ -21,6 +21,7 @@ function encrypt(u_password) {
  */
 // Written By 서연
 // 계정 설정 화면 보기
+
 router.get('/account', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
