@@ -196,7 +196,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 		console.log(" catSignUpFlag work was Done ");
         }
 
-        console.log(" catResult : " + catResult );
+        console.log(" catSelectResult : " + catSelectResult );
         result.cat_idx = catSelectResult.length == 0 ? "-1" : catSelectResult[0].idx + "";
         result.token = jwt.sign(user_email, user_idx);
         return res.r(result);
