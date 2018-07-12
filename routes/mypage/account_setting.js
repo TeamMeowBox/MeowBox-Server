@@ -117,7 +117,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         VALUES (?,?,?,?,?)
         `
 
-        if (cat_name == undefined || cat_name == "-1" || cat_size == undefined || cat_birthday == undefined) {
+	if (cat_name == undefined || cat_name == "-1" ||cat_name == "" || cat_size == 0 || cat_birthday == undefined) {
 		console.log(" Don't wanna catSingUp " );
             catSignUpFlag = 0;
         }
