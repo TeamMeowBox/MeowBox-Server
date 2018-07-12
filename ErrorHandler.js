@@ -18,6 +18,7 @@ module.exports = (app) => {
         if (err instanceof expressValidation.ValidationError) {  // 잘못된 파라미터 확인
             miss_param = err.errors.map(error => error.messages.join('. ')).join('\n');
             console.log(`\n\x1b[36m[Miss Params] \u001b[0m \n${miss_param}`);
+            
             err = error_code.INVALID_PARAMETER;
         } else if (isNaN(err)) {  // 서버쪽 에러
             err = error_code.SERVER_ERROR;
