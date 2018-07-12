@@ -21,7 +21,7 @@ function encrypt(u_password) {
  */
 // Written By 서연
 // 계정 수정
-// Edit By 기용
+// Edit By 기용 , 경인
 // App 용
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
