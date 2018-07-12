@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const log = require('./config/logger');
 
 const scheduler = require('./module/scheduler')
 app.use((req, res, next) => {
@@ -56,6 +57,8 @@ app.use(function(req, res, next)
 {
   var err = new Error('Not Found');
   err.status = 404;
+  err.path = req.path;
+  log.error(err);
   next(err);
 });
 
