@@ -17,8 +17,7 @@ var frame = {
 var reviewSchema = new Schema({
     content : {
         "birthday" : frame,
-        "best_image_7" : frame,
-        "best_image_6" : frame
+        "best_image_7" : frame
     }
 },{
     versionKey: false // You should be aware of the outcome after set to false
