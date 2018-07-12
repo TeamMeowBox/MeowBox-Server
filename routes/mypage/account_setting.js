@@ -17,6 +17,46 @@ function encrypt(u_password) {
 
 
 /*
+ Method : get
+ */
+// Written By 서연
+// 계정 설정 화면 보기
+
+router.get('/account', async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+    let user_idx = chkToken.user_idx;
+    let _result, result;
+    let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
+    _result = await db.Query(userSelectQuery, [user_idx]);
+    if (_result.length === 0) {
+        return next("1406")
+    }
+    let accountSelectQuery =
+        `
+        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cat_idx
+        FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
+        WHERE users.idx = ?
+        `;
+    try {
+        let accountSelectResult = await db.Query(accountSelectQuery, [user_idx]);
+        result = accountSelectResult[0];
+        result.cat_idx = accountSelectResult[0].cat_idx;
+        result.cat_name = accountSelectResult[0].cat_name;
+        result.size = accountSelectResult[0].size;
+        result.birthday = accountSelectResult[0].birthday;
+        result.caution = accountSelectResult[0].caution;
+    } catch (error) {
+        return next(error);
+    }
+    return res.r(result);
+});
+
+
+/*
  Method : post
  */
 // Written By 서연
