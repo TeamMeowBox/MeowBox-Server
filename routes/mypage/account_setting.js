@@ -175,20 +175,21 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     param.push(user_idx);
     let result = {};
-
+    let catResult;
     //트랜잭션 처리
-    let catsUpdateResut = "-1";
     db.Transaction(async (connection) => {
         await connection.query(usersUpdateQuery, param);
         if (catSignUpFlag) {
-            catsUpdateResut = await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
         }
+        catResult = await connection.query(catSelectQuery, [chkToken.user_idx]);
+        result.cat_idx = catResult[0].idx
+        result.token = jwt.sign(user_email, user_idx);
+        return res.r(result);
+
     }).catch(error => {
         return next(error)
     })
-    result.token = jwt.sign(user_email, user_idx);
-    result.cat_idx = catsUpdateResut.insertId + "";
-    return res.r(result);
 });
 
 
@@ -299,7 +300,7 @@ router.post('/update_cat', async (req, res, next) => {
     //트랜잭션 처리
     db.Transaction(async (connection) => {
         let result = await connection.query(selectCatQuery, [chkToken.user_idx]);
-        if( result.length == 0 ){
+        if (result.length == 0) {
             return next(400)
         }
         else {
@@ -315,7 +316,7 @@ router.post('/update_cat', async (req, res, next) => {
             if (caution == undefined) {
                 caution = result[0].caution;
             }
-            await connection.query(updateQuery, [name,size,birthday,caution, chkToken.user_idx]);
+            await connection.query(updateQuery, [name, size, birthday, caution, chkToken.user_idx]);
         }
     }).catch(error => {
         return next(error)
