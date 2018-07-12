@@ -61,7 +61,7 @@ router.get('/account', async (req, res, next) => {
  */
 // Written By 서연
 // 계정 수정
-// Edit By 기용
+// Edit By 기용 , 경인
 // App 용
 router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]), async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
@@ -74,7 +74,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
 	console.log(" cat_name : " + cat_name);
 	console.log(" cat_szie : " + cat_size);
-	console.log(" cat_birthday " + cat_birthday);
+	console.log(" cat_birthday : " + cat_birthday);
     let catSelectQuery =
         `
     SELECT *
@@ -117,7 +117,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
         VALUES (?,?,?,?,?)
         `
 
-        if (cat_name == undefined || cat_name == "-1" || cat_size == undefined || cat_birthday == undefined) {
+	if ( cat_name == "-1" ) {
 		console.log(" Don't wanna catSingUp " );
             catSignUpFlag = 0;
         }
@@ -314,6 +314,7 @@ router.post('/update_cat', async (req, res, next) => {
     //트랜잭션 처리
     db.Transaction(async (connection) => {
         let result = await connection.query(selectCatQuery, [chkToken.user_idx]);
+        console.log('result : ' + result);
         if (result.length == 0) {
             return next(400)
         }

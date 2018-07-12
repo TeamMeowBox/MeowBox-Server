@@ -23,6 +23,8 @@ function getFirstMonday(date) {
 // Next Edit 이민형 (7.11)
 // --> Response Frame 통일 작업 + 로직 변경
 // 데이터 제대로 넣고 다시 수정 필요 !!!
+// Next Edit 정경인 (7.12)
+// price 추가
 router.get('/', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
@@ -34,7 +36,7 @@ router.get('/', async (req, res, next) => {
     } else {
         let selectQuery =
             `
-        SELECT idx,product, payment_date as term, end_date as end_term
+        SELECT idx,product, payment_date as term, end_date as end_term, price
         FROM orders 
         WHERE user_idx = ? 
         ORDER BY payment_date DESC
