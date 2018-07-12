@@ -8,6 +8,7 @@ const axios = require('axios')
 const request = require('request');
 
 const pool = require('../../config/dbPool');
+var token;
 
  
 function preOrder(merchant_uid, amount){ // code  0 : success / 1 : fail
@@ -97,7 +98,7 @@ router.get('/', async (req, res, next) => {
             }
         });
 
-        let token = getToken.data.response.access_token;
+        token = getToken.data.response.access_token;
         console.log('IMP token : ' + token);
 
         let getAmountQuery = 
@@ -109,7 +110,7 @@ router.get('/', async (req, res, next) => {
 
         let getAmountResult = await db.Query(getAmountQuery,[merchant_uid]);
 
-        let preOrderResult = await preOrder(merchant_uid, getAmountQuery[0].price);
+        let preOrderResult = await preOrder(merchant_uid, getAmountResult[0].price);
         preOrderResult = JSON.parse(preOrderResult);
         console.log('preOrderResult.code : ' + preOrderResult.code);
 
@@ -174,7 +175,7 @@ router.post('/web', async (req, res, next) => {
             }
         });
 
-        let token = getToken.data.response.access_token;
+        token = getToken.data.response.access_token;
         console.log('IMP token : ' + token);
 
 
@@ -187,7 +188,7 @@ router.post('/web', async (req, res, next) => {
 
         let getAmountResult = await db.Query(getAmountQuery,[merchant_uid]);
 
-        let preOrderResult = await preOrder(merchant_uid, getAmountQuery[0].price);
+        let preOrderResult = await preOrder(merchant_uid, getAmountResult[0].price);
         preOrderResult = JSON.parse(preOrderResult);
         console.log('preOrderResult.code : ' + preOrderResult.code);
 
