@@ -195,9 +195,9 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
             await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx])
 		console.log(" catSignUpFlag work was Done ");
         }
-        catResult = await connection.query(catSelectQuery, [chkToken.user_idx]);
-	console.log(" catResult : " + catResult );
-        result.cat_idx = catResult.length == 0 ? "-1" : catResult[0].idx;
+
+        console.log(" catResult : " + catResult );
+        result.cat_idx = catSelectResult.length == 0 ? "-1" : catSelectResult[0].idx + "";
         result.token = jwt.sign(user_email, user_idx);
         return res.r(result);
 
