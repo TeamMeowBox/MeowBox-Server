@@ -17,6 +17,46 @@ function encrypt(u_password) {
 
 
 /*
+ Method : get
+ */
+// Written By 서연
+// 계정 설정 화면 보기
+
+router.get('/account', async (req, res, next) => {
+    const chkToken = jwt.verify(req.headers.authorization);
+    if (chkToken == undefined) {
+        return next("10403")
+    }
+    let user_idx = chkToken.user_idx;
+    let _result, result;
+    let userSelectQuery = `SELECT idx FROM users WHERE idx = ?`
+    _result = await db.Query(userSelectQuery, [user_idx]);
+    if (_result.length === 0) {
+        return next("1406")
+    }
+    let accountSelectQuery =
+        `
+        SELECT users.name AS user_name, users.email, users.phone_number, users.image_profile,
+               cats.name AS cat_name, cats.size, cats.birthday, cats.caution, cats.idx as cat_idx
+        FROM users  LEFT JOIN cats ON users.idx = cats.user_idx
+        WHERE users.idx = ?
+        `;
+    try {
+        let accountSelectResult = await db.Query(accountSelectQuery, [user_idx]);
+        result = accountSelectResult[0];
+        result.cat_idx = accountSelectResult[0].cat_idx;
+        result.cat_name = accountSelectResult[0].cat_name;
+        result.size = accountSelectResult[0].size;
+        result.birthday = accountSelectResult[0].birthday;
+        result.caution = accountSelectResult[0].caution;
+    } catch (error) {
+        return next(error);
+    }
+    return res.r(result);
+});
+
+
+/*
  Method : post
  */
 // Written By 서연
@@ -31,6 +71,10 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     let user_idx = chkToken.user_idx;
     let { user_name, user_email, user_phone, cat_name, cat_size, cat_birthday, cat_caution } = req.body;
+
+	console.log(" cat_name : " + cat_name);
+	console.log(" cat_szie : " + cat_size);
+	console.log(" cat_birthday " + cat_birthday);
     let catSelectQuery =
         `
     SELECT *
@@ -42,6 +86,7 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     let catsUpdateQuery;
     let catSignUpFlag;
     if (catSelectResult.length > 0) { // 고양이 존재 o
+	console.log(" You have Cat ") ;
         catSignUpFlag = 1;
         catsUpdateQuery =
             `
@@ -65,19 +110,24 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
 
     }
     else { // 고양이 존재 x
+	console.log(" You don't have cat " );
         catsUpdateQuery =
             `
         INSERT INTO cats(name, size, birthday, caution, user_idx)
         VALUES (?,?,?,?,?)
         `
+
         if (cat_name == undefined || cat_name == "-1" || cat_size == undefined || cat_birthday == undefined) {
+		console.log(" Don't wanna catSingUp " );
             catSignUpFlag = 0;
         }
         else if (cat_caution == undefined) {
+		console.log(" You want catSingUp without caution" );
             catSignUpFlag = 1;
             cat_caution = "";
         }
         else {
+		console.log(" You want catSingUp ");
             catSignUpFlag = 1;
         }
     }
@@ -134,16 +184,20 @@ router.post('/account', upload.fields([{ name: 'image_profile', maxCount: 1 }]),
     }
 
     param.push(user_idx);
+    console.log("param : " + param);
     let result = {};
     let catResult;
     //트랜잭션 처리
     db.Transaction(async (connection) => {
         await connection.query(usersUpdateQuery, param);
         if (catSignUpFlag) {
-            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx]);
+		console.log(" catSingUpFlag is True and Work it " );
+            await connection.query(catsUpdateQuery, [cat_name, cat_size, cat_birthday, cat_caution, chkToken.user_idx])
+		console.log(" catSignUpFlag work was Done ");
         }
-        catResult = await connection.query(catSelectQuery, [chkToken.user_idx]);
-        result.cat_idx = catResult[0].idx
+
+        console.log(" catSelectResult : " + catSelectResult );
+        result.cat_idx = catSelectResult.length == 0 ? "-1" : catSelectResult[0].idx + "";
         result.token = jwt.sign(user_email, user_idx);
         return res.r(result);
 

@@ -9,10 +9,12 @@ const moment = require('moment');
 //Written By 이민형
 //주문내역 상세보기 기능
 router.post('/',async (req,res,next) => {
+console.log("in here");
     let { order_idx } = req.body;
     let result = new Array();
     let flag = true;
 
+console.log("111");
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
         return next("10403")
@@ -27,8 +29,11 @@ router.post('/',async (req,res,next) => {
     FROM orders
     WHERE idx = ?
     `
+
     try{
+console.log("222");
         var selectOrderResult = await db.Query(selectOrderQuery,[order_idx])
+console.log("333");
     } catch(err){
         return next("500")
     }
