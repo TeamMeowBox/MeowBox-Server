@@ -41,6 +41,7 @@
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
     "serve-favicon": "~2.4.5",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "winston-daily-rotate-file": "^3.2.3"
   }
 }

@@ -61,7 +61,7 @@ console.log("333");
     
 
     //정기권 진행중이거나 일일권을 아직 받지 않았을때
-    if(moment(real_end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD')){
+    if(moment(real_end_date).format('YYYY.MM.DD') > moment().format('YYYY.MM.DD.')){
         let countQuery = 
         `
         SELECT *
