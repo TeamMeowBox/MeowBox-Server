@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../../config/mongoPool');
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 var frame = {
-    title : String,
     comment : String,
     image_list : [String],
     hashtag : [String],
@@ -17,7 +15,8 @@ var frame = {
 var reviewSchema = new Schema({
     content : {
         "birthday" : frame,
-        "best_image_7" : frame
+        "7_best_image" : frame,
+        "6_best_image" : frame
     }
 },{
     versionKey: false // You should be aware of the outcome after set to false
@@ -27,7 +26,6 @@ var reviewSchema = new Schema({
 var test = mongoose.model('review', reviewSchema, 'review');
 
 router.get('/',async (req,res,next) => {
-    console.log('here');
     let result;
     try{
         result = await test.find({

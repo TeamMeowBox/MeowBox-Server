@@ -16,6 +16,7 @@ var frameElement = {
 var frame = {
   birthday : [frameElement],
   best_image_7 :[frameElement],
+  best_image_6 :[frameElement],
   title : Object,
   comment : Object
 }
