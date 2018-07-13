@@ -24,12 +24,12 @@ router.get('/', async (req, res, next) => {
   }
   let userSelectQuery =
     `
-        SELECT * FROM users 
+        SELECT * 
+        FROM users 
         WHERE idx = ?
         `;
 
   let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
-  result.image_profile = userSelectResult[0].image_profile
 
   let selectCatQuery = ` 
                 SELECT cats.name as cat_name 
@@ -50,25 +50,32 @@ router.get('/', async (req, res, next) => {
           `;
 
   try {
-
     let selectOrderResult = await db.Query(selectOrderQuery, [chkToken.user_idx]);
     let have_ticket_idx;
     let have_ticket_flag;
 
     result.flag = "-1"
     if(selectOrderResult.length === 0){ // 정기권 X and 주문 기록 x
+<<<<<<< HEAD
         product_flag = 1;
         result.sendImage = sendImage[0];
         // 사진을 1 
       } 
       
       else {    //selectOrderResult.length !== 0
+=======
+      console.log('정기권 X       주문 기록 X');
+      result.user_image_profile = userSelectResult[0].image_profile;
+      result.sendImage = sendImage[0];  
+    } else {  
+>>>>>>> 37e5ac305292470d804bf652e8021806f58c65d3
       for(var i in selectOrderResult){
         if(selectOrderResult[i].product == 3 || selectOrderResult[i].product == 6 ){
           have_ticket_flag = true;
           have_ticket_idx= i;
           break;  
         } else {
+<<<<<<< HEAD
           have_ticket_flag = false;
         }
       } // end of For
@@ -77,13 +84,30 @@ router.get('/', async (req, res, next) => {
         let ticket =selectOrderResult[have_ticket_idx].product
         let use =selectOrderResult[have_ticket_idx].product
                         - selectOrderResult[have_ticket_idx].product_cnt
+=======
+          have_ticket_flag = false;   
+        }
+      } // end of For
+      
+      if( have_ticket_flag ){ // 정기권 존재     
+        console.log('정기권 O');  
+        let ticket = selectOrderResult[have_ticket_idx].product
+        let use = selectOrderResult[have_ticket_idx].product - selectOrderResult[have_ticket_idx].product_cnt
+        result.image_profile = userSelectResult[0].image_profile;
+>>>>>>> 37e5ac305292470d804bf652e8021806f58c65d3
         result.flag = "1"
         result.ticket =ticket+"박스"
         result.use= use+"박스"
         result.percent =Number(((use/ticket)*100).toFixed() ) 
+<<<<<<< HEAD
 
 
       }else { // 정기권 X 주문 기록 o
+=======
+      }else { // 정기권 X 주문 기록 o
+        console.log('정기권 X      주문 기록 O');
+        result.user_image_profile = userSelectResult[0].image_profile;
+>>>>>>> 37e5ac305292470d804bf652e8021806f58c65d3
         let picture_flag = selectOrderResult[0].product;
         if(picture_flag == 1 ){
           result.sendImage = sendImage[0]
@@ -94,7 +118,10 @@ router.get('/', async (req, res, next) => {
         }
       }
     } // end of Else
+<<<<<<< HEAD
   
+=======
+>>>>>>> 37e5ac305292470d804bf652e8021806f58c65d3
   } catch (error) {
     return next(error)
   }
