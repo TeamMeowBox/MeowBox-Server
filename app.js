@@ -42,7 +42,7 @@ app.set('jwt-secret', jwt.secret);
 app.use(helmet());
 app.use(logger('dev'));
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public_data')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
