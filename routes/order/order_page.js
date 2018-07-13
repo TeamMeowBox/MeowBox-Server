@@ -185,7 +185,7 @@ router.get('/product/:product', async (req, res, next) => {
     let query = `
     select orders.product , reservations.*
     from reservations, orders
-    where orders.user_idx  = ? AND orders.idx = reservations.order_idx AND orders.payment_flag = 1
+    where orders.user_idx  = ? AND orders.idx = reservations.order_idx
     order by reservations.delivery_date desc;
     `
     try {
