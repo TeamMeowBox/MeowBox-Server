@@ -8,3 +8,17 @@
 {"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:46:32 am ]","level":"error"}
 {"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:47:47 am ]","level":"error"}
 {"message":" :  /order/order_list]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:47:51 am ]","level":"error"}
+<<<<<<< HEAD
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 6:36:11 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 7:15:07 am ]","level":"error"}
+{"status":404,"path":"/order/order_page/product/","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 7:18:01 am ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 7:18:02 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 7:30:53 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 7:30:58 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 7:49:39 am ]","level":"error"}
+{"status":404,"path":"/order/order_page/product/","level":"error"}
+=======
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 400 : 잘못된 요청입니다. ] [ Time : 2018.07.13 4:35:45 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 4:36:06 pm ]","level":"error"}
+>>>>>>> ddac11efcb3ded4f5a04201e7d5345741d9f203c
