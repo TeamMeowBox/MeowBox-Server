@@ -22,3 +22,33 @@
 {"message":" :  /mypage/account_setting/account]  [ Status Code: 400 : 잘못된 요청입니다. ] [ Time : 2018.07.13 4:35:45 pm ]","level":"error"}
 {"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 4:36:06 pm ]","level":"error"}
 >>>>>>> ddac11efcb3ded4f5a04201e7d5345741d9f203c
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 9:30:12 am ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:10 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:12 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:13 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:14 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:14 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:15 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:16 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:16 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:17 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:17 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:17 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:17 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:17 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:21 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:22 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:22 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:22 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 9:46:25 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 10:09:03 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 10:17:41 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 10:17:42 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 10:17:44 am ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 10:44:05 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 11:03:18 am ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 11:03:24 am ]","level":"error"}
