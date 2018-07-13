@@ -10,75 +10,7 @@ const request = require('request');
 const pool = require('../../config/dbPool');
 var token;
 
-function yyyymmdd(dateIn) {
-    let array = [];
-    var yyyy = dateIn.getFullYear();
-    var mm = dateIn.getMonth() + 1; // getMonth() is zero-based
-    if (mm < 10) { mm = '0' + mm; }
-    var dd = dateIn.getDate();
-    if (dd < 10) { dd = '0' + dd; }
-    array.push(String(yyyy + mm + dd));
-    array.push(String(yyyy + '.' + mm + '.' + dd));
-    return array;
-}
-
-//다음주의 원하는 요일 구하는 함수(한주의 시작을 월요일로 가정)
-function getNextDayofWeek(date, dayOfWeek) {
-
-    //var resultDate = new Date(date.getTime());
-    var resultDate = moment(date)
-    var day = moment(resultDate).day() === 0 ? 7 : moment(resultDate).day();
-    //resultDate.setDate(resultDate.getDate() + (dayOfWeek + 7 - day));
-    resultDate = moment(resultDate).add(dayOfWeek + 7 - day, 'day')
-    console.log(resultDate)
-    //console.log("resultDate : "+resultDate+"  "+resultDate.getDay())
-
-    return moment(resultDate);
-}
-
-//달의 첫번째 월요일을 구하는 함수
-function getFirstMonday(date) {
-    var date = moment(date).startOf('month')
-    while (moment(date).day() !== 1) {
-        //date.setDate(date.getDate()+1)
-        date = moment(date).add(1, 'd')
-    }
-
-    return date
-}
-
-//배송일 리스트 구하는 함수
-function getDeliveryDate(payment_date, product) {
-    var deliveryDate = new Array();
-    if (product == 3 || product == 6) {
-        for (let i = 0; i < product; i++) {
-            if (i == 0) {
-                let firstDate = getNextDayofWeek(payment_date, 1)
-                //delivertDate.push(getNextDayofWeek(payment_date,1))
-                if (moment(firstDate).month() > moment(payment_date).month()) {
-                    deliveryDate.push(moment(firstDate).format('YYYY.MM.DD'))
-                    i++;
-                }
-                deliveryDate.push(moment(firstDate).format('YYYY.MM.DD'))
-            } else {
-                let testDate = moment(payment_date).add(i, 'M')
-                deliveryDate.push(getFirstMonday(testDate).format('YYYY.MM.DD'))
-            }
-        }
-    } else {
-        console.log('qwerqwerqwer');
-        let testDate = getNextDayofWeek(payment_date, 1)
-        console.log('asdfasdfaasdf');
-        deliveryDate.push(moment(testDate).format('YYYY.MM.DD'))
-        console.log('zxcvzxcvzxcv');
-    }
-
-    return deliveryDate
-}
-
-
-
-
+ 
 function preOrder(merchant_uid, amount){ // code  0 : success / 1 : fail
     return new Promise(function(resolve, reject){
         pool.getConnection(function(err, connection){
@@ -147,10 +79,6 @@ router.get('/', async (req, res, next) => {
         let imp_success = req.query.imp_success;
         let merchant_uid = req.query.merchant_uid; 
 
-        imp_uid = 1
-        imp_success = 2
-        merchant_uid = 2
-
 	
         if( imp_success == "false" ){
 		console.log('imp_success is fail ');
@@ -179,15 +107,11 @@ router.get('/', async (req, res, next) => {
         let getAmountQuery = 
         `
         SELECT user_idx, price
-        FROM pre_orders
-        WHERE idx = ?
+        FROM orders
+        WHERE idx = ? 
         `
 
         let getAmountResult = await db.Query(getAmountQuery,[merchant_uid]);
-
-        console.log('getAmountResult : ' + getAmountResult[0].user_idx);
-
-        /*
 
         let preOrderResult = await preOrder(merchant_uid, getAmountResult[0].price);
         preOrderResult = JSON.parse(preOrderResult);
@@ -197,11 +121,7 @@ router.get('/', async (req, res, next) => {
         afterOrderResult = JSON.parse(afterOrderResult);
         console.log('afterOrderResult.code : ' + afterOrderResult.code);
 
-        */
-
-
-        // if( afterOrderResult.code == 0) {
-        if( true ) {
+        if( afterOrderResult.code == 0) {
             let orderResultInsertQuery =
             `
             INSERT INTO order_result(user_idx, imp_uid, merchant_uid )
@@ -209,70 +129,17 @@ router.get('/', async (req, res, next) => {
             `
             await db.Query(orderResultInsertQuery, [getAmountResult[0].user_idx, imp_uid, merchant_uid]);
 
-            console.log(' orderResultInsertQuery selectQuery ');
 
-
-            let selectQuery = 
+            let updateOrderPaymentFlagQuery =
             `
-            SELECT *
-            FROM pre_orders
-            WHERE user_idx = ?
-            ORDER BY user_idx DESC
+            UPDATE orders
+            SET payment_flag = 1
+            WHERE merchant_uid = ?
             `
-
-            let selectResult = await db.Query(selectQuery,[getAmountResult[0].user_idx]);
-
-            console.log(' after selectQuery ');
-
-
-
-            let payment_date = [];
-            payment_date = yyyymmdd(new Date());
-            console.log('payment_date : ' + payment_date);
-
-            console.log('selectResult[0].product : ' + selectResult[0].product);
-
-            let deliveryList = getDeliveryDate(payment_date[0], selectResult[0].product);
-            console.log('123123121312312');
-            let end_date = deliveryList[deliveryList.length-1]
-            console.log('deliveryList : ' + deliveryList);
-
-
-
-
-
-            let deleteQuery =
-            `
-            DELETE FROM pre_orders
-            WHERE user_idx = ?
-            `
-            await db.Query(deleteQuery,[getAmountResult[0].user_idx]);
-
-            console.log(' after deleteQuery ');
-
-
-            let insertQuery =
-            `
-            INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, end_date,price, product, payment_method)
-            VALUES(?,?,?,?,?,?,?,?,?,?);
-            `;
-            await db.Query(insertQuery, [getAmountResult[0].user_idx, selectResult[0].name, selectResult[0].address, selectResult[0].phone_number, selectResult[0].email, payment_date[1], end_date, selectResult[0].price, selectResult[0].product, selectResult[0].payment_method]);
-
-            console.log(' after insertQuery ');
-        
-            insertQuery =
-            `
-            INSERT INTO reservations (order_idx, delivery_date)
-            VALUES(?,?);
-            `;
-        
-            for (var i in deliveryList) {
-                console.log('deliveryList : ' + deliveryList[i]);
-                db.Query(insertQuery, [ result.order_idx, deliveryList[i]]);
-            } // end of For
+            await db.Query(updateOrderPaymentFlagQuery, [merchant_uid]);
 
             return res.render('order_success');
-        } // end of If 
+        }
         else {
             return res.render('order_fail');
         }
@@ -440,3 +307,4 @@ router.post('/check_order', async (req, res, next) => {
 
 
 module.exports = router;
+
