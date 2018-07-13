@@ -1,4 +1,3 @@
-
 /*
  Default module
 */
@@ -14,21 +13,28 @@ const db = require('../../module/pool.js');
 router.get('/', async (req, res, next) => {
   let sendImage, cnt;
   let result = {};
+
   const chkToken = jwt.verify(req.headers.authorization);
   if (chkToken == undefined) {
-    return next('10403')
+    return next("10403")
   }
-  const SelectQuery =
+  let userSelectQuery =
     `
-    SELECT u.image_profile, c.name
-    FROM users AS u
-    LEFT JOIN cats AS c ON u.idx = c.user_idx
-    WHERE u.idx = ?
-    `;
+        SELECT * FROM users 
+        WHERE idx = ?
+        `;
 
-  let selectResult = await db.Query(selectQuery, [chkToken.user_idx]);
+  let userSelectResult = await db.Query(userSelectQuery, [chkToken.user_idx]);
+  result.image_profile = userSelectResult[0].image_profile
 
-  result.catinfo = (selectResult.length === 0) ? "-1" : selectResult[0].cat_name;              // 고양이 유무
+  let selectCatQuery = ` 
+                SELECT cats.name as cat_name 
+                FROM users,cats 
+                WHERE users.idx =? AND users.idx = cats.user_idx 
+              `;
+  let selectCatResult = await db.Query(selectCatQuery, [chkToken.user_idx]);
+
+  result.catinfo = (selectCatResult.length === 0) ? "-1" : selectCatResult[0].cat_name;                              // 고양이 유무
 
 
   let selectOrderQuery = `
@@ -46,7 +52,6 @@ router.get('/', async (req, res, next) => {
         `https://s3.ap-northeast-2.amazonaws.com/goodgid-s3/KakaoTalk_Photo_2018-07-05-12-47-18.png`; //나의 고양이에게 
       result.flag = "-1"
       result.sendImage = sendImage;
-
 
     } else if (selectOrderResult[0].product === 7) {
       sendImage =
@@ -66,14 +71,12 @@ router.get('/', async (req, res, next) => {
       result.flag = "1";
       result.ticket = selectOrderResult[0].product + "박스"
       result.use = cnt + "박스"
-      result.percent = Number(((cnt / selectOrderResult[0].product) * 100).toFixed()) //소수점 제거
+      result.percent = Number(((cnt/selectOrderResult[0].product)*100).toFixed() ) //소수점 제거
+
     }
-
-
   } catch (error) {
     return next(error)
   }
-
   return res.r(result);
 })
 
