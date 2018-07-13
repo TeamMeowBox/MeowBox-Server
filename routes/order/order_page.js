@@ -98,7 +98,7 @@ router.get('/', async(req, res, next) => {
     SELECT idx as order_idx, name, address, phone_number, email, payment_date, product
     FROM orders
     WHERE user_idx = ? 
-    ORDER BY payment_date DESC
+    ORDER BY payment_date, order_idx DESC
     `;
 
     try {
