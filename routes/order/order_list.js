@@ -20,8 +20,11 @@ function getFirstMonday(date) {
 // Written by 이민형
 // 주문내역 리스트 기능
 // Edit by 신기용 (7.5)
+// Next Edit 이민형 (7.11)
 // --> Response Frame 통일 작업 + 로직 변경
 // 데이터 제대로 넣고 다시 수정 필요 !!!
+// Next Edit 정경인 (7.12)
+// price 추가
 router.get('/', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
     if (chkToken == undefined) {
@@ -33,7 +36,7 @@ router.get('/', async (req, res, next) => {
     } else {
         let selectQuery =
             `
-        SELECT idx,product, payment_date as term
+        SELECT idx,product, payment_date as term, end_date as end_term, price
         FROM orders 
         WHERE user_idx = ? 
         ORDER BY payment_date DESC
@@ -54,17 +57,36 @@ router.get('/', async (req, res, next) => {
                 if (product_name == 3 || product_name == 6) {
                     let endDate = selectResult[i].term;
                     endDate = getFirstMonday(moment(endDate).add(selectResult[i].product - 1, 'M'))
-                    selectResult[i].term = selectResult[i].term + ' - ' + moment(endDate).format('YYYY.MM.DD');
+                    //수정 전
+                    //selectResult[i].term = selectResult[i].term + ' - ' + moment(endDate).format('YYYY.MM.DD');
+
+                    //수정 후
+                    selectResult[i].term = selectResult[i].term + ' - ' + selectResult[i].end_term 
                     selectResult[i].product = product_name + "개월 정기권";
                     selectResult[i].flag = "1";
 
+                    //수정 전
+                    //let _endDate = moment(endDate).format('YYYY.MM.DD');
 
-                    let _endDate = moment(endDate).format('YYYY.MM.DD');
+                    //수정 후
+                    let _endDate = moment(selectResult[i].end_term)
                     let currentDate = moment().format('YYYY.MM.DD');
-                    if (currentDate < _endDate) {
-                        result.ticket = selectResult[i];
-                    } else {
-                        result.ticketed.push(selectResult[i]);
+                    //수정 전
+                    // if (currentDate < _endDate) {
+                    //     result.ticket = selectResult[i];
+                    // } else {
+                    //     result.ticketed.push(selectResult[i]);
+                    // }
+
+                    //Edit By 이민형
+                    //수정 후
+                    if(moment(endDate).format('YYYY.MM.DD') != moment(_endDate).format('YYYY.MM.DD')){ //정기권 취소
+                        selectResult[i].term = moment(_endDate).format('YYYY.MM.DD') + " 정기권 취소"
+                        result.ticketed.push(selectResult[i])
+                    } else if (currentDate < moment(_endDate).format('YYYY.MM.DD')) { //정기권이 아직 안끝났을때
+                        result.ticket = selectResult[i]
+                    } else { //끝났을때
+                        result.ticketed.push(selectResult[i])
                     }
 
                 }
@@ -92,7 +114,7 @@ router.get('/', async (req, res, next) => {
                     }
                 }
 
-                else if( product_name == 2 ){
+                else if (product_name == 2) {
                     selectResult[i].product = "고양이는 처음이지?";
 
                     result.ticketed.push(selectResult[i]);
@@ -109,27 +131,36 @@ router.get('/', async (req, res, next) => {
 });
 
 // Written by 정경인
-// 주문 삭제 
-router.delete('/', async (req, res, next) => {
+// Edit by 권서연
+// 정기권 삭제 
+router.delete('/:order_idx', async (req, res, next) => {
     const chkToken = jwt.verify(req.headers.authorization);
-    let { order_idx } = req.query
+    let { order_idx } = req.params;
 
     if (chkToken == undefined) {
         return next("10403"); // "description": "잘못된 인증 방식입니다.",
-    }    
-    let Query = `
+    }
+    let reserveDeleteQuery =
+    `
     DELETE FROM reservations
     WHERE order_idx = ?
+    `;
+    let endDateUpdateQuery =
     `
-    try {
-        await db.Query(Query, [order_idx])
-    } catch (error) {
-        return next(error)
-    }
-    return res.r()
-
-})
-
-
+    UPDATE orders
+    SET end_date = ?
+    WHERE idx = ?
+    `;
+    let currentDate = moment().format('YYYY.MM.DD');
+    let result ={};
+    db.Transaction(async (connection) => {
+        await connection.query(reserveDeleteQuery, [Number(order_idx)]);
+        await connection.query(endDateUpdateQuery, [currentDate.toString(), Number(order_idx)]);
+    }).catch(error => {
+        return next(error);
+    });
+    result.flag = "-1";
+    return res.r(result)
+});
 
 module.exports = router;

@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const log = require('./config/logger');
 
 const scheduler = require('./module/scheduler')
 app.use((req, res, next) => {
@@ -41,7 +42,7 @@ app.set('jwt-secret', jwt.secret);
 app.use(helmet());
 app.use(logger('dev'));
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public_data')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -56,6 +57,8 @@ app.use(function(req, res, next)
 {
   var err = new Error('Not Found');
   err.status = 404;
+  err.path = req.path;
+  log.error(err);
   next(err);
 });
 
@@ -63,9 +66,9 @@ app.use(function(req, res, next)
 app.use(function(err, req, res, next)
 {
   res.locals.message = err.message;
-  // console.log("res.locals.message error : " + res.locals.message);
+  console.log("res.locals.message error : " + res.locals.message);
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  // console.log("res.locals.error error : " + res.locals.error);
+  console.log("res.locals.error error : " + res.locals.error);
 
   res.status(err.status || 500);
   res.render('error',{errLog : res.locals.error});

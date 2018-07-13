@@ -2,7 +2,7 @@ const schedule = require('node-schedule');
 const async = require('async');
 const db = require('./pool.js');
 /*
-    schedule.scheduleJob('10 * * * * *', async function () { //매 십초 
+    schedule.scheduleJob('0 0 0 * * *', async function () { //매 십초 
       console.log("test scheduler!");
 
       let Query = ` 

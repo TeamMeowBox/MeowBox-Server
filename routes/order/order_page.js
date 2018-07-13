@@ -98,22 +98,20 @@ router.get('/', async(req, res, next) => {
     SELECT idx as order_idx, name, address, phone_number, email, payment_date, product
     FROM orders
     WHERE user_idx = ? 
-    ORDER BY payment_date DESC
+    ORDER BY payment_date, order_idx DESC
     `;
 
     try {
         orderResult = await db.Query(orderSelectQuery, [chkToken.user_idx]);
 
-            if(orderResult[0].product ==3 || orderResult[0].product == 6 ){
-                return next("400")
-            }
+           
             if (orderResult.length === 0) {
                 result.order_idx = -1;  // "description": "주문 내역이 존재하지 않습니다."
           } else {
                 result.order_idx = orderResult[0].order_idx + "";
                 result.name = orderResult[0].name;
                 result.address = orderResult[0].address;
-                result.phone_number = orderResult[0].phone_number;
+                result.phone_number = orderResult[0].phone_number;  
                 result.email = orderResult[0].email;
                 result.payment_date = orderResult[0].payment_date;
           }
@@ -144,36 +142,40 @@ router.post('/', async (req, res, next) => {
     let payment_date = [];
     payment_date = yyyymmdd(new Date());
 
+    //Edit By 이민형
+    //07.11
+    //end_date추가
     let insertQuery =
         `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, price, product, payment_method)
-    VALUES(?,?,?,?,?,?,?,?,?);
+    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, end_date,price, product, payment_method)
+    VALUES(?,?,?,?,?,?,?,?,?,?);
     `;
 
-    let result;
+    let result ={};
     try {
-        let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1], price, product, payment_method]);
+        let deliveryList = getDeliveryDate(payment_date[0], product);
+        let end_date = deliveryList[deliveryList.length-1]
+        let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1],end_date,price, product, payment_method]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
-
-        let deliveryList = getDeliveryDate(payment_date[0], product);
         insertQuery =
-            `
+        `
         INSERT INTO reservations (order_idx, delivery_date)
         VALUES(?,?);
         `;
         console.log('deleveryList :' + deliveryList);
-
+        console.log(insertIdx.insertId)
+        result.flag = "-1";
         if( product == 3 || product == 6){
-            result = "1";
+            result.flag = "1";
         }
-
-
+        result.order_idx =insertIdx.insertId;
+        console.log( result.order_idx)
         for (var i in deliveryList) {
             console.log(' i : ' + i);
             let a = deliveryList[i];
             console.log('a : ' + a);
-            db.Query(insertQuery, [insertIdx.insertId, deliveryList[i]]);
+            db.Query(insertQuery, [ result.order_idx, deliveryList[i]]);
         }
     } catch (error) {
         return next(error);
@@ -181,9 +183,11 @@ router.post('/', async (req, res, next) => {
     return res.r(result);
 });
 
-//정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
-router.get('/product', async (req, res, next) => {
-    let { product } = req.query
+
+// Written By 정경인
+// 정기권 3,6 이 중복되면 400에러 (정기권 진행중인지 모먼트로 검사하기)
+router.get('/product/:product', async (req, res, next) => {
+    let { product } = req.params
     const chkToken = jwt.verify(req.headers.authorization);
 
     if (chkToken == undefined) {
@@ -202,14 +206,15 @@ router.get('/product', async (req, res, next) => {
         if(product == 3 || product == 6){
             if(Result.length !== 0 && (Result[0].product == 3 ||Result[0].product == 6) )
             {
-                return next("400")
+                return res.r("-1")
             }
         }
     } catch (error) {
         return next(error)
     }
-    return res.r();
+    return res.r("1");
 
 })
 
 module.exports = router;
+

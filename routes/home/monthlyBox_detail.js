@@ -7,7 +7,6 @@ const _crypto = require('crypto');
 const jwt = require('../../module/jwt.js');
 const db = require('../../module/pool.js');
 const upload = require('../../module/multer.js');
-const secretKey = require('../../config/secretKey').key;
 
 //숫자 3단위에서 콤마 찍는 함수
 function comma(num){
@@ -31,10 +30,6 @@ function comma(num){
 // Written By 서연
 // Home에서 고양이 수
 router.get('/catCount',  async (req, res,next) => {
-    const chkToken = jwt.verify(req.headers.authorization);
-    if (chkToken == undefined) {
-        return next("10403")
-    }
     
     let catCountResult;
     let _result, result;
@@ -84,53 +79,3 @@ router.get('/crawling',  async (req, res,next) => {
     return res.r(result);
 });
 module.exports = router;
-
-/* 
-***
-몽고
-***
-*/
-// const express = require('express');
-// const router = express.Router();
-
-// const db = require('../../config/mongoPool.js')
-// const mongoose = require('mongoose')
-// const Schema = mongoose.Schema;
-
-// var contentSchema = new Schema({
-//     title : String,
-//     main_img : String,
-//     hashtag : [{type : String}],
-//     main_text : String,
-//     detail_img : [{type : String}],
-//     detail_text : String
-// })
-
-// var package = new Schema({
-//     package_img : String,
-//     package_date : String,
-//     content : [{
-//         title : String,
-//         main_img : String,
-//         hashtag : [{type : String}],
-//         main_text : String,
-//         detail_img : [{type : String}],
-//         detail_text : String
-//     }]
-// },{Collection : 'testhomes'})
-
-// var testhomes = mongoose.model('testhomes',package,'testhomes')
-
-// router.get('/',async (req,res,next) => {
-//     // let {id} = req.params
-//     let result;
-//     try{
-//         result = await testhomes.find({});
-//     } catch(err){
-//         return next(err);
-//     }
-//     console.log(result)
-//     return res.r(result);
-// })
-
-// module.exports = router;
