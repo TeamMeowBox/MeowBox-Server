@@ -147,7 +147,7 @@ router.post('/', async (req, res, next) => {
     //end_date추가
     let insertQuery =
         `
-    INSERT INTO orders (user_idx, name, address, phone_number, email, payment_date, end_date,price, product, payment_method)
+    INSERT INTO pre_orders (user_idx, name, address, phone_number, email, payment_date, end_date,price, product, payment_method)
     VALUES(?,?,?,?,?,?,?,?,?,?);
     `;
 
@@ -158,25 +158,13 @@ router.post('/', async (req, res, next) => {
         let insertIdx = await db.Query(insertQuery, [chkToken.user_idx, name, address, phone_number, email, payment_date[1],end_date,price, product, payment_method]);
 
         console.log('insertIdx : ' + insertIdx.insertId);
-        insertQuery =
-        `
-        INSERT INTO reservations (order_idx, delivery_date)
-        VALUES(?,?);
-        `;
-        console.log('deleveryList :' + deliveryList);
-        console.log(insertIdx.insertId)
+
         result.flag = "-1";
         if( product == 3 || product == 6){
             result.flag = "1";
         }
         result.order_idx =insertIdx.insertId;
-        console.log( result.order_idx)
-        for (var i in deliveryList) {
-            console.log(' i : ' + i);
-            let a = deliveryList[i];
-            console.log('a : ' + a);
-            db.Query(insertQuery, [ result.order_idx, deliveryList[i]]);
-        }
+
     } catch (error) {
         return next(error);
     }
