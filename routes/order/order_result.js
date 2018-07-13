@@ -72,13 +72,13 @@ function afterOrder(merchant_uid){ // code   0 : success /   -1 : fail
 
 // Written By 신기용
 // App 용
+// [7.13] 주문은 했으나 결제가 안됐을 경우 
 router.get('/', async (req, res, next) => {
     try {
         let imp_uid = req.query.imp_uid;
         let imp_success = req.query.imp_success;
         let merchant_uid = req.query.merchant_uid; 
 
-	console.log("Type : " + typeof(imp_success) );
 	
         if( imp_success == "false" ){
 		console.log('imp_success is fail ');
@@ -128,6 +128,15 @@ router.get('/', async (req, res, next) => {
             VALUES(?,?,?)
             `
             await db.Query(orderResultInsertQuery, [getAmountResult[0].user_idx, imp_uid, merchant_uid]);
+
+
+            let updateOrderPaymentFlagQuery =
+            `
+            UPDATE orders
+            SET payment_flag = 1
+            WHERE merchant_uid = ?
+            `
+            await db.Query(updateOrderPaymentFlagQuery, [merchant_uid]);
 
             return res.render('order_success');
         }
