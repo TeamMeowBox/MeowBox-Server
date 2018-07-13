@@ -57,7 +57,7 @@ router.get('/', async (req, res, next) => {
     result.flag = "-1"
     if(selectOrderResult.length === 0){ // 정기권 X and 주문 기록 x
       console.log('정기권 X       주문 기록 X');
-      result.user_image_profile = userSelectResult[0].image_profile;
+      result.image_profile = userSelectResult[0].image_profile;
       result.sendImage = sendImage[0];  
     } else {  
       for(var i in selectOrderResult){
@@ -81,7 +81,7 @@ router.get('/', async (req, res, next) => {
         result.percent =Number(((use/ticket)*100).toFixed() ) 
       }else { // 정기권 X 주문 기록 o
         console.log('정기권 X      주문 기록 O');
-        result.user_image_profile = userSelectResult[0].image_profile;
+        result.image_profile = userSelectResult[0].image_profile;
         let picture_flag = selectOrderResult[0].product;
         if(picture_flag == 1 ){
           result.sendImage = sendImage[0]
