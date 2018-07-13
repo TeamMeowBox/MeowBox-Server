@@ -78,7 +78,10 @@ router.get('/', async (req, res, next) => {
         let imp_success = req.query.imp_success;
         let merchant_uid = req.query.merchant_uid; 
 
-        if(! imp_success ){
+	console.log("Type : " + typeof(imp_success) );
+	
+        if( imp_success == "false" ){
+		console.log('imp_success is fail ');
             return res.render('order_fail');
         }
 
