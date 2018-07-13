@@ -7,7 +7,6 @@ const _crypto = require('crypto');
 const jwt = require('../../module/jwt.js');
 const db = require('../../module/pool.js');
 const upload = require('../../module/multer.js');
-const secretKey = require('../../config/secretKey').key;
 
 //숫자 3단위에서 콤마 찍는 함수
 function comma(num){
