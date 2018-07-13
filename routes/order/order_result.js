@@ -129,15 +129,6 @@ router.get('/', async (req, res, next) => {
             `
             await db.Query(orderResultInsertQuery, [getAmountResult[0].user_idx, imp_uid, merchant_uid]);
 
-
-            let updateOrderPaymentFlagQuery =
-            `
-            UPDATE orders
-            SET payment_flag = 1
-            WHERE merchant_uid = ?
-            `
-            await db.Query(updateOrderPaymentFlagQuery, [merchant_uid]);
-
             return res.render('order_success');
         }
         else {
