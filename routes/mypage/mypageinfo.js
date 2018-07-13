@@ -130,13 +130,19 @@ router.get('/web', async (req, res, next) => {
   
   result.user_name = userSelectResult[0].name;
   result.email = userSelectResult[0].email;
-  let cat_size = selectCatResult[0].size;
-  let cat_birthday = selectCatResult[0].birthday;
+
+  if(selectCatResult.length == 0){
+    result.cat_info = " 고양이를 등록해 주세요"
+
+  }else {
+    let cat_size = selectCatResult[0].size;
+    let cat_birthday = selectCatResult[0].birthday;
+    result.cat_name = (selectCatResult.length === 0) ? "-1" : selectCatResult[0].name;
+    result.cat_info = result.cat_name + " / " + cat_size + " / " + cat_birthday;
+  }
   
 
-  result.cat_name = (selectCatResult.length === 0) ? "-1" : selectCatResult[0].name;
   
-  result.cat_info = result.cat_name + " / " + cat_size + " / " + cat_birthday;
 
 
 
