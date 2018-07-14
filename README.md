@@ -34,11 +34,6 @@
 
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/schedule.png" />
 
-
-## 트리거
-
-<img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/trigger.png" />
-
 ---
 
 ## 사용 모듈
