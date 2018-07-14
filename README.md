@@ -15,7 +15,7 @@
 
 * 트랜잭션 처리
 
-* 로깅 
+* 로깅 - [Winston](https://github.com/winstonjs/winston)
 
 * 클러스터링
 
