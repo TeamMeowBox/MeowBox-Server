@@ -8,9 +8,8 @@
 # MeowBox Using Feature
 
 
-## 결제
+## 결제 [Axios](https://github.com/axios/axios)
 
-[Axios](https://github.com/axios/axios)
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/payment.png" />
 
 
