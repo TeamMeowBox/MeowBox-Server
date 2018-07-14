@@ -5,7 +5,7 @@
 
 ---
 
-# MeowBox Using Featu
+# MeowBox Using Feature
 
 ## 트랜잭션 처리
 
