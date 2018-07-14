@@ -1,9 +1,12 @@
+
+
+
+
 const schedule = require('node-schedule');
-const async = require('async');
 const db = require('./pool.js');
-/*
-    schedule.scheduleJob('0 0 0 * * *', async function () { //매 십초 
-      console.log("test scheduler!");
+
+    schedule.scheduleJob('0 0 0 * * *', async function () {
+      console.log("Work Scheduler!");
 
       let Query = ` 
     	DELETE FROM reservations 
@@ -11,13 +14,4 @@ const db = require('./pool.js');
     `
     ;
     await db.Query(Query,[]);
-
-
-
-     // where  date(delivery_date) > date(subdate(now(),interval 1 DAY));
-     // INSERT INTO  reservations VALUES(? ,DATE_FORMAT(NOW(),'%Y.%m.%d') );
-     
-
-    })
-
-*/
+  })
