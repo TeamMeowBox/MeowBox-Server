@@ -17,8 +17,10 @@
 
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/logger.png" />
 
+
 ## 결제
 
+<img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/payment.png" />
 
 
 ## 클러스터링
@@ -39,16 +41,17 @@
 
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/dev/public_data/images/SA.png" />
 
+---
 
 ## 사용 모듈
 
-[cors](https://github.com/expressjs/cors), 
+[cors](https://github.com/expressjs/cors)
 
-[multer](https://github.com/expressjs/multer), 
+[multer](https://github.com/expressjs/multer) 
 
-[jwt](https://github.com/lcobucci/jwt), 
+[jwt](https://github.com/lcobucci/jwt) 
 
-[helmet](https://github.com/helmetjs/helmet), 
+[helmet](https://github.com/helmetjs/helmet) 
 
 [async/await](https://github.com/Anwesh43/aync-await-js)
 
