@@ -1,0 +1,123 @@
+{"level":"error","message":"\n\u001b[31m[ERROR Handler] \u001b[0m \n\u001b[34m[Request PATH - /mypage/account_setting/account] \u001b[0m \n"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:26:45 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:26:54 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:27:57 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:29:39 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:31:40 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 6:31:48 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:32:02 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:32:07 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:33:24 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:34:31 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:35:01 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:35:08 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:36:03 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:40:09 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:40:18 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 6:40:44 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:46 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:48 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:49 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:51 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:51 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:51 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:05:51 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:21 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:22 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:22 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:23 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:24 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:24 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:24 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:34 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:35 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:35 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:35 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:35 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:35 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:36 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:37 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:37 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:37 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:37 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:38 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:38 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:38 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:38 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:38 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:39 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:39 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:39 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:39 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:40 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:40 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:40 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:40 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:40 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:41 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:41 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:41 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:41 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:41 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:42 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:42 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:06:42 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 7:09:30 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:12 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:12 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:12 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:13 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:17 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:18 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:18 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:18 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:20 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:20 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:20 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:20 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:10:20 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:00 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:00 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:01 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:01 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:01 pm ]","level":"error"}
+{"message":" :  /user/cat_signup]  [ Status Code: 1407 : 이미 등록된 고양이가 있습니다. ] [ Time : 2018.07.12 7:11:01 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 7:11:51 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.12 7:22:18 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"//home/monthlyBox_detail/catCount","level":"error"}
+{"status":404,"path":"//home/monthlyBox_detail/catCount","level":"error"}
+{"status":404,"path":"//home/monthlyBox_detail/catCount","level":"error"}
+{"status":404,"path":"//home/monthlyBox_detail/catCount","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.12 9:00:26 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.12 9:00:26 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.12 9:18:25 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.12 9:18:25 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account]  [ Status Code: 400 : 잘못된 요청입니다. ] [ Time : 2018.07.12 9:18:30 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 10:58:06 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 10:58:11 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 10:58:17 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 10:58:29 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 10:59:03 pm ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.12 10:59:17 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.12 11:24:52 pm ]","level":"error"}
