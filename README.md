@@ -2,7 +2,7 @@
 
 사랑한다면 미유박스하세요
 
-## 소개 ##
+## [소개] ##
 
 반려묘를 위한 필수 용품과 수제 간식을 정기 배송하는 서비스입니다.
 반려묘에게 매달 필요한 물품들을 정기 배송해줌
@@ -16,6 +16,6 @@
 
 
 
-## 워크 플로우
+## [워크 플로우] ##
 
 ![workflow](https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/images/meowbox_workflow.jpg)
