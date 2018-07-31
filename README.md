@@ -1,7 +1,23 @@
-# MeowBox
+# MeowBox - Server 
+
+사랑한다면 미유박스하세요
+
+## 소개 ##
+
+반려묘를 위한 필수 용품과 수제 간식을 정기 배송하는 서비스입니다.
+
+반려묘를 키우기 위해 필수적으로 구매해야 하는 물품들이 있습니다. 미유박스는 그 중에 4가지(간식, 장난감, 용품, 스크래처)를 정기 배송해주는 서비스 입니다.
+
+반려묘의 정보에 따른 박스구성이 배송됩니다. 
+
+박스의 종류
+
+- 정기박스
+- 생일박스
+- 초보자 박스(고양이를 처음 키우시는 고객을 위한 박스)
 
 
 
-<img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/dev/public_data/images/SA.png" />
+## 워크 플로우
 
-
+![workflow](https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/images/meowbox_workflow.jpg)
