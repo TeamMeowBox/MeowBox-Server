@@ -2,7 +2,7 @@
 
 사랑한다면 **미유박스**하세요
 
-## 소개
+## [ about ]
 
 반려묘를 위한 필수 용품과 수제 간식을 정기 배송하는 서비스입니다.
 
@@ -18,9 +18,9 @@
 
 
 
-## 워크 플로우
+## [ WorkFlow ]
 
-![](/Users/jeong-gyeong-in/Documents/%E1%84%86%E1%85%B5%E1%84%8B%E1%85%B2%E1%84%87%E1%85%A1%E1%86%A8%E1%84%89%E1%85%B3.jpg)
+[workflow]: https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/images/meowbox_workflow.jpg
 
 
 
@@ -30,7 +30,7 @@
 
 
 
-## [ 특징 ]
+## [ Features ]
 
 - 결제
 - 트랜잭션 처리
