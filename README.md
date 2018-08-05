@@ -39,7 +39,7 @@
 
 ## [ Features ]
 
-- 결제[Axios](https://github.com/axios/axios)
+- 결제 [Axios](https://github.com/axios/axios)
 
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/payment.png" />
 
@@ -53,7 +53,7 @@
 - 스케쥴러
 
 
-## 사용 모듈
+## [ 사용 모듈 ]
 
 * [cors](https://github.com/expressjs/cors)
 
@@ -64,8 +64,6 @@
 * [helmet](https://github.com/helmetjs/helmet)
 
 * [async/await](https://github.com/Anwesh43/aync-await-js)
-
-
 
 
 
