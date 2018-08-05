@@ -1,3 +1,4 @@
+
 # MeowBox - Server
 
 사랑한다면 **미유박스**하세요
@@ -38,14 +39,34 @@
 
 ## [ Features ]
 
-- 결제
+- 결제[Axios](https://github.com/axios/axios)
+
+<img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/payment.png" />
+
 - 트랜잭션 처리
-- 로깅 (winston)
+- 로깅 [Winston](https://github.com/winstonjs/winston)
 - 클러스터링
 - 에러코드
+
+<img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/status_error.png" />
+
 - 스케쥴러
+
+
+## 사용 모듈
+
+* [cors](https://github.com/expressjs/cors)
+
+* [multer](https://github.com/expressjs/multer)
+
+* [jwt](https://github.com/lcobucci/jwt)
+
+* [helmet](https://github.com/helmetjs/helmet)
+
+* [async/await](https://github.com/Anwesh43/aync-await-js)
+
+
 
 
 
 ## [ Function ]
-

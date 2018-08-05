@@ -78,3 +78,41 @@
 {"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 2:37:44 pm ]","level":"error"}
 {"status":404,"path":"/order/order_page/product/","level":"error"}
 {"status":404,"path":"/order/order_page/product/","level":"error"}
+{"status":404,"path":"/order/order_page/product/","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 4:06:29 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:04:33 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:04:33 pm ]","level":"error"}
+{"message":" :  /order/order_list]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:04:36 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:05:07 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:05:10 pm ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 5:22:55 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 5:39:44 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 5:40:49 pm ]","level":"error"}
+{"message":" :  /user/signup]  [ Status Code: 1401 : 아이디가 중복됩니다. ] [ Time : 2018.07.13 5:40:57 pm ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 5:41:56 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 5:48:55 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /mypage/account_setting/account/]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.13 6:49:05 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account/]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.13 6:49:05 pm ]","level":"error"}
+{"message":" :  /mypage/account_setting/account/]  [ Status Code: 1406 : 존재하지 않는 유저입니다. ] [ Time : 2018.07.13 6:49:11 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 6:49:49 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 6:50:09 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 6:50:11 pm ]","level":"error"}
+{"message":" :  /order/order_list]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 6:50:14 pm ]","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 6:50:39 pm ]","level":"error"}
+{"message":" :  /mypage/mypageinfo]  [ Status Code: 10403 : 잘못된 인증 방식입니다. ] [ Time : 2018.07.13 6:50:56 pm ]","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"status":404,"path":"/favicon.ico","level":"error"}
+{"message":" :  /user/signin]  [ Status Code: 401 : 로그인에 실패하였습니다. ] [ Time : 2018.07.13 7:15:04 pm ]","level":"error"}
+{"status":404,"path":"/mypage/mypageinfo/web","level":"error"}
+{"status":404,"path":"/mypage/mypageinfo/web","level":"error"}
+{"status":404,"path":"/mypage/mypageinfo/web","level":"error"}
