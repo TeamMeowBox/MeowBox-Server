@@ -21,6 +21,8 @@
 
 ## [ WorkFlow ]
 
+[WorkFlow PDF file](https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/MeowBox_WorkFlow.pdf)
+
 ![workflow](https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/images/meowbox_workflow.jpg)
 
 
@@ -29,22 +31,25 @@
 
 
 
-## [ System Architecture ]
+## [ System Architecture & explanation ]
 
 ![architecture](https://github.com/ruddls00114/MeowBox-Server/blob/master/public_data/images/SA.png)
 
-
-
-
+1. AWS EC2에 Docker를 사용하여 서버 배포
+2. [PM2](https://github.com/Unitech/pm2) 를 사용하여 NodeJS process 관리 및 application  실행
+3. AWS Lambda를 통해 Image resizing ([serverless-image-resizing](https://github.com/awslabs/serverless-image-resizing))
+4. AWS S3 스토리지에 Images 저장
+5. AWS RDS MYSQL 사용 - Static Data 저장 
+6. NoSQL(mongoDB) 사용- Dynamic Data(crawling data) 저장 
 
 ## [ Features ]
 
-- 결제 [Axios](https://github.com/axios/axios)
+- 결제 [Axios module](https://github.com/axios/axios)
 
 <img  width = "70%" height = "70%" src="https://github.com/TeamMeowBox/MeowBox-Server/blob/master/public_data/images/payment.png" />
 
 - 트랜잭션 처리
-- 로깅 [Winston](https://github.com/winstonjs/winston)
+- 로깅 [Winston module](https://github.com/winstonjs/winston)
 - 클러스터링
 - 에러코드
 
@@ -67,4 +72,3 @@
 
 
 
-## [ Function ]
